@@ -1,5 +1,5 @@
-#ifndef _SEGDRIVER_PCx85_H_
-#define _SEGDRIVER_PCx85_H_
+#ifndef SEGDRIVER_PCx85_H
+#define SEGDRIVER_PCx85_H
 
 #include <Wire.h>
 #include <SegLCDLib.h>

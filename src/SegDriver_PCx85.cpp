@@ -1,6 +1,3 @@
-#ifndef SEGDRIVER_PCx85_H
-#define SEGDRIVER_PCx85_H
-
 #include <Arduino.h>
 #include <SegDriver_PCx85.h>
 
@@ -92,5 +89,3 @@ void SegDriver_PCx85::_setMode(ModeStatus status, ModeBias bias, ModeDrive drive
     _i2c.write(data);
     _i2c.endTransmission();
 }
-
-#endif
