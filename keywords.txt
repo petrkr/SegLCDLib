@@ -1,0 +1,58 @@
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+SegLCD_PCF85176_Raw	KEYWORD1
+SegLCD_PCF85176_6DigitSignalBatteryProgress	KEYWORD1
+
+LCDSections	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+# Common methods
+begin	KEYWORD2
+clear	KEYWORD2
+display	KEYWORD2
+noDisplay	KEYWORD2
+write	KEYWORD2
+writeChar	KEYWORD2
+
+# PCx85 methods
+bankSelect	KEYWORD2
+blink	KEYWORD2
+
+# 6DigitSigBattProgress LCD
+setBatteryLevel	KEYWORD2
+setSignalLevel	KEYWORD2
+setProgress	KEYWORD2
+setWheel	KEYWORD2
+setLabels	KEYWORD2
+clearLabels	KEYWORD2
+
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+# Common constants
+MODE_BIAS_12	LITERAL1
+MODE_BIAS_13	LITERAL1
+MODE_DRIVE_STATIC	LITERAL1
+MODE_DRIVE_12	LITERAL1
+MODE_DRIVE_13	LITERAL1
+MODE_DRIVE_14	LITERAL1
+
+SECTION_DEFAULT	LITERAL1
+SECTION_TOP	LITERAL1
+
+# PCx85 constants
+MODE_STATUS_BLANK	LITERAL1
+MODE_STATUS_ENABLED	LITERAL1
+BLINK_FREQUENCY_OFF	LITERAL1
+BLINK_FREQUENCY_1	LITERAL1
+BLINK_FREQUENCY_2	LITERAL1
+BLINK_FREQUENCY_3	LITERAL1
+BLINK_MODE_NORMAL	LITERAL1
+BLINK_MODE_ALTRAM	LITERAL1
