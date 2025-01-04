@@ -38,11 +38,10 @@ class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
         void setLabels(LabelFlags labels);
         void clearLabels(LabelFlags labels);
 
-    
+
     private:
         uint8_t _buffer_sigbatt = 0;
         uint8_t _buffer_labels = 0;
-        
 
 };
 #endif

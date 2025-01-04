@@ -113,11 +113,11 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setWheel(uint16_t value) {
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setLabels(LabelFlags labels) {
     _buffer_labels |= labels;
     
-    _write(labels, ADDR_PRES_LABELS);
+    _write(_buffer_labels, ADDR_PRES_LABELS);
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::clearLabels(LabelFlags labels) {
     _buffer_labels &= ~labels;
     
-    _write(labels, ADDR_PRES_LABELS);
+    _write(_buffer_labels, ADDR_PRES_LABELS);
 }
