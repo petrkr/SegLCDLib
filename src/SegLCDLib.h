@@ -17,11 +17,17 @@ typedef enum {
 
 class SegLCDLib {
     public:
+        enum class LCDSections {
+            SECTION_DEFAULT,
+            SECTION_TOP,
+        };
+
         virtual void begin() = 0;
         virtual void clear() = 0;
         virtual ~SegLCDLib() {}
         virtual void display() = 0;
         virtual void noDisplay() = 0;
+        virtual void writeChar(uint8_t digit, char c, LCDSections section) = 0;
 
     protected:
         virtual void _write(uint8_t data, uint8_t address) = 0;
