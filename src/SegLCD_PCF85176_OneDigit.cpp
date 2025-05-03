@@ -1,8 +1,24 @@
 #include <Wire.h>
 #include <SegLCD_PCF85176_OneDigit.h>
 
+//TODO: Support for chaining multiple displays
+// For now it supports only one controller with 5 digits
 
 SegLCD_PCF85176_OneDigit::SegLCD_PCF85176_OneDigit(TwoWire& i2c, uint8_t address, uint8_t subaddress) :  SegDriver_PCF85176(i2c, address, subaddress) {}
+
+// Segments mapping order ABCD EFGH
+const uint8_t segment_num[10] = {
+    0xFC,
+    0x60,
+    0xDA,
+    0xF2,
+    0x66,
+    0xB6,
+    0xBE,
+    0xE0,
+    0xFE,
+    0xF6
+};
 
 void SegLCD_PCF85176_OneDigit::begin() {
     begin(false);
@@ -26,24 +42,57 @@ void SegLCD_PCF85176_OneDigit::writeChar(uint8_t digit, char c, LCDSections sect
         }
     }
 
+    _buffer[(digit-1)] = b;
     _write(b, (digit-1)*8);
 }
 
-uint8_t SegLCD_PCF85176_OneDigit::_get_char_value(char ch) {
-    // Segments mapping order ABCD EFGH
-    switch (ch) {
-        case ' ': return 0x00;
-        case '0': return 0xFC;
-        case '1': return 0x60;
-        case '2': return 0xDA;
-        case '3': return 0xF2;
-        case '4': return 0x66;
-        case '5': return 0xB6;
-        case '6': return 0xBE;
-        case '7': return 0xE0;
-        case '8': return 0xFE;
-        case '9': return 0xF6;
+void SegLCD_PCF85176_OneDigit::setDecimal(uint8_t digit, bool state, LCDSections section) {
+    if (digit < 1 || digit > 4) {
+        return; // Invalid digit
+    }
 
-        default:  return 0x00; // Return 0x00 for unsupported characters
+    if (state) {
+        _buffer[(digit-1)] |= 0x01; // Set the decimal point bit
+    } else {
+        _buffer[(digit-1)] &= ~0x01; // Clear the decimal point bit
+    }
+
+    _write(_buffer[(digit-1)], (digit-1)*8);
+}
+
+void SegLCD_PCF85176_OneDigit::writeFloat(float f, uint8_t decimal, LCDSections section) {
+// TODO
+}
+
+// Write string from left to right
+void SegLCD_PCF85176_OneDigit::writeString(const char* str, LCDSections section) {
+    for (uint8_t i = 0; i < 4; i++) {
+        if (str[i] == '\0') {
+            break;
+        }
+        writeChar(i + 1, str[i], section);
+    }
+}
+
+
+uint8_t SegLCD_PCF85176_OneDigit::_get_char_value(char ch) {
+    switch (ch) {
+        case ' ':
+            return 0x00;
+
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            return segment_num[ch - '0'];
+
+        default:
+            return 0x00; // Return 0x00 for unsupported characters
     }
 }
