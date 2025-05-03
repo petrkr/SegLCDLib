@@ -82,6 +82,7 @@ void SegLCD_PCF85176_OneDigit::writeFloat(float input, uint8_t decimals, LCDSect
 
 // Write string from left to right, support '.' as decimal point (attached to previous digit)
 void SegLCD_PCF85176_OneDigit::writeString(const char* str, LCDSections section) {
+    clear();
     int len = strlen(str);
     int digitIndex = 0;
 
