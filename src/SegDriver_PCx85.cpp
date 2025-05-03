@@ -59,6 +59,14 @@ void SegDriver_PCx85::_write(uint8_t *data, size_t length, uint8_t address) {
     _i2c.write(address);
     _i2c.write(data, length);
     _i2c.endTransmission();
+
+    // if we write to last address, we need to select the device again
+    // because PCF support chaining, but we do not support it yet
+    if (address >= MAX_HW_ADDRESS-8)
+    {
+        // TODO: Count how this will be on different modes than static
+        _deviceSelect();
+    }
 }
 
 void SegDriver_PCx85::_deviceSelect() {
