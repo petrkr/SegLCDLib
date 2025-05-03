@@ -27,7 +27,7 @@ class SegLCDLib {
         virtual ~SegLCDLib() {}
         virtual void display() = 0;
         virtual void noDisplay() = 0;
-        virtual void writeChar(uint8_t digit, char c, LCDSections section) = 0;
+        virtual void writeChar(uint8_t digit, char c, LCDSections section) { };
 
     protected:
         virtual void _write(uint8_t data, uint8_t address) = 0;
