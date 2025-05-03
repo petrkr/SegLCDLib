@@ -1,10 +1,11 @@
 #include <Wire.h>
 #include <SegLCD_PCF85176_OneDigit.h>
 
+SegLCD_PCF85176_OneDigit::SegLCD_PCF85176_OneDigit(TwoWire& i2c, uint8_t address, uint8_t subaddress) :  SegDriver_PCF85176(i2c, address, subaddress) {}
+
 //TODO: Support for chaining multiple displays
 // For now it supports only one controller with 5 digits
-
-SegLCD_PCF85176_OneDigit::SegLCD_PCF85176_OneDigit(TwoWire& i2c, uint8_t address, uint8_t subaddress) :  SegDriver_PCF85176(i2c, address, subaddress) {}
+#define DIGIT_COUNT 5
 
 // Segments mapping order ABCD EFGH
 const uint8_t segment_num[10] = {
@@ -93,13 +94,24 @@ void SegLCD_PCF85176_OneDigit::writeFloat(float input, uint8_t decimals, LCDSect
     }
 }
 
-// Write string from left to right
+// Write string from left to right, support '.' as decimal point (attached to previous digit)
 void SegLCD_PCF85176_OneDigit::writeString(const char* str, LCDSections section) {
-    for (uint8_t i = 0; i < 5; i++) {
-        if (str[i] == '\0') {
-            break;
+    int len = strlen(str);
+    int digitIndex = 0;
+
+    for (int i = 0; i < len && digitIndex < DIGIT_COUNT; ++i) {
+        if (str[i] == '.') {
+            continue;
         }
-        writeChar(i + 1, str[i], section);
+
+        int digit = DIGIT_COUNT - digitIndex;
+        writeChar(digit, str[i], section);
+
+        if (i + 1 < len && str[i + 1] == '.') {
+            setDecimal(digit, true, section);
+        }
+
+        digitIndex++;
     }
 }
 
