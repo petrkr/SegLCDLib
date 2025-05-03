@@ -5,8 +5,8 @@
 #include <SegLCDLib.h>
 
 class SegDriver_PCx85 : public SegLCDLib {
+    #define MAX_HW_ADDRESS  0
     #define MAX_ADDRESS     0
-    #define BUFFERSIZE      0
 
     // Define commands
     #define CMD_LOAD_POINTER    0x00
@@ -59,8 +59,9 @@ class SegDriver_PCx85 : public SegLCDLib {
 };
 
 class SegDriver_PCF85176 : public SegDriver_PCx85 {
-    #define MAX_ADDRESS     39
-    #define BUFFERSIZE      20
+    // Maximum possible address for the PCF85176
+    #define MAX_HW_ADDRESS  39
+    #define MAX_ADDRESS     MAX_HW_ADDRESS
 
     public:
         SegDriver_PCF85176(TwoWire& i2c, uint8_t address = 56, uint8_t subaddress = 0) : SegDriver_PCx85(i2c, address, subaddress) {}

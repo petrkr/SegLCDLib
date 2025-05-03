@@ -38,7 +38,8 @@ void SegDriver_PCx85::blink(BlinkFrequency frequency, BlinkMode mode) {
 }
 
 void SegDriver_PCx85::clear() {
-    uint8_t tmp[(MAX_ADDRESS / 2)] = { 0 };
+    //TODO: different modes than static
+    uint8_t tmp[(MAX_ADDRESS / 8)+1] = { 0 };
     _write(tmp, sizeof(tmp), 0);
 }
 
@@ -62,7 +63,7 @@ void SegDriver_PCx85::_write(uint8_t *data, size_t length, uint8_t address) {
 
     // if we write to last address, we need to select the device again
     // because PCF support chaining, but we do not support it yet
-    if (address >= MAX_HW_ADDRESS-8)
+    if (address+(length*8) >= MAX_HW_ADDRESS-8)
     {
         // TODO: Count how this will be on different modes than static
         _deviceSelect();
