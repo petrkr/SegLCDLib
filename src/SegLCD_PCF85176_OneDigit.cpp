@@ -52,7 +52,7 @@ void SegLCD_PCF85176_OneDigit::writeChar(uint8_t digit, char c, LCDSections sect
 }
 
 void SegLCD_PCF85176_OneDigit::setDecimal(uint8_t digit, bool state, LCDSections section) {
-    if (digit < 1 || digit > 4) {
+    if (digit < 1 || digit > 5) {
         return; // Invalid digit
     }
 
@@ -71,7 +71,7 @@ void SegLCD_PCF85176_OneDigit::writeFloat(float f, uint8_t decimal, LCDSections 
 
 // Write string from left to right
 void SegLCD_PCF85176_OneDigit::writeString(const char* str, LCDSections section) {
-    for (uint8_t i = 0; i < 4; i++) {
+    for (uint8_t i = 0; i < 5; i++) {
         if (str[i] == '\0') {
             break;
         }
