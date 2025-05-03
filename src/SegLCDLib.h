@@ -4,16 +4,16 @@
 #include <Arduino.h>
 
 typedef enum {
-    MODE_BIAS_13 = 0,
-    MODE_BIAS_12 = 1
-} ModeBias;
-
-typedef enum {
     MODE_DRIVE_STATIC = 1,
     MODE_DRIVE_12 = 2,
     MODE_DRIVE_13 = 3,
     MODE_DRIVE_14 = 0
 } ModeDrive;
+
+typedef enum {
+    MODE_BIAS_13 = 0,
+    MODE_BIAS_12 = 1
+} ModeBias;
 
 class SegLCDLib {
     public:

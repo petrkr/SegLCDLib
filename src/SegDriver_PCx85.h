@@ -44,7 +44,7 @@ class SegDriver_PCx85 : public SegLCDLib {
         void noDisplay() override;
 
     protected:
-        void _setMode(ModeStatus status, ModeBias bias, ModeDrive drive);
+        void _setMode(ModeStatus status, ModeDrive drive, ModeBias bias);
         void _write(uint8_t data, uint8_t address = 0) override;
         void _write(uint8_t *data, size_t length, uint8_t address = 0) override;
 
@@ -52,8 +52,8 @@ class SegDriver_PCx85 : public SegLCDLib {
         TwoWire& _i2c;
         uint8_t _address;
         uint8_t _subaddress;
-        ModeBias _bias;
         ModeDrive _drive;
+        ModeBias _bias;
 
         void _deviceSelect();
 };

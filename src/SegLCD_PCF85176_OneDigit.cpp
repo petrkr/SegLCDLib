@@ -13,7 +13,7 @@ void SegLCD_PCF85176_OneDigit::begin() {
 
 void SegLCD_PCF85176_OneDigit::begin(bool v1fix) {
     SegDriver_PCF85176::begin();
-    _setMode(MODE_STATUS_ENABLED, MODE_BIAS_13, MODE_DRIVE_STATIC);
+    _setMode(MODE_STATUS_ENABLED, MODE_DRIVE_STATIC, MODE_BIAS_13);
     _v1fix = v1fix;
 }
 

@@ -44,11 +44,11 @@ void SegDriver_PCx85::clear() {
 }
 
 void SegDriver_PCx85::display() {
-    _setMode(MODE_STATUS_ENABLED, _bias, _drive);
+    _setMode(MODE_STATUS_ENABLED, _drive, _bias);
 }
 
 void SegDriver_PCx85::noDisplay() {
-    _setMode(MODE_STATUS_BLANK, _bias, _drive);
+    _setMode(MODE_STATUS_BLANK, _drive, _bias);
 }
 
 void SegDriver_PCx85::_write(uint8_t data, uint8_t address) {
@@ -82,9 +82,9 @@ void SegDriver_PCx85::_deviceSelect() {
     _i2c.endTransmission();
 }
 
-void SegDriver_PCx85::_setMode(ModeStatus status, ModeBias bias, ModeDrive drive) {
-    _bias = bias;
+void SegDriver_PCx85::_setMode(ModeStatus status, ModeDrive drive, ModeBias bias) {
     _drive = drive;
+    _bias = bias;
 
     uint8_t data;
 

@@ -6,7 +6,7 @@ SegLCD_PCF85176_6DigitSignalBatteryProgress::SegLCD_PCF85176_6DigitSignalBattery
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::begin() {
     SegDriver_PCF85176::begin();
-    _setMode(MODE_STATUS_ENABLED, MODE_BIAS_13, MODE_DRIVE_14);
+    _setMode(MODE_STATUS_ENABLED, MODE_DRIVE_14, MODE_BIAS_13);
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setBatteryLevel(uint8_t level) {
