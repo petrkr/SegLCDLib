@@ -38,7 +38,7 @@ void SegDriver_PCx85::blink(BlinkFrequency frequency, BlinkMode mode) {
 }
 
 void SegDriver_PCx85::clear() {
-    uint8_t tmp[(MAX_ADDRESS / 2) - 1] = { 0 };
+    uint8_t tmp[(MAX_ADDRESS / 2)] = { 0 };
     _write(tmp, sizeof(tmp), 0);
 }
 
