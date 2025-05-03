@@ -209,3 +209,14 @@ uint8_t SegLCD_PCF85176_6DigitSignalBatteryProgress::_get_char_value(char ch) {
         default:  return 0x00; // Return 0x00 for unsupported characters
     }
 }
+    // ABCD_EFGH to ABCH_FGED
+uint8_t SegLCD_PCF85176_6DigitSignalBatteryProgress::_mapSegments(uint8_t val) {
+    uint8_t out = 0;
+    out |= (val & 0b11100000);           // bits 7-5 → 7-5
+    out |= (val & 0b00010000) >> 4;      // D: bit 4 → 0
+    out |= (val & 0b00001000) >> 1;      // E: bit 3 → 2
+    out |= (val & 0b00000100) >> 1;      // F: bit 2 → 1
+    out |= (val & 0b00000010) << 2;      // G: bit 1 → 3
+    out |= (val & 0b00000001) << 4;      // H: bit 0 → 4
+    return out;
+}
