@@ -30,6 +30,11 @@ void SegLCD_PCF85176_OneDigit::begin(bool v1fix) {
     _v1fix = v1fix;
 }
 
+void SegLCD_PCF85176_OneDigit::clear() {
+    memset(_buffer, 0x00, sizeof(_buffer));
+    SegDriver_PCx85::clear();
+}
+
 void SegLCD_PCF85176_OneDigit::writeChar(uint8_t digit, char c, LCDSections section) {
     uint8_t b = _get_char_value(c);
 
