@@ -65,8 +65,32 @@ void SegLCD_PCF85176_OneDigit::setDecimal(uint8_t digit, bool state, LCDSections
     _write(_buffer[(digit-1)], (digit-1)*8);
 }
 
-void SegLCD_PCF85176_OneDigit::writeFloat(float f, uint8_t decimal, LCDSections section) {
-// TODO
+void SegLCD_PCF85176_OneDigit::writeFloat(float input, uint8_t decimals, LCDSections section) {
+    clear();
+
+    bool isNegative = input < 0.0f;
+    float scale = powf(10, decimals);
+    long scaled = lroundf(fabsf(input) * scale);
+
+    int totalDigits = _countDigits(scaled);
+    int digitPos = 1;
+
+    for (int i = 0; i < totalDigits; ++i) {
+        int digit = scaled % 10;
+        writeChar(digitPos, digit+'0');
+
+        if (i == decimals && decimals > 0) {
+            setDecimal(digitPos, true);
+        }
+
+        scaled /= 10;
+        digitPos++;
+    }
+
+    if (isNegative) {
+        writeChar(digitPos, '-');
+        digitPos++;
+    }
 }
 
 // Write string from left to right
@@ -79,6 +103,14 @@ void SegLCD_PCF85176_OneDigit::writeString(const char* str, LCDSections section)
     }
 }
 
+int SegLCD_PCF85176_OneDigit::_countDigits(long num) {
+    int count = 0;
+    do {
+        count++;
+        num /= 10;
+    } while (num > 0);
+    return count;
+}
 
 uint8_t SegLCD_PCF85176_OneDigit::_get_char_value(char ch) {
     switch (ch) {

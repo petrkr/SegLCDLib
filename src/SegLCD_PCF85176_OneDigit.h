@@ -16,11 +16,12 @@ class SegLCD_PCF85176_OneDigit : public SegDriver_PCF85176 {
         void clear() override;
         void setDecimal(uint8_t digit, bool state, LCDSections section = LCDSections::SECTION_DEFAULT);
         void writeChar(uint8_t digit, char c, LCDSections section = LCDSections::SECTION_DEFAULT) override;
-        void writeFloat(float f, uint8_t decimal = 0, LCDSections section = LCDSections::SECTION_DEFAULT);
+        void writeFloat(float input, uint8_t decimals = 0, LCDSections section = LCDSections::SECTION_DEFAULT);
         void writeString(const char* str, LCDSections section = LCDSections::SECTION_DEFAULT);
     private:
         uint8_t _buffer[MAX_ADDRESS/8];
         bool _v1fix;
+        int _countDigits(long num);
         uint8_t _get_char_value(char ch);
 };
 #endif
