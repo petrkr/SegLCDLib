@@ -178,6 +178,23 @@ uint8_t SegLCD_PCF85176_OneDigit::_get_char_value(char ch) {
         case 'y': return 0b01110110;
         case 'Z': return 0b11011010;
         case 'z': return 0b11011000;
+
+        case '*': return 0b11000110;
+        case ',': return 0b00001000;
+        case '.': return 0b00000001;
+        case '/': return 0b01001010;
+        case '~': return 0b10000000;
+        case '-': return 0b00000010;
+        case '_': return 0b00010000;
+        case ':': return 0b00010010;
+        case '!': return 0b01100001;
+        case '|': return 0b00001100;
+        case '"': return 0b01000100;
+        case '(':
+        case '[': return 0b10011100;
+        case ')':
+        case ']': return 0b11110000;
+
         default: return 0x00;
     }
 }
