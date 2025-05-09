@@ -18,7 +18,16 @@ void setup() {
   // Clear LCD
   lcd.clear();
   delay(500);
-//lcd.write((uint8_t)0xff, 4);
+
+//  lcd.write((uint8_t)0x01, 16);
+//  delay(1000);
+
+  lcd.writeFloat(-3.14, 2);
+  delay(1000);
+
+  lcd.writeFloat(2.4, 1, SegLCD_PCF85176_T1T2Lcd::LCDSections::SECTION_T2);
+  delay(1000);
+
 
   lcd.setClockSymbol(true);
 
@@ -38,9 +47,11 @@ void setup() {
 
   lcd.setLabels(SegLCD_PCF85176_T1T2Lcd::LABEL_T2_HUM | SegLCD_PCF85176_T1T2Lcd::LABEL_T1_C_UP);
   lcd.writeChar(1, 'h');
+  lcd.setDecimal(1, true);
   lcd.writeChar(2, 'e');
   lcd.writeChar(3, 'l');
   lcd.writeChar(4, 'o');
+
 
   lcd.writeChar(1, 'H', SegLCD_PCF85176_T1T2Lcd::LCDSections::SECTION_T2);
   lcd.writeChar(2, 'E', SegLCD_PCF85176_T1T2Lcd::LCDSections::SECTION_T2);
@@ -73,6 +84,4 @@ void loop() {
   lcd.setBatteryLevel(2);delay(500);
   lcd.setBatteryLevel(3);delay(500);
   lcd.setBatteryLevel(4);delay(500);
-
-  
 }
