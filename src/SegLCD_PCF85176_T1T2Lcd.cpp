@@ -47,6 +47,24 @@ void SegLCD_PCF85176_T1T2Lcd::setSignalLevel(uint8_t level) {
     _write(_buffer_sigclk, ADDR_SIGNAL_CLOCK);
 }
 
+void SegLCD_PCF85176_T1T2Lcd::setClockSymbol(bool status) {
+    if (status)
+        _buffer_sigclk |= 0x04;
+    else
+        _buffer_sigclk &= ~0x04;
+
+    _write(_buffer_sigclk, ADDR_SIGNAL_CLOCK);
+}
+
+void SegLCD_PCF85176_T1T2Lcd::setClockColon(bool status) {
+    if (status)
+        _buffer_sigclk |= 0x02;
+    else
+        _buffer_sigclk &= ~0x02;
+
+    _write(_buffer_sigclk, ADDR_SIGNAL_CLOCK);
+}
+
 void SegLCD_PCF85176_T1T2Lcd::setLabels(uint8_t labels) {
     _buffer_labels |= labels;
     _write(_buffer_labels, ADDR_LABELS);
