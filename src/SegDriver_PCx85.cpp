@@ -38,9 +38,24 @@ void SegDriver_PCx85::blink(BlinkFrequency frequency, BlinkMode mode) {
 }
 
 void SegDriver_PCx85::clear() {
-    //TODO: different modes than static
-    uint8_t tmp[(MAX_ADDRESS / 8)+1] = { 0 };
-    _write(tmp, sizeof(tmp), 0);
+    // TODO: Make this more generic or dynamic
+    uint8_t tmps[(MAX_ADDRESS / 8)+1] = { 0 };
+    uint8_t tmp14[(MAX_ADDRESS / 2)+1] = { 0 };
+
+    switch (_drive) {
+        case MODE_DRIVE_STATIC:
+            _write(tmps, sizeof(tmps), 0);
+            return;
+        //TODO: Get riht size values here
+        case MODE_DRIVE_12:
+        case MODE_DRIVE_13:
+            break;
+        case MODE_DRIVE_14:
+            _write(tmp14, sizeof(tmp14), 0);
+            return;
+        default:
+            break;
+    }
 }
 
 void SegDriver_PCx85::display() {
