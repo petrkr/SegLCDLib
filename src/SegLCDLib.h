@@ -20,6 +20,10 @@ class SegLCDLib {
         enum class LCDSections {
             SECTION_DEFAULT,
             SECTION_TOP,
+            SECTION_T1,
+            SECTION_T2,
+            SECTION_CLOCK,
+            SECTION_DAY
         };
 
         virtual void begin() = 0;
