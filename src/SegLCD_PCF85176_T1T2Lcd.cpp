@@ -226,6 +226,16 @@ uint8_t SegLCD_PCF85176_T1T2Lcd::_mapSegments(uint8_t val) {
     return out;
 }
 
+// TODO: Move it to generic class
+int SegLCD_PCF85176_T1T2Lcd::_countDigits(long num) {
+    int count = 0;
+    do {
+        count++;
+        num /= 10;
+    } while (num > 0);
+    return count;
+}
+
 // For generic class allow access to low level functions
 void SegLCD_PCF85176_T1T2Lcd::write(uint8_t data, uint8_t address) {
     _write(data, address);

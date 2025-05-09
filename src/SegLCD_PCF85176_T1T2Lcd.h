@@ -61,5 +61,6 @@ class SegLCD_PCF85176_T1T2Lcd : public SegDriver_PCF85176 {
 
         uint8_t _get_char_value(char ch);
         uint8_t _mapSegments(uint8_t val);
+        int _countDigits(long num);
 };
 #endif
