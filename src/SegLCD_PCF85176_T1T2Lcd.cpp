@@ -137,22 +137,37 @@ void SegLCD_PCF85176_T1T2Lcd::writeFloat(float input, uint8_t decimals, LCDSecti
     long scaled = lroundf(fabsf(input) * scale);
 
     int totalDigits = _countDigits(scaled);
-    int digitPos = 1;
+    int digitCount = totalDigits + (isNegative ? 1 : 0);
+    if (decimals > 0 && totalDigits <= decimals) {
+        digitCount++;
+    }
+
+    int startPos = 4 - digitCount + 1;
+    int digitPos = 0;
 
     for (int i = 0; i < totalDigits; ++i) {
         int digit = scaled % 10;
-        writeChar(4-digitPos, digit+'0', section);
+        int pos = startPos + digitCount - 1 - digitPos;
+        writeChar(pos, digit + '0', section);
 
         if (i == decimals && decimals > 0) {
-            setDecimal(4-digitPos, true, section);
+            setDecimal(pos, true, section);
         }
 
         scaled /= 10;
         digitPos++;
     }
 
+    if (decimals > 0 && totalDigits <= decimals) {
+        int pos = startPos + digitCount - 1 - digitPos;
+        writeChar(pos, '0', section);
+        setDecimal(pos, true, section);
+        digitPos++;
+    }
+
     if (isNegative) {
-        writeChar(4-digitPos, '-', section);
+        int pos = startPos + digitCount - 1 - digitPos;
+        writeChar(pos, '-', section);
         digitPos++;
     }
 }
