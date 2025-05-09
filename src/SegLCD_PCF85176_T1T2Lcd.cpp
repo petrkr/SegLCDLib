@@ -101,9 +101,66 @@ void SegLCD_PCF85176_T1T2Lcd::clearT1T2Labels(uint8_t t1t2) {
     _write(_buffer_clock, 2, ADDR_CLOCK_T1T2_LABELS_SEGS);
 }
 
-void SegLCD_PCF85176_T1T2Lcd::writeChar(uint8_t digit, char c, LCDSections section) {
+void SegLCD_PCF85176_T1T2Lcd::setDecimal(uint8_t digit, bool state, LCDSections section) {
+    if (digit < 1 || digit > 4) {
+        return; // Invalid digit
+    }
+
+    uint8_t address = 0;
+    uint8_t* _buffer = nullptr;
+    switch (section) {
+        case LCDSections::SECTION_DEFAULT:
+        case LCDSections::SECTION_T1:
+            address = ADDR_T1_SEGS + ((digit - 1) * 2);
+            _buffer = _bufferT1;
+            break;
+        case LCDSections::SECTION_T2:
+            address = ADDR_T2_SEGS + ((digit - 1) * 2);
+            _buffer= _bufferT2;
+            break;
+        default:
+            return; // Invalid section
+    }
+
+    if (state) {
+        _buffer[(digit-1)] |= 0x01; // Set the decimal point bit
+    } else {
+        _buffer[(digit-1)] &= ~0x01; // Clear the decimal point bit
+    }
+
+    _write(_buffer[(digit-1)], address);
+}
+
+void SegLCD_PCF85176_T1T2Lcd::writeFloat(float input, uint8_t decimals, LCDSections section) {
+    bool isNegative = input < 0.0f;
+    float scale = powf(10, decimals);
+    long scaled = lroundf(fabsf(input) * scale);
+
+    int totalDigits = _countDigits(scaled);
+    int digitPos = 1;
+
+    for (int i = 0; i < totalDigits; ++i) {
+        int digit = scaled % 10;
+        writeChar(4-digitPos, digit+'0', section);
+
+        if (i == decimals && decimals > 0) {
+            setDecimal(4-digitPos, true, section);
+        }
+
+        scaled /= 10;
+        digitPos++;
+    }
+
+    if (isNegative) {
+        writeChar(4-digitPos, '-', section);
+        digitPos++;
+    }
+}
+
+    void SegLCD_PCF85176_T1T2Lcd::writeChar(uint8_t digit, char c, LCDSections section) {
     uint8_t ch = _mapSegments(_get_char_value(c));
 
+    // TODO: Do some dot bit mask and make it more generic
     switch (section) {
         case LCDSections::SECTION_DEFAULT:
         case LCDSections::SECTION_T1:
