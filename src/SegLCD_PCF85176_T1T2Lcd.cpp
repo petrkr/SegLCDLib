@@ -172,7 +172,7 @@ void SegLCD_PCF85176_T1T2Lcd::writeFloat(float input, uint8_t decimals, LCDSecti
     }
 }
 
-    void SegLCD_PCF85176_T1T2Lcd::writeChar(uint8_t digit, char c, LCDSections section) {
+void SegLCD_PCF85176_T1T2Lcd::writeChar(uint8_t digit, char c, LCDSections section) {
     uint8_t ch = _mapSegments(_get_char_value(c));
 
     // TODO: Do some dot bit mask and make it more generic
