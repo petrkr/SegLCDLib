@@ -122,14 +122,52 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::clearLabels(LabelFlags labels)
     _write(_buffer_labels, ADDR_PRES_LABELS);
 }
 
-void SegLCD_PCF85176_6DigitSignalBatteryProgress::writeChar(uint8_t digit, char c, LCDSections section) {
+void SegLCD_PCF85176_6DigitSignalBatteryProgress::setDecimal(uint8_t digit, bool state, LCDSections section) {
+    uint8_t address = 0;
+    uint8_t* _buffer = nullptr;
     switch (section) {
         case LCDSections::SECTION_DEFAULT:
-            _write(_mapSegments(_get_char_value(c)), ADDR_BIG_SEGS + ((6 - digit) * 2));
+            if (digit < 1 || digit > 4) {
+                return; // Invalid digit
+            }
+
+            address = ADDR_BIG_SEGS + ((6 - digit) * 2);
+            _buffer = _buffer_default;
             break;
         case LCDSections::SECTION_TOP:
         case LCDSections::SECTION_CLOCK:
-             _write(_mapSegments(_get_char_value(c)), ADDR_SMALL_SEGS + ((digit - 1) * 2));
+            if (digit < 1 || digit > 3) {
+                return; // Invalid digit
+            }
+
+            address = ADDR_SMALL_SEGS + ((digit - 1) * 2);
+            _buffer = _buffer_top;
+            break;
+        default:
+            return; // Invalid section
+    }
+
+    if (state) {
+        _buffer[(digit-1)] |= 0x10; // Set the decimal point bit
+    } else {
+        _buffer[(digit-1)] &= ~0x10; // Clear the decimal point bit
+    }
+
+    _write(_buffer[(digit-1)], address);
+}
+
+void SegLCD_PCF85176_6DigitSignalBatteryProgress::writeChar(uint8_t digit, char c, LCDSections section) {
+    uint8_t ch = _mapSegments(_get_char_value(c));
+
+    switch (section) {
+        case LCDSections::SECTION_DEFAULT:
+            _buffer_default[digit-1] = ch;
+            _write(_buffer_default[digit-1], ADDR_BIG_SEGS + ((6 - digit) * 2));
+            break;
+        case LCDSections::SECTION_TOP:
+        case LCDSections::SECTION_CLOCK:
+            _buffer_top[digit-1] = ch;
+             _write(_buffer_top[digit-1], ADDR_SMALL_SEGS + ((digit - 1) * 2));
             break;
     }
 }
