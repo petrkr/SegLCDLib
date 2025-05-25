@@ -101,12 +101,3 @@ void SegLCD_PCF85176_OneDigit::writeString(const char* str, LCDSections section)
         digitIndex++;
     }
 }
-
-int SegLCD_PCF85176_OneDigit::_countDigits(long num) {
-    int count = 0;
-    do {
-        count++;
-        num /= 10;
-    } while (num > 0);
-    return count;
-}

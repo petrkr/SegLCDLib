@@ -87,3 +87,12 @@ uint8_t SegLCDLib::_get_char_value(char ch) {
         default: return 0x00;
     }
 }
+
+int SegLCDLib::_countDigits(long num) {
+    int count = 0;
+    do {
+        count++;
+        num /= 10;
+    } while (num > 0);
+    return count;
+}

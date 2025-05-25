@@ -21,6 +21,5 @@ class SegLCD_PCF85176_OneDigit : public SegDriver_PCF85176 {
     private:
         uint8_t _buffer[MAX_ADDRESS/8];
         bool _v1fix;
-        int _countDigits(long num);
 };
 #endif
