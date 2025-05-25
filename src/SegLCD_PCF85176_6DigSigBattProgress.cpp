@@ -185,6 +185,60 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setDecimal(uint8_t digit, bool
     _write(_buffer[(digit-1)], address);
 }
 
+void SegLCD_PCF85176_6DigitSignalBatteryProgress::writeFloat(float input, uint8_t decimals, LCDSections section) {
+    bool isNegative = input < 0.0f;
+    float scale = powf(10, decimals);
+    long scaled = lroundf(fabsf(input) * scale);
+
+    int totalDigits = _countDigits(scaled);
+    int digitCount = totalDigits + (isNegative ? 1 : 0);
+    if (decimals > 0 && totalDigits <= decimals) {
+        digitCount++;
+    }
+
+    int startPos;
+    int digitPos = 0;
+
+    switch (section) {
+        case LCDSections::SECTION_DEFAULT:
+            startPos = 6 - digitCount + 1;
+            break;
+        case LCDSections::SECTION_TOP:
+        case LCDSections::SECTION_CLOCK:
+            startPos = 4 - digitCount + 1;
+            break;
+        default:
+            return; // Invalid section
+    }
+
+    for (int i = 0; i < totalDigits; ++i) {
+        int digit = scaled % 10;
+        int pos = startPos + digitCount - 1 - digitPos;
+        writeChar(pos, digit + '0', section);
+
+        if (i == decimals && decimals > 0) {
+            setDecimal(pos, true, section);
+        }
+
+        scaled /= 10;
+        digitPos++;
+    }
+
+    if (decimals > 0 && totalDigits <= decimals) {
+        int pos = startPos + digitCount - 1 - digitPos;
+        writeChar(pos, '0', section);
+        setDecimal(pos, true, section);
+        digitPos++;
+    }
+
+    if (isNegative) {
+        int pos = startPos + digitCount - 1 - digitPos;
+        writeChar(pos, '-', section);
+        digitPos++;
+    }
+}
+
+
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::writeChar(uint8_t digit, char c, LCDSections section) {
     uint8_t ch = _mapSegments(_get_char_value(c));
 
