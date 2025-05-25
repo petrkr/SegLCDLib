@@ -125,98 +125,110 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::clearLabels(LabelFlags labels)
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::writeChar(uint8_t digit, char c, LCDSections section) {
     switch (section) {
         case LCDSections::SECTION_DEFAULT:
-            _write(_get_char_value(c), ADDR_BIG_SEGS + ((6 - digit) * 2));
+            _write(_mapSegments(_get_char_value(c)), ADDR_BIG_SEGS + ((6 - digit) * 2));
             break;
         case LCDSections::SECTION_TOP:
-             _write(_get_char_value(c), ADDR_SMALL_SEGS + ((digit - 1) * 2));
+        case LCDSections::SECTION_CLOCK:
+             _write(_mapSegments(_get_char_value(c)), ADDR_SMALL_SEGS + ((digit - 1) * 2));
             break;
     }
 }
 
+//Mapping ABCD EFGH
 uint8_t SegLCD_PCF85176_6DigitSignalBatteryProgress::_get_char_value(char ch) {
-    // Segments mapping order ABCH FGED
     switch (ch) {
         case ' ': return 0x00;
-        case '0': return 0xEB;
-        case '1': return 0x60;
-        case '2': return 0xC7;
-        case '3': return 0xE5;
-        case '4': return 0x6C;
-        case '5': return 0xAD;
-        case '6': return 0xAF;
-        case '7': return 0xE0;
-        case '8': return 0xEF;
-        case '9': return 0xED;
+        case '0': return 0b11111100;
+        case '1': return 0b01100000;
+        case '2': return 0b11011010;
+        case '3': return 0b11110010;
+        case '4': return 0b01100110;
+        case '5': return 0b10110110;
+        case '6': return 0b10111110;
+        case '7': return 0b11100000;
+        case '8': return 0b11111110;
+        case '9': return 0b11110110;
         case 'A':
         case 'a': return 0b11101110;
         case 'B':
-        case 'b': return 0x2F;
-        case 'C': return 0x8B;
-        case 'c': return 0b00000111;
+        case 'b': return 0b00111110;
+        case 'C': return 0b10011100;
+        case 'c': return 0b00011010;
         case 'D':
-        case 'd': return 0b01100111;
+        case 'd': return 0b01111010;
         case 'E':
-        case 'e': return 0x8F;
+        case 'e': return 0b10011110;
         case 'F':
-        case 'f': return 0x8E;
+        case 'f': return 0b10001110;
         case 'G':
-        case 'g': return 0xED;
+        case 'g': return 0b11110110;
         case 'H': return 0b01101110;
         case 'h': return 0b00101110;
         case 'I': return 0b01100000;
         case 'i': return 0b00100000;
-        case 'J': return 0b01100011;
-        case 'j': return 0b01100011;
+        case 'J': return 0b01111000;
+        case 'j': return 0b01111000;
         case 'K':
         case 'k': return 0b10101110;
-        case 'L': return 0x0B;
-        case 'l': return 0b00000011;
-        case 'M': 
-        case 'm': return 0b10100110;
-        case 'N': return 0b11101010;
-        case 'n': return 0b00100110;
-        case 'O': return 0xEB;
-        case 'o': return 0b00100111;
+        case 'L': return 0b00011100;
+        case 'l': return 0b00011000;
+        case 'M':
+        case 'm': return 0b10101010;
+        case 'N': return 0b11101100;
+        case 'n': return 0b00101010;
+        case 'O': return 0b11111100;
+        case 'o': return 0b00111010;
         case 'P':
-        case 'p': return 0xCE;
+        case 'p': return 0b11001110;
         case 'Q':
-        case 'q': return 0b11101100;
+        case 'q': return 0b11100110;
         case 'R':
-        case 'r': return 0b00000110;
+        case 'r': return 0b00001010;
         case 'S':
-        case 's': return 0xAD;
+        case 's': return 0b10110110;
         case 'T':
-        case 't': return 0x0F;
-        case 'U': return 0x6B;
-        case 'u': return 0b00100011;
+        case 't': return 0b00011110;
+        case 'U': return 0b01111100;
+        case 'u': return 0b00111000;
         case 'V':
-        case 'v': return 0b01001001;
+        case 'v': return 0b01010100;
         case 'W':
-        case 'w': return 0b01001101;
+        case 'w': return 0b01010110;
         case 'X': return 0b01101110;
-        case 'x': return 0b00100010;
+        case 'x': return 0b00101000;
         case 'Y':
-        case 'y': return 0b01101101;
-        case 'Z': return 0xC7;
-        case 'z': return 0b11000011;
+        case 'y': return 0b01110110;
+        case 'Z': return 0b11011010;
+        case 'z': return 0b11011000;
 
-        case '*': return 0xCC;
+        case '*': return 0b11000110;
+        case ',': return 0b00001000;
+        case '.': return 0b00000001;
+        case '/': return 0b01001010;
+        case '~': return 0b10000000;
+        case '-': return 0b00000010;
+        case '_': return 0b00010000;
+        case ':': return 0b00010010;
+        case '!': return 0b01100001;
+        case '|': return 0b00001100;
+        case '"': return 0b01000100;
+        case '(':
+        case '[': return 0b10011100;
+        case ')':
+        case ']': return 0b11110000;
 
-        case '-': return 0b00000100;
-        case '_': return 0b00000001;
-        case ':': return 0b00000101;
-
-        default:  return 0x00; // Return 0x00 for unsupported characters
+        default: return 0x00;
     }
 }
-    // ABCD_EFGH to ABCH_FGED
+
+// ABCD_EFGH to ABCH FGED
 uint8_t SegLCD_PCF85176_6DigitSignalBatteryProgress::_mapSegments(uint8_t val) {
     uint8_t out = 0;
-    out |= (val & 0b11100000);           // bits 7-5 → 7-5
+    out |= (val & 0b11100000);           // ABC: bits 7-5 → 7-5
     out |= (val & 0b00010000) >> 4;      // D: bit 4 → 0
-    out |= (val & 0b00001000) >> 1;      // E: bit 3 → 2
-    out |= (val & 0b00000100) >> 1;      // F: bit 2 → 1
-    out |= (val & 0b00000010) << 2;      // G: bit 1 → 3
+    out |= (val & 0b00001000) >> 2;      // E: bit 3 → 1
+    out |= (val & 0b00000100) << 1;      // F: bit 2 → 3
+    out |= (val & 0b00000010) << 1;      // G: bit 1 → 2
     out |= (val & 0b00000001) << 4;      // H: bit 0 → 4
     return out;
 }
