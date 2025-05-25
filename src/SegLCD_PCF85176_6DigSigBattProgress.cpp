@@ -244,11 +244,17 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::writeChar(uint8_t digit, char 
 
     switch (section) {
         case LCDSections::SECTION_DEFAULT:
+            if (digit < 1 || digit > 6) {
+                return; // Invalid digit
+            }
             _buffer_default[digit-1] = ch;
             _write(_buffer_default[digit-1], ADDR_BIG_SEGS + ((6 - digit) * 2));
             break;
         case LCDSections::SECTION_TOP:
         case LCDSections::SECTION_CLOCK:
+            if (digit < 1 || digit > 4) {
+                return; // Invalid digit
+            }
             _buffer_top[digit-1] = ch;
              _write(_buffer_top[digit-1], ADDR_SMALL_SEGS + ((digit - 1) * 2));
             break;
