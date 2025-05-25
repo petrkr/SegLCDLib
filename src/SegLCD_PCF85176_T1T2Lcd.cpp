@@ -179,13 +179,11 @@ void SegLCD_PCF85176_T1T2Lcd::writeChar(uint8_t digit, char c, LCDSections secti
     switch (section) {
         case LCDSections::SECTION_DEFAULT:
         case LCDSections::SECTION_T1:
-            _bufferT1[digit - 1] &= ~0b11111110;
-            _bufferT1[digit - 1] |= ch & 0b11111110;
+            _bufferT1[digit - 1] = ch;
             _write(_bufferT1[digit - 1], ADDR_T1_SEGS + ((digit - 1) * 2));
             break;
         case LCDSections::SECTION_T2:
-            _bufferT2[digit - 1] &= ~0b11111110;
-            _bufferT2[digit - 1] |= ch & 0b11111110;
+            _bufferT2[digit - 1] = ch;
             _write(_bufferT2[digit - 1], ADDR_T2_SEGS + ((digit - 1) * 2));
             break;    
         case LCDSections::SECTION_TOP:
