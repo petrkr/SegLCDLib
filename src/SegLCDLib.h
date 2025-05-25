@@ -34,6 +34,8 @@ class SegLCDLib {
         virtual void writeChar(uint8_t digit, char c, LCDSections section) { };
 
     protected:
+        uint8_t _get_char_value(char ch);
+
         virtual void _write(uint8_t data, uint8_t address) = 0;
         virtual void _write(uint8_t *data, size_t length, uint8_t address) = 0;
 };
