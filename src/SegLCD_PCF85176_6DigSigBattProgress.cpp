@@ -122,6 +122,35 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::clearLabels(LabelFlags labels)
     _write(_buffer_labels, ADDR_PRES_LABELS);
 }
 
+void SegLCD_PCF85176_6DigitSignalBatteryProgress::setClockColon(bool state, LCDSections section) {
+    uint8_t address = 0;
+    uint8_t digit = 0;
+    uint8_t* _buffer = nullptr;
+    switch (section) {
+        case LCDSections::SECTION_DEFAULT:
+            address = ADDR_BIG_SEGS; // Digit 6
+            digit = 6;
+            _buffer = _buffer_default;
+            break;
+        case LCDSections::SECTION_TOP:
+        case LCDSections::SECTION_CLOCK:
+            address = ADDR_SMALL_SEGS + 6; // Digit 4
+            digit = 4;
+            _buffer = _buffer_top;
+            break;
+        default:
+            return; // Invalid section
+    }
+
+    if (state) {
+        _buffer[(digit-1)] |= 0x10; // Set the decimal point bit
+    } else {
+        _buffer[(digit-1)] &= ~0x10; // Clear the decimal point bit
+    }
+
+    _write(_buffer[(digit-1)], address);
+}
+
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setDecimal(uint8_t digit, bool state, LCDSections section) {
     uint8_t address = 0;
     uint8_t* _buffer = nullptr;
