@@ -14,6 +14,9 @@ But there could be possible to detach it and somehow redone interface, but then 
 |----------|------|
 | PCF85176 | I2C  |
 
+### PCF85176 Board
+![PCF85176 Board](docs/images/pcf85176board.webp)
+
 ## Supported LCD
 
 | Name                               | Controller(s) | Link |
