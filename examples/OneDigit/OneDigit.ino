@@ -1,3 +1,8 @@
+/**
+ * @example OneDigit.ino
+ * @brief Example of Single digit LCD with 5 digits
+ */
+
 #include "SegLCD_PCF85176_OneDigit.h"
 
 #include <Wire.h>

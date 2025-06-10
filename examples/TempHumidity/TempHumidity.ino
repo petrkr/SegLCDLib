@@ -1,3 +1,8 @@
+/**
+ * @example TempHumidity.ino
+ * @brief Example of Temperature and Humidity LCD
+ */
+
 #include "SegLCD_PCF85176_TempHum.h"
 #include <Wire.h>
 
