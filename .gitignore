@@ -12,3 +12,6 @@
 *.la
 *.a
 *.lib
+
+# Doxygen output
+docs/html/
