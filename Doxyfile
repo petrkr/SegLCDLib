@@ -1,18 +1,5 @@
 # Doxyfile 1.13.2
 
-# This file describes the settings to be used by the documentation system
-# Doxygen (www.doxygen.org) for a project.
-#
-# All text after a double hash (##) is considered a comment and is placed in
-# front of the TAG it is preceding.
-#
-# All text after a single hash (#) is considered a comment and will be ignored.
-# The format is:
-# TAG = value [value, ...]
-# For lists, items can also be appended using:
-# TAG += value [value, ...]
-# Values that contain spaces should be placed between quotes (\" \").
-#
 # Note:
 #
 # Use Doxygen to compare the used configuration file with the template
@@ -996,7 +983,7 @@ EXAMPLE_RECURSIVE      = YES
 # that contain images that are to be included in the documentation (see the
 # \image command).
 
-IMAGE_PATH             =
+IMAGE_PATH             = docs/images
 
 # The INPUT_FILTER tag can be used to specify a program that Doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program
