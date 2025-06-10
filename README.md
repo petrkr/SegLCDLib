@@ -30,20 +30,19 @@ This LCD type is used for testing new LCD by sending RAW data to controller. It 
 
 
 ### 6-digit signal, battery, progress
-
-TBD Photo
+![6-digit, signal, battery, progress](docs/images/6digsigbatprogress.webp)
 
 ### One digit
+![Onedigit](docs/images/onedigit.webp)
 
-TBD Photo
 
 ### T1T2 Lcd
+![T1T2](docs/images/t1t2lcd.webp)
 
-TBD Photo
 
 ### Temp humidity
+![Onedigit](docs/images/temphumlcd.webp)
 
-TBD Photo
 
 ## TODO
  - Implement basic "aliexpress" LCD with HT1621 controller
