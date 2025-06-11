@@ -10,9 +10,10 @@ But there could be possible to detach it and somehow redone interface, but then 
 
 ## Supported controllers
 
-| Name     | Type |
-|----------|------|
-| PCF85176 | I2C  |
+| Name     | Type           |
+|----------|----------------|
+| PCF85176 | I2C            |
+| HT1621   | 3-wire serial  |
 
 ### PCF85176 Board
 ![PCF85176 Board](docs/images/pcf85176board.webp)
@@ -26,6 +27,7 @@ But there could be possible to detach it and somehow redone interface, but then 
 | One Digit (up to 5 segments)                            | PCF85176      | https://aliexpress.com/item/1005005410565386.html |
 | T1T2 Lcd                           | PCF85176      | https://aliexpress.com/item/32333296186.html      |
 | Temp humidity                      | PCF85176      | https://aliexpress.com/item/1005003044283980.html |
+| 6-digit with battery               | HT1621        | https://aliexpress.com/item/1005005555160141.html |
 
 
 ### RAW LCD
@@ -47,7 +49,12 @@ This LCD type is used for testing new LCD by sending RAW data to controller. It 
 ![Onedigit](docs/images/temphumlcd.webp)
 
 
+### 6-digit with battery
+
+This display use integrated COB HT1621 driver.
+
+TBD photo
+
 ## TODO
- - Implement basic "aliexpress" LCD with HT1621 controller
  - Think about some generic charmap/font for 7, 14 and 16 seg digits.
  - Make some generic write* functions, for now only writeFloat and writeChar, think about writeInt, which would be just call of writeFloat with decimal=0, or rename that to writeNumber or some different way? Before first version is released, this still can change.
