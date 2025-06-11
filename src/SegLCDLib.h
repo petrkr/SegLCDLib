@@ -62,12 +62,12 @@ class SegLCDLib {
         /**
          * @brief Turn the display on.
          */
-        virtual void display() = 0;
+        virtual void on() = 0;
 
         /**
          * @brief Turn the display off.
          */
-        virtual void noDisplay() = 0;
+        virtual void off() = 0;
 
         /**
          * @brief Write a character to a specific digit/position in a defined section.

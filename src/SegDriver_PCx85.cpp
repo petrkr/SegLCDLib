@@ -58,11 +58,11 @@ void SegDriver_PCx85::clear() {
     }
 }
 
-void SegDriver_PCx85::display() {
+void SegDriver_PCx85::on() {
     _setMode(MODE_STATUS_ENABLED, _drive, _bias);
 }
 
-void SegDriver_PCx85::noDisplay() {
+void SegDriver_PCx85::off() {
     _setMode(MODE_STATUS_BLANK, _drive, _bias);
 }
 

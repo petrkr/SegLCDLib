@@ -83,8 +83,8 @@ class SegDriver_PCx85 : public SegLCDLib {
          */
         void blink(BlinkFrequency blink = BLINK_FREQUENCY_OFF, BlinkMode mode = BLINK_MODE_NORMAL);
         void clear() override;
-        void display() override;
-        void noDisplay() override;
+        void on() override;
+        void off() override;
 
     protected:
         /**
