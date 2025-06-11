@@ -53,7 +53,7 @@ This LCD type is used for testing new LCD by sending RAW data to controller. It 
 
 This display use integrated COB HT1621 driver.
 
-TBD photo
+![6 digit with battery symbols](docs/images/6digbatht1621.webp)
 
 ## TODO
  - Think about some generic charmap/font for 7, 14 and 16 seg digits.
