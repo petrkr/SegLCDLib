@@ -24,11 +24,11 @@ But there could be possible to detach it and somehow redone interface, but then 
 |------------------------------------|---------------|------|
 | RAW LCD                            | PCF85176      | N/A  |
 | 6-digit signal battery progresess  | PCF85176      | N/A  |
-| One Digit (up to 5 segments)                            | PCF85176      | https://aliexpress.com/item/1005005410565386.html |
+| One Digit (up to 5 segments)       | PCF85176      | https://aliexpress.com/item/1005005410565386.html |
 | T1T2 Lcd                           | PCF85176      | https://aliexpress.com/item/32333296186.html      |
 | Temp humidity                      | PCF85176      | https://aliexpress.com/item/1005003044283980.html |
 | 6-digit with battery               | HT1621        | https://aliexpress.com/item/1005005555160141.html |
-
+| 4-digit with degree                | HT1621        | https://aliexpress.com/item/1005009301473702.html |
 
 ### RAW LCD
 This LCD type is used for testing new LCD by sending RAW data to controller. It is good to testing and implementing new types of LCD screens before starting to create actually class
@@ -54,6 +54,11 @@ This LCD type is used for testing new LCD by sending RAW data to controller. It 
 This display use integrated COB HT1621 driver.
 
 ![6 digit with battery symbols](docs/images/6digbatht1621.webp)
+
+
+### 4-digit with degree
+![4 digit with degree symbols](docs/images/4digdegree-ht1621-temp.webp) ![4 digit with colon](docs/images/4digdegree-ht1621-clock.webp)
+
 
 ## TODO
  - Think about some generic charmap/font for 7, 14 and 16 seg digits.

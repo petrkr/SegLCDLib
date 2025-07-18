@@ -9,6 +9,7 @@ SegLCD_PCF85176_T1T2Lcd	KEYWORD1
 SegLCD_PCF85176_TempHumidity	KEYWORD1
 SegLCD_HT1621_Raw	KEYWORD1
 SegLCD_HT1621_6SegBat	KEYWORD1
+SegLCD_HT1621_4SegDegree	KEYWORD1
 
 LCDSections	KEYWORD1
 
@@ -21,8 +22,11 @@ begin	KEYWORD2
 clear	KEYWORD2
 display	KEYWORD2
 noDisplay	KEYWORD2
+setDecimal	KEYWORD2
 write	KEYWORD2
 writeChar	KEYWORD2
+writeFloat	KEYWORD2
+setClockColon	KEYWORD2
 
 # PCx85 methods
 bankSelect	KEYWORD2
@@ -35,6 +39,10 @@ setProgress	KEYWORD2
 setWheel	KEYWORD2
 setLabels	KEYWORD2
 clearLabels	KEYWORD2
+
+# 4DigDegree LCD
+setMiddleDot	KEYWORD2
+setDegree	KEYWORD2
 
 
 #######################################
@@ -71,7 +79,4 @@ BLINK_FREQUENCY_3	LITERAL1
 BLINK_MODE_NORMAL	LITERAL1
 BLINK_MODE_ALTRAM	LITERAL1
 
-setClockColon	KEYWORD2
-setDecimal	KEYWORD2
-writeFloat	KEYWORD2
 MAX_ADDRESS	LITERAL1
