@@ -21,8 +21,8 @@ void SegLCD_HT1621_4SegDegree::setMiddleDot(bool state, LCDSections section) {
 }
 
 void SegLCD_HT1621_4SegDegree::setClockColon(bool state, LCDSections section) {
-    setMiddleDot(state)
-    setDecimal(2, state) // Decimal at 2nd digit is used as part of clock colon
+    setMiddleDot(state);
+    setDecimal(2, state); // Decimal at 2nd digit is used as part of clock colon
 }
 
 void SegLCD_HT1621_4SegDegree::setDecimal(uint8_t digit, bool state, LCDSections section) {
