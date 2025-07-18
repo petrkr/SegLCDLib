@@ -1,6 +1,6 @@
 /**
- * @example HT1621-6DigBat.ino
- * @brief Example of 6 digit with battery gauge LCD display using HT1621
+ * @example HT1621-4DigBat.ino
+ * @brief Example of 4 digits with degree symbol LCD display using HT1621
  */
 
 #include "SegLCD_HT1621_4SegDegree.h"
