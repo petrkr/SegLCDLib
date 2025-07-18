@@ -8,6 +8,11 @@ For now LCD class is derivered from controller's class, because mostly those con
 
 But there could be possible to detach it and somehow redone interface, but then there must be two instances in main code. First for controller, second for LCD itself. Maybe in some next version if that will be even actual.
 
+## Documentation
+
+https://petrkr.github.io/SegLCDLib/
+
+
 ## Supported controllers
 
 | Name     | Type           |
