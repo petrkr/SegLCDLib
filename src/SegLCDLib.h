@@ -2,6 +2,7 @@
 #define SEGLCDLIB_H
 
 #include <Arduino.h>
+#include "Print.h"
 
 /**
  * @brief Drive mode used by LCD controller.
@@ -27,7 +28,7 @@ typedef enum {
  * This class defines the generic interface required by all LCD segment drivers,
  * including display control, character output, and data writing methods.
  */
-class SegLCDLib {
+class SegLCDLib : public Print {
     public:
         /**
          * @brief Logical display sections that can be targeted by higher-level rendering logic.
@@ -78,12 +79,15 @@ class SegLCDLib {
          */
         virtual void setCursor(uint8_t row, uint8_t col) { };
 
+        virtual size_t write(uint8_t ch) { };
+
         /**
          * @brief Send RAW command to controller
          *
          * @param command Raw command byte
          */
         virtual void command(uint8_t command) = 0;
+        using Print::write;
 
         // --------------------------
         // LCD API 1.0 Optional part
