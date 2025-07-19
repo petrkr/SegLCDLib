@@ -30,7 +30,7 @@ void SegLCD_PCF85176_T1T2Lcd::setBatteryLevel(uint8_t level) {
     if (level > 3)
         _buffer_batt |= 0x20;
 
-    _write(_buffer_batt, ADDR_BATT);
+    _writeRam(_buffer_batt, ADDR_BATT);
 }
 
 void SegLCD_PCF85176_T1T2Lcd::setSignalLevel(uint8_t level) {
@@ -50,7 +50,7 @@ void SegLCD_PCF85176_T1T2Lcd::setSignalLevel(uint8_t level) {
     if (level > 4)
         _buffer_sigclk |= 0x08;
 
-    _write(_buffer_sigclk, ADDR_SIGNAL_CLOCK);
+    _writeRam(_buffer_sigclk, ADDR_SIGNAL_CLOCK);
 }
 
 void SegLCD_PCF85176_T1T2Lcd::setClockSymbol(bool status) {
@@ -59,7 +59,7 @@ void SegLCD_PCF85176_T1T2Lcd::setClockSymbol(bool status) {
     else
         _buffer_sigclk &= ~0x04;
 
-    _write(_buffer_sigclk, ADDR_SIGNAL_CLOCK);
+    _writeRam(_buffer_sigclk, ADDR_SIGNAL_CLOCK);
 }
 
 void SegLCD_PCF85176_T1T2Lcd::setClockColon(bool status) {
@@ -68,17 +68,17 @@ void SegLCD_PCF85176_T1T2Lcd::setClockColon(bool status) {
     else
         _buffer_sigclk &= ~0x02;
 
-    _write(_buffer_sigclk, ADDR_SIGNAL_CLOCK);
+    _writeRam(_buffer_sigclk, ADDR_SIGNAL_CLOCK);
 }
 
 void SegLCD_PCF85176_T1T2Lcd::setLabels(uint8_t labels) {
     _buffer_labels |= labels;
-    _write(_buffer_labels, ADDR_LABELS);
+    _writeRam(_buffer_labels, ADDR_LABELS);
 }
 
 void SegLCD_PCF85176_T1T2Lcd::clearLabels(uint8_t labels) {
     _buffer_labels &= ~labels;
-    _write(_buffer_labels, ADDR_LABELS);
+    _writeRam(_buffer_labels, ADDR_LABELS);
 }
 
 void SegLCD_PCF85176_T1T2Lcd::setT1T2Labels(uint8_t t1t2) {
@@ -88,7 +88,7 @@ void SegLCD_PCF85176_T1T2Lcd::setT1T2Labels(uint8_t t1t2) {
     if (t1t2 & SegLCD_PCF85176_T1T2Lcd::LABEL_T2)
       _buffer_clock[1] |= 0x01;
 
-    _write(_buffer_clock, 2, ADDR_CLOCK_T1T2_LABELS_SEGS);
+    _writeRam(_buffer_clock, 2, ADDR_CLOCK_T1T2_LABELS_SEGS);
 }
 
 void SegLCD_PCF85176_T1T2Lcd::clearT1T2Labels(uint8_t t1t2) {
@@ -98,7 +98,7 @@ void SegLCD_PCF85176_T1T2Lcd::clearT1T2Labels(uint8_t t1t2) {
     if (t1t2 & SegLCD_PCF85176_T1T2Lcd::LABEL_T2)
       _buffer_clock[1] &= ~0x01;
 
-    _write(_buffer_clock, 2, ADDR_CLOCK_T1T2_LABELS_SEGS);
+    _writeRam(_buffer_clock, 2, ADDR_CLOCK_T1T2_LABELS_SEGS);
 }
 
 void SegLCD_PCF85176_T1T2Lcd::setDecimal(uint8_t digit, bool state, LCDSections section) {
@@ -128,7 +128,7 @@ void SegLCD_PCF85176_T1T2Lcd::setDecimal(uint8_t digit, bool state, LCDSections 
         _buffer[(digit-1)] &= ~0x01; // Clear the decimal point bit
     }
 
-    _write(_buffer[(digit-1)], address);
+    _writeRam(_buffer[(digit-1)], address);
 }
 
 void SegLCD_PCF85176_T1T2Lcd::writeFloat(float input, uint8_t decimals, LCDSections section) {
@@ -180,20 +180,20 @@ void SegLCD_PCF85176_T1T2Lcd::writeChar(uint8_t digit, char c, LCDSections secti
         case LCDSections::SECTION_DEFAULT:
         case LCDSections::SECTION_T1:
             _bufferT1[digit - 1] = ch;
-            _write(_bufferT1[digit - 1], ADDR_T1_SEGS + ((digit - 1) * 2));
+            _writeRam(_bufferT1[digit - 1], ADDR_T1_SEGS + ((digit - 1) * 2));
             break;
         case LCDSections::SECTION_T2:
             _bufferT2[digit - 1] = ch;
-            _write(_bufferT2[digit - 1], ADDR_T2_SEGS + ((digit - 1) * 2));
+            _writeRam(_bufferT2[digit - 1], ADDR_T2_SEGS + ((digit - 1) * 2));
             break;    
         case LCDSections::SECTION_TOP:
         case LCDSections::SECTION_CLOCK:
             _buffer_clock[digit - 1] &= ~0b11111110;
             _buffer_clock[digit - 1] |= ch & 0b11111110;
-             _write(_buffer_clock[digit - 1], ADDR_CLOCK_T1T2_LABELS_SEGS + ((digit - 1) * 2));
+             _writeRam(_buffer_clock[digit - 1], ADDR_CLOCK_T1T2_LABELS_SEGS + ((digit - 1) * 2));
             break;
         case LCDSections::SECTION_DAY:
-             _write(ch, ADDR_DAY_SEG + ((digit - 1) * 2));
+             _writeRam(ch, ADDR_DAY_SEG + ((digit - 1) * 2));
             break;
     }
 }
@@ -211,5 +211,5 @@ uint8_t SegLCD_PCF85176_T1T2Lcd::_mapSegments(uint8_t val) {
 
 // For generic class allow access to low level functions
 void SegLCD_PCF85176_T1T2Lcd::write(uint8_t data, uint8_t address) {
-    _write(data, address);
+    _writeRam(data, address);
 }

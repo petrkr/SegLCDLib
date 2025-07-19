@@ -44,14 +44,14 @@ void SegDriver_PCx85::clear() {
 
     switch (_drive) {
         case MODE_DRIVE_STATIC:
-            _write(tmps, sizeof(tmps), 0);
+            _writeRam(tmps, sizeof(tmps), 0);
             return;
         //TODO: Get riht size values here
         case MODE_DRIVE_12:
         case MODE_DRIVE_13:
             break;
         case MODE_DRIVE_14:
-            _write(tmp14, sizeof(tmp14), 0);
+            _writeRam(tmp14, sizeof(tmp14), 0);
             return;
         default:
             break;
@@ -66,11 +66,11 @@ void SegDriver_PCx85::off() {
     _setMode(MODE_STATUS_BLANK, _drive, _bias);
 }
 
-void SegDriver_PCx85::_write(uint8_t data, uint8_t address) {
-    _write(&data, 1, address);
+void SegDriver_PCx85::_writeRam(uint8_t data, uint8_t address) {
+    _writeRam(&data, 1, address);
 }
 
-void SegDriver_PCx85::_write(uint8_t *data, size_t length, uint8_t address) {
+void SegDriver_PCx85::_writeRam(uint8_t *data, size_t length, uint8_t address) {
     _i2c.beginTransmission(_address);
     _i2c.write(address);
     _i2c.write(data, length);

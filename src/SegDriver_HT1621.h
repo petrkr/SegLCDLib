@@ -75,6 +75,7 @@ class SegDriver_HT1621 : public SegLCDLib {
         void clear() override;
         void on() override;
         void off() override;
+        void command(uint8_t command) override;
 
     protected:
         /**
@@ -86,17 +87,8 @@ class SegDriver_HT1621 : public SegLCDLib {
          * @param bias Bias mode (default is MODE_BIAS_13)
          */
         void _setMode(ModeDrive drive = MODE_DRIVE_14 , ModeBias bias = MODE_BIAS_13);
-        void _write(uint8_t data, uint8_t address = 0) override;
-        void _write(uint8_t *data, size_t length, uint8_t address = 0) override;
-
-        /**
-         * @brief Send a command to the display.
-         *
-         * This method sends a command to the display using the write clock and data pins.
-         *
-         * @param command The command to send
-         */
-        void _sendCommand(uint8_t command);
+        void _writeRam(uint8_t data, uint8_t address = 0) override;
+        void _writeRam(uint8_t *data, size_t length, uint8_t address = 0) override;
 
     private:
         uint8_t _wr;   ///< Write clock pin for the display

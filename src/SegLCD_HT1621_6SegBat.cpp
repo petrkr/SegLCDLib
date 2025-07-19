@@ -7,9 +7,9 @@ void SegLCD_HT1621_6SegBat::init() {
     SegDriver_HT1621::init();
     _setMode(MODE_DRIVE_14, MODE_BIAS_13);
 
-    _sendCommand(CMD_SYS_EN);
-    _sendCommand(CMD_LCD_ON);
-    _sendCommand(CMD_NORMAL);
+    command(CMD_SYS_EN);
+    command(CMD_LCD_ON);
+    command(CMD_NORMAL);
 }
 
 void SegLCD_HT1621_6SegBat::setBatteryLevel(uint8_t level) {
@@ -27,9 +27,9 @@ void SegLCD_HT1621_6SegBat::setBatteryLevel(uint8_t level) {
     if (level > 2)
         _buffer_default[0] |= 0x80;
 
-    _write(_buffer_default[2], 6);
-    _write(_buffer_default[1], 8);
-    _write(_buffer_default[0], 10);
+    _writeRam(_buffer_default[2], 6);
+    _writeRam(_buffer_default[1], 8);
+    _writeRam(_buffer_default[0], 10);
 }
 
 void SegLCD_HT1621_6SegBat::setDecimal(uint8_t digit, bool state, LCDSections section) {
@@ -43,7 +43,7 @@ void SegLCD_HT1621_6SegBat::setDecimal(uint8_t digit, bool state, LCDSections se
         _buffer_default[(digit)] &= ~0x80; // Clear the decimal point bit
     }
 
-    _write(_buffer_default[(digit)], ((6 - digit - 1) * 2));
+    _writeRam(_buffer_default[(digit)], ((6 - digit - 1) * 2));
 }
 
 void SegLCD_HT1621_6SegBat::writeChar(uint8_t digit, char c, LCDSections section) {
@@ -57,7 +57,7 @@ void SegLCD_HT1621_6SegBat::writeChar(uint8_t digit, char c, LCDSections section
             }
             _buffer_default[digit - 1] &= ~0b01111111;
             _buffer_default[digit - 1] |= ch & 0b01111111;
-            _write(_buffer_default[digit-1], ((6 - digit) * 2));
+            _writeRam(_buffer_default[digit-1], ((6 - digit) * 2));
             break;
     }
 }

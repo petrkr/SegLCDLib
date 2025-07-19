@@ -34,7 +34,7 @@ void SegDriver_HT1621::clear() {
         case MODE_DRIVE_13:
             break;
         case MODE_DRIVE_14:
-            _write(tmp, sizeof(tmp), 0);
+            _writeRam(tmp, sizeof(tmp), 0);
             return;
         default:
             break;
@@ -43,19 +43,34 @@ void SegDriver_HT1621::clear() {
 
 void SegDriver_HT1621::on() {
     // Enable the display
-    _sendCommand(CMD_LCD_ON);
+    command(CMD_LCD_ON);
 }
 
 void SegDriver_HT1621::off() {
     // Disable the display
-    _sendCommand(CMD_LCD_OFF);
+    command(CMD_LCD_OFF);
 }
 
-void SegDriver_HT1621::_write(uint8_t data, uint8_t address) {
-    _write(&data, 1, address);
+void SegDriver_HT1621::command(uint8_t command) {
+    digitalWrite(_cs, LOW);
+
+    // send CMD prefix 100 (command mode)
+    _sendBits(OP_CMD, 3);
+
+    // Send 8bits command
+    _sendBits(command);
+
+    // Suffix, in command mode, we always write 0
+    _sendBits(0, 1);
+
+    digitalWrite(_cs, HIGH);
 }
 
-void SegDriver_HT1621::_write(uint8_t *data, size_t length, uint8_t address) {
+void SegDriver_HT1621::_writeRam(uint8_t data, uint8_t address) {
+    _writeRam(&data, 1, address);
+}
+
+void SegDriver_HT1621::_writeRam(uint8_t *data, size_t length, uint8_t address) {
     digitalWrite(_cs, LOW);
 
     _sendBits(OP_WRITE, 3);
@@ -107,22 +122,7 @@ void SegDriver_HT1621::_setMode(ModeDrive drive, ModeBias bias) {
             break;
     }
 
-    _sendCommand(data);
-}
-
-void SegDriver_HT1621::_sendCommand(uint8_t command) {
-    digitalWrite(_cs, LOW);
-
-    // send CMD prefix 100 (command mode)
-    _sendBits(OP_CMD, 3);
-
-    // Send 8bits command
-    _sendBits(command);
-
-    // Suffix, in command mode, we always write 0
-    _sendBits(0, 1);
-
-    digitalWrite(_cs, HIGH);
+    command(data);
 }
 
 // Private method to send bits

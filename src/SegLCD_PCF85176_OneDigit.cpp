@@ -35,7 +35,7 @@ void SegLCD_PCF85176_OneDigit::writeChar(uint8_t digit, char c, LCDSections sect
     }
 
     _buffer[(digit-1)] = b;
-    _write(b, (digit-1)*8);
+    _writeRam(b, (digit-1)*8);
 }
 
 void SegLCD_PCF85176_OneDigit::setDecimal(uint8_t digit, bool state, LCDSections section) {
@@ -49,7 +49,7 @@ void SegLCD_PCF85176_OneDigit::setDecimal(uint8_t digit, bool state, LCDSections
         _buffer[(digit-1)] &= ~0x01; // Clear the decimal point bit
     }
 
-    _write(_buffer[(digit-1)], (digit-1)*8);
+    _writeRam(_buffer[(digit-1)], (digit-1)*8);
 }
 
 void SegLCD_PCF85176_OneDigit::writeFloat(float input, uint8_t decimals, LCDSections section) {

@@ -24,7 +24,7 @@ void SegLCD_PCF85176_TempHumidity::setBatteryLevel(uint8_t level) {
     if (level > 3)
         _buffer_sigbatt |= 1;
 
-    _write(_buffer_sigbatt, ADDR_SIGNAL_BATT);
+    _writeRam(_buffer_sigbatt, ADDR_SIGNAL_BATT);
 }
 
 void SegLCD_PCF85176_TempHumidity::setSignalLevel(uint8_t level) {
@@ -42,30 +42,30 @@ void SegLCD_PCF85176_TempHumidity::setSignalLevel(uint8_t level) {
     if (level > 3)
         _buffer_sigbatt |= 0x80;
 
-    _write(_buffer_sigbatt, ADDR_SIGNAL_BATT);
+    _writeRam(_buffer_sigbatt, ADDR_SIGNAL_BATT);
 }
 
 void SegLCD_PCF85176_TempHumidity::setLabels(uint8_t labels) {
     if (labels & LABEL_C) {
         _buffer_default[3] |= 0x08; // Set the C label
-        _write(_buffer_default[3], ADDR_TEMP_SEGS + 6); // C label is at position 4 (3 in zero-based index)
+        _writeRam(_buffer_default[3], ADDR_TEMP_SEGS + 6); // C label is at position 4 (3 in zero-based index)
     }
 
     if (labels & LABEL_PROC) {
         _buffer_top[2] |= 0x08; // Set the proc symbol
-        _write(_buffer_top[2], ADDR_HUM_SEGS + 4); // proc symbol is at position 3 (2 in zero-based index)
+        _writeRam(_buffer_top[2], ADDR_HUM_SEGS + 4); // proc symbol is at position 3 (2 in zero-based index)
     }
 }
 
 void SegLCD_PCF85176_TempHumidity::clearLabels(uint8_t labels) {
     if (labels & LABEL_C) {
         _buffer_default[3] &= ~0x08; // Clear the C label
-        _write(_buffer_default[3], ADDR_TEMP_SEGS + 6); // C label is at position 4 (3 in zero-based index)
+        _writeRam(_buffer_default[3], ADDR_TEMP_SEGS + 6); // C label is at position 4 (3 in zero-based index)
     }
 
     if (labels & LABEL_PROC) {
         _buffer_top[2] &= ~0x08; // Clear the proc symbol
-        _write(_buffer_top[2], ADDR_HUM_SEGS + 4); // proc symbol is at position 3 (2 in zero-based index)
+        _writeRam(_buffer_top[2], ADDR_HUM_SEGS + 4); // proc symbol is at position 3 (2 in zero-based index)
     }
 }
 
@@ -102,7 +102,7 @@ void SegLCD_PCF85176_TempHumidity::setDecimal(uint8_t digit, bool state, LCDSect
         _buffer[(digit-1)] &= ~0x08; // Clear the decimal point bit
     }
 
-    _write(_buffer[(digit-1)], address);
+    _writeRam(_buffer[(digit-1)], address);
 }
 
 void SegLCD_PCF85176_TempHumidity::writeFloat(float input, uint8_t decimals, LCDSections section) {
@@ -171,7 +171,7 @@ void SegLCD_PCF85176_TempHumidity::writeChar(uint8_t digit, char c, LCDSections 
                 return; // Invalid digit
             }
             _buffer_default[digit-1] = ch;
-            _write(_buffer_default[digit-1], ADDR_TEMP_SEGS + ((digit -1) * 2));
+            _writeRam(_buffer_default[digit-1], ADDR_TEMP_SEGS + ((digit -1) * 2));
             break;
         case LCDSections::SECTION_BOTTOM:
         case LCDSections::SECTION_HUMIDITY:
@@ -179,7 +179,7 @@ void SegLCD_PCF85176_TempHumidity::writeChar(uint8_t digit, char c, LCDSections 
                 return; // Invalid digit
             }
             _buffer_top[digit-1] = ch;
-             _write(_buffer_top[digit-1], ADDR_HUM_SEGS + ((digit - 1) * 2));
+             _writeRam(_buffer_top[digit-1], ADDR_HUM_SEGS + ((digit - 1) * 2));
             break;
     }
 }

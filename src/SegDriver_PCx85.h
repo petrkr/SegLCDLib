@@ -86,6 +86,9 @@ class SegDriver_PCx85 : public SegLCDLib {
         void on() override;
         void off() override;
 
+        // TODO: Implement calling commands
+        void command(uint8_t command) override { };
+
     protected:
         /**
          * @brief Set the mode of the display.
@@ -98,8 +101,8 @@ class SegDriver_PCx85 : public SegLCDLib {
          * @param bias Bias mode (default is MODE_BIAS_13)
          */
         void _setMode(ModeStatus status, ModeDrive drive = MODE_DRIVE_14 , ModeBias bias = MODE_BIAS_13);
-        void _write(uint8_t data, uint8_t address = 0) override;
-        void _write(uint8_t *data, size_t length, uint8_t address = 0) override;
+        void _writeRam(uint8_t data, uint8_t address = 0) override;
+        void _writeRam(uint8_t *data, size_t length, uint8_t address = 0) override;
 
     private:
         TwoWire& _i2c;

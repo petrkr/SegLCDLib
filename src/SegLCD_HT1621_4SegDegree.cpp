@@ -7,9 +7,9 @@ void SegLCD_HT1621_4SegDegree::init() {
     SegDriver_HT1621::init();
     _setMode(MODE_DRIVE_14, MODE_BIAS_13);
 
-    _sendCommand(CMD_SYS_EN);
-    _sendCommand(CMD_LCD_ON);
-    _sendCommand(CMD_NORMAL);
+    command(CMD_SYS_EN);
+    command(CMD_LCD_ON);
+    command(CMD_NORMAL);
 }
 
 void SegLCD_HT1621_4SegDegree::setDegree(bool state, LCDSections section) {
@@ -73,7 +73,7 @@ void SegLCD_HT1621_4SegDegree::writeChar(uint8_t digit, char c, LCDSections sect
     if (segments & 0b00100000) _buffer[2] |= (1 << common);       // F -> S4
     if (segments & 0b01000000) _buffer[3] |= (1 << (common + 4)); // G -> S7
 
-    _write(_buffer, sizeof(_buffer), 0);
+    _writeRam(_buffer, sizeof(_buffer), 0);
 }
 
 // ABCD_EFGH to HGFE_DCBA
@@ -97,5 +97,5 @@ void SegLCD_HT1621_4SegDegree::_writeSymbols(uint8_t bitnum, bool state) {
       _buffer[3] &= ~(1 << bitnum);
     }
     
-    _write(_buffer[3], ADDR_SYMBOLS);
+    _writeRam(_buffer[3], ADDR_SYMBOLS);
 }

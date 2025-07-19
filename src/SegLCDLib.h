@@ -78,6 +78,12 @@ class SegLCDLib {
          */
         virtual void setCursor(uint8_t row, uint8_t col) { };
 
+        /**
+         * @brief Send RAW command to controller
+         *
+         * @param command Raw command byte
+         */
+        virtual void command(uint8_t command) = 0;
 
         // --------------------------
         // LCD API 1.0 Optional part
@@ -115,7 +121,7 @@ class SegLCDLib {
          * @param data Data byte
          * @param address RAM address
          */
-        virtual void _write(uint8_t data, uint8_t address) = 0;
+        virtual void _writeRam(uint8_t data, uint8_t address) = 0;
 
         /**
          * @brief Low-level method to write a data buffer to display RAM.
@@ -124,7 +130,7 @@ class SegLCDLib {
          * @param length Length of data buffer
          * @param address Start RAM address
          */
-        virtual void _write(uint8_t *data, size_t length, uint8_t address) = 0;
+        virtual void _writeRam(uint8_t *data, size_t length, uint8_t address) = 0;
 
         /**
          * @brief Helper method to convert a character to its segment representation.
@@ -135,7 +141,6 @@ class SegLCDLib {
          * @brief Helper method to count number of digits in an integer.
          */
         int _countDigits(long num);
-
 };
 
 #endif

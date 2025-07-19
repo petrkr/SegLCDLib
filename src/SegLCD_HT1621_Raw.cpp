@@ -9,14 +9,10 @@ void SegLCD_HT1621_Raw::init(ModeDrive drive, ModeBias bias) {
 }
 
 // For generic class allow access to low level functions
-void SegLCD_HT1621_Raw::write(uint8_t data, uint8_t address) {
-    _write(data, address);
+void SegLCD_HT1621_Raw::writeRam(uint8_t data, uint8_t address) {
+    _writeRam(data, address);
 }
 
-void SegLCD_HT1621_Raw::write(uint8_t *data, size_t length, uint8_t address) {
-    _write(data, length, address);
-}
-
-void SegLCD_HT1621_Raw::sendCommand(uint8_t command) {
-    _sendCommand(command);
+void SegLCD_HT1621_Raw::writeRam(uint8_t *data, size_t length, uint8_t address) {
+    _writeRam(data, length, address);
 }

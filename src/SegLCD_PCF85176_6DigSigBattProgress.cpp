@@ -24,7 +24,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setBatteryLevel(uint8_t level)
     if (level > 3)
         _buffer_sigbatt |= 4;
 
-    _write(_buffer_sigbatt, ADDR_SIGNAL_BATT);
+    _writeRam(_buffer_sigbatt, ADDR_SIGNAL_BATT);
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setSignalLevel(uint8_t level) {
@@ -42,7 +42,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setSignalLevel(uint8_t level) 
     if (level > 3)
         _buffer_sigbatt |= 0x10;
 
-    _write(_buffer_sigbatt, ADDR_SIGNAL_BATT);
+    _writeRam(_buffer_sigbatt, ADDR_SIGNAL_BATT);
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setProgress(uint8_t value) {
@@ -98,7 +98,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setProgress(uint8_t value) {
         buffer[1] |= 0x01;
     }
 
-    _write(buffer, sizeof(buffer), ADDR_PROGRESS);
+    _writeRam(buffer, sizeof(buffer), ADDR_PROGRESS);
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setWheel(uint16_t value) {
@@ -107,19 +107,19 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setWheel(uint16_t value) {
     buffer[0] = value & 0xFF;
     buffer[1] = (((value >> 8) & 0x0F) << 4);
 
-    _write(buffer, sizeof(buffer), ADDR_WHEEL);
+    _writeRam(buffer, sizeof(buffer), ADDR_WHEEL);
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setLabels(LabelFlags labels) {
     _buffer_labels |= labels;
     
-    _write(_buffer_labels, ADDR_PRES_LABELS);
+    _writeRam(_buffer_labels, ADDR_PRES_LABELS);
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::clearLabels(LabelFlags labels) {
     _buffer_labels &= ~labels;
     
-    _write(_buffer_labels, ADDR_PRES_LABELS);
+    _writeRam(_buffer_labels, ADDR_PRES_LABELS);
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setClockColon(bool state, LCDSections section) {
@@ -148,7 +148,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setClockColon(bool state, LCDS
         _buffer[(digit-1)] &= ~0x10; // Clear the decimal point bit
     }
 
-    _write(_buffer[(digit-1)], address);
+    _writeRam(_buffer[(digit-1)], address);
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setDecimal(uint8_t digit, bool state, LCDSections section) {
@@ -182,7 +182,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setDecimal(uint8_t digit, bool
         _buffer[(digit-1)] &= ~0x10; // Clear the decimal point bit
     }
 
-    _write(_buffer[(digit-1)], address);
+    _writeRam(_buffer[(digit-1)], address);
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::writeFloat(float input, uint8_t decimals, LCDSections section) {
@@ -248,7 +248,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::writeChar(uint8_t digit, char 
                 return; // Invalid digit
             }
             _buffer_default[digit-1] = ch;
-            _write(_buffer_default[digit-1], ADDR_BIG_SEGS + ((6 - digit) * 2));
+            _writeRam(_buffer_default[digit-1], ADDR_BIG_SEGS + ((6 - digit) * 2));
             break;
         case LCDSections::SECTION_TOP:
         case LCDSections::SECTION_CLOCK:
@@ -256,7 +256,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::writeChar(uint8_t digit, char 
                 return; // Invalid digit
             }
             _buffer_top[digit-1] = ch;
-             _write(_buffer_top[digit-1], ADDR_SMALL_SEGS + ((digit - 1) * 2));
+             _writeRam(_buffer_top[digit-1], ADDR_SMALL_SEGS + ((digit - 1) * 2));
             break;
     }
 }
