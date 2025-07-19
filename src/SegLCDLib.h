@@ -44,8 +44,13 @@ class SegLCDLib {
             SECTION_HUMIDITY  ///< Humidity section
         };
 
+        // ---------------------------
+        // LCD API 1.0 Mandatory part
+        // ---------------------------
+        // Spec: https://playground.arduino.cc/Code/LCDAPI/
+
         /**
-         * @brief Initialize the display driver.
+         * @brief Initialize the display driver, clear display and set position to 0,0.
          */
         virtual void init() = 0;
 
@@ -55,10 +60,28 @@ class SegLCDLib {
         virtual void clear() = 0;
 
         /**
-         * @brief Destructor.
+         * @brief Set cursor to 0, 0 without clear display
          */
-        virtual ~SegLCDLib() {}
+        virtual void home() { };
 
+        /**
+         * @brief Set cursor on exact digit.
+         *
+         * Because LCD API is mainly used for character displays in this segment displays this function will be littlebit
+         * confusing. Because most of Segment LCD has only one row, thus this will be like row 0 and column will represent
+         * actual digit.
+         *
+         * But if there is LCD like T1T2 LCD. Row 0 will be clock part, Row 1 will be T1: part and Row 2 will be T2: part of LCD
+         *
+         * @param row Row, where 0-MAXROWS
+         * @param col Column 0-MAXDIGITS in current row
+         */
+        virtual void setCursor(uint8_t row, uint8_t col) { };
+
+
+        // --------------------------
+        // LCD API 1.0 Optional part
+        // --------------------------
         /**
          * @brief Turn the display on.
          */
@@ -68,6 +91,11 @@ class SegLCDLib {
          * @brief Turn the display off.
          */
         virtual void off() = 0;
+
+
+        // ----------------------
+        // SegLCDLib specific part
+        // ----------------------
 
         /**
          * @brief Write a character to a specific digit/position in a defined section.
