@@ -18,7 +18,7 @@ LCDSections	KEYWORD1
 #######################################
 
 # Common methods
-begin	KEYWORD2
+init	KEYWORD2
 clear	KEYWORD2
 display	KEYWORD2
 noDisplay	KEYWORD2
