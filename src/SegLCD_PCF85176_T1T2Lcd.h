@@ -31,7 +31,7 @@ class SegLCD_PCF85176_T1T2Lcd : public SegDriver_PCF85176 {
         } LabelT1T2Enum;
 
         SegLCD_PCF85176_T1T2Lcd(TwoWire& i2c, uint8_t address = 56, uint8_t subaddress = 0);
-        void begin() override;
+        void init() override;
         void clear() override;
         void setBatteryLevel(uint8_t value);
         void setSignalLevel(uint8_t value);

@@ -62,7 +62,7 @@ class SegDriver_PCx85 : public SegLCDLib {
          * @param subaddress Subaddress for the device
          */
         SegDriver_PCx85(TwoWire& i2c, uint8_t address, uint8_t subaddress);
-        virtual void begin() override;
+        virtual void init() override;
 
         /**
          * @brief Select bank for input and output.

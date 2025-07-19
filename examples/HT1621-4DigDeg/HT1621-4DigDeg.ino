@@ -23,7 +23,7 @@ void setup() {
     digitalWrite(PIN_PWR, HIGH);
   }
 
-  lcd.begin();
+  lcd.init();
 
   // Clear LCD
   lcd.clear();

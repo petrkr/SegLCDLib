@@ -11,8 +11,8 @@ class SegLCD_PCF85176_OneDigit : public SegDriver_PCF85176 {
 
     public:
         SegLCD_PCF85176_OneDigit(TwoWire& i2c, uint8_t address = 56, uint8_t subaddress = 0);
-        void begin() override;
-        void begin(bool v1fix);
+        void init() override;
+        void init(bool v1fix);
         void clear() override;
         void setDecimal(uint8_t digit, bool state, LCDSections section = LCDSections::SECTION_DEFAULT);
         void writeChar(uint8_t digit, char c, LCDSections section = LCDSections::SECTION_DEFAULT) override;

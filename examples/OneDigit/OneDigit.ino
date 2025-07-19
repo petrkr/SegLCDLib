@@ -16,7 +16,7 @@ void setup() {
   Wire.begin();
 
   Serial.println("Initialize LCD...");
-  lcd.begin(true);
+  lcd.init(true);
 
   lcd.writeString("HELLO");
   delay(2000);

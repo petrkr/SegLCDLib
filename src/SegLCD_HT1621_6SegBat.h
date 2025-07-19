@@ -8,7 +8,7 @@ class SegLCD_HT1621_6SegBat : public SegDriver_HT1621 {
     #define ADDR_BATT 6
     public:
         SegLCD_HT1621_6SegBat(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read = -1);
-        void begin() override;
+        void init() override;
         void setBatteryLevel(uint8_t level);
         void setDecimal(uint8_t digit, bool state, LCDSections section = LCDSections::SECTION_DEFAULT);
         void writeChar(uint8_t digit, char c, LCDSections section = LCDSections::SECTION_DEFAULT) override;

@@ -18,7 +18,7 @@ void setup() {
   Serial.println("Initialize LCD...");
 
   // Demo for duty 1/4, bias 1/3 LCD display
-  lcd.begin();
+  lcd.init();
 
   // Clear LCD
   lcd.clear();

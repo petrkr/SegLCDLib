@@ -16,7 +16,7 @@ void setup() {
 
   Serial.println("Initialize LCD...");
 
-  lcd.begin();
+  lcd.init();
 
   // Clear LCD
   lcd.clear();

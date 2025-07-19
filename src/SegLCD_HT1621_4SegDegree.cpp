@@ -3,8 +3,8 @@
 
 SegLCD_HT1621_4SegDegree::SegLCD_HT1621_4SegDegree(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read) : SegDriver_HT1621(chipselect, data, write, read) {}
 
-void SegLCD_HT1621_4SegDegree::begin() {
-    SegDriver_HT1621::begin();
+void SegLCD_HT1621_4SegDegree::init() {
+    SegDriver_HT1621::init();
     _setMode(MODE_DRIVE_14, MODE_BIAS_13);
 
     _sendCommand(CMD_SYS_EN);

@@ -10,7 +10,7 @@ SegDriver_HT1621::SegDriver_HT1621(uint8_t chipselect, uint8_t data, uint8_t wri
     _irq = -1; // Not used, but reserved for future use
 }
 
-void SegDriver_HT1621::begin() {
+void SegDriver_HT1621::init() {
     pinMode(_cs, OUTPUT);
     pinMode(_data, OUTPUT);
     pinMode(_wr, OUTPUT);

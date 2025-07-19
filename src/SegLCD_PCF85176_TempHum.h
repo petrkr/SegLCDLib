@@ -19,7 +19,7 @@ class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
         } LabelFlags;
 
         SegLCD_PCF85176_TempHumidity(TwoWire& i2c, uint8_t address = 56, uint8_t subaddress = 0);
-        void begin() override;
+        void init() override;
         void setBatteryLevel(uint8_t value);
         void setSignalLevel(uint8_t value);
         void setLabels(uint8_t labels);

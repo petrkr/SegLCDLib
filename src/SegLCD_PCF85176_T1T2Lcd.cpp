@@ -4,8 +4,8 @@
 
 SegLCD_PCF85176_T1T2Lcd::SegLCD_PCF85176_T1T2Lcd(TwoWire& i2c, uint8_t address, uint8_t subaddress) :  SegDriver_PCF85176(i2c, address, subaddress) {}
 
-void SegLCD_PCF85176_T1T2Lcd::begin() {
-    SegDriver_PCF85176::begin();
+void SegLCD_PCF85176_T1T2Lcd::init() {
+    SegDriver_PCF85176::init();
     _setMode(MODE_STATUS_ENABLED);
 }
 

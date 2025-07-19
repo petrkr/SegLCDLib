@@ -7,12 +7,12 @@ SegLCD_PCF85176_OneDigit::SegLCD_PCF85176_OneDigit(TwoWire& i2c, uint8_t address
 // For now it supports only one controller with 5 digits
 #define DIGIT_COUNT 5
 
-void SegLCD_PCF85176_OneDigit::begin() {
-    begin(false);
+void SegLCD_PCF85176_OneDigit::init() {
+    init(false);
 }
 
-void SegLCD_PCF85176_OneDigit::begin(bool v1fix) {
-    SegDriver_PCF85176::begin();
+void SegLCD_PCF85176_OneDigit::init(bool v1fix) {
+    SegDriver_PCF85176::init();
     _setMode(MODE_STATUS_ENABLED, MODE_DRIVE_STATIC);
     _v1fix = v1fix;
 }

@@ -7,7 +7,7 @@ SegDriver_PCx85::SegDriver_PCx85(TwoWire& i2c, uint8_t address, uint8_t subaddre
     _subaddress = subaddress;
 }
 
-void SegDriver_PCx85::begin() {
+void SegDriver_PCx85::init() {
     _deviceSelect();
 }
 

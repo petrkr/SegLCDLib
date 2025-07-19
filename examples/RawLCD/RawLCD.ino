@@ -18,7 +18,7 @@ void setup() {
   Serial.println("Initialize LCD...");
 
   // Demo for static one segment LCD display
-  lcd.begin(MODE_DRIVE_STATIC, MODE_BIAS_13);
+  lcd.init(MODE_DRIVE_STATIC, MODE_BIAS_13);
 
   // Clear LCD
   lcd.clear();

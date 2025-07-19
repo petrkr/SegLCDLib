@@ -47,7 +47,7 @@ class SegLCDLib {
         /**
          * @brief Initialize the display driver.
          */
-        virtual void begin() = 0;
+        virtual void init() = 0;
 
         /**
          * @brief Clear all visible segments on the display.

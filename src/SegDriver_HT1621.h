@@ -70,7 +70,7 @@ class SegDriver_HT1621 : public SegLCDLib {
          * @param read Read clock pin for the display (optional, default is -1)
          */
         SegDriver_HT1621(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read = -1);
-        virtual void begin() override;
+        virtual void init() override;
 
         void clear() override;
         void on() override;

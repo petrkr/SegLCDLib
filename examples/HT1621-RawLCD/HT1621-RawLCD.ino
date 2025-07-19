@@ -18,7 +18,7 @@ void setup() {
   Serial.println("Initialize LCD...");
 
   // Demo for duty 1/4, bias 1/3 LCD display
-  lcd.begin(MODE_DRIVE_14, MODE_BIAS_13);
+  lcd.init(MODE_DRIVE_14, MODE_BIAS_13);
 
   // Send RAW command
   lcd.sendCommand(CMD_SYS_EN);
