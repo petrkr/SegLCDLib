@@ -28,7 +28,7 @@ https://petrkr.github.io/SegLCDLib/
 | Name                               | Controller(s) | Link |
 |------------------------------------|---------------|------|
 | RAW LCD                            | PCF85176      | N/A  |
-| 6-digit signal battery progresess  | PCF85176      | N/A  |
+| 6-digit signal battery progresess  | PCF85176      | https://aliexpress.com/item/1005009214559485.html |
 | One Digit (up to 5 segments)       | PCF85176      | https://aliexpress.com/item/1005005410565386.html |
 | T1T2 Lcd                           | PCF85176      | https://aliexpress.com/item/32333296186.html      |
 | Temp humidity                      | PCF85176      | https://aliexpress.com/item/1005003044283980.html |
