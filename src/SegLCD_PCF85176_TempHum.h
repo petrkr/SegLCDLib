@@ -31,8 +31,8 @@ class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
     private:
         uint8_t _buffer_sigbatt = 0;
 
-        uint8_t _buffer_top[3] = {0};
-        uint8_t _buffer_default[4] = {0};
+        uint8_t _buffer_temp[4] = {0};
+        uint8_t _buffer_hum[3] = {0};
 
         uint8_t _mapSegments(uint8_t val);
 };
