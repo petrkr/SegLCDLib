@@ -46,9 +46,6 @@ class SegLCD_PCF85176_T1T2Lcd : public SegDriver_PCF85176 {
         void writeFloat(float input, uint8_t decimals = 0, LCDSections section = LCDSections::SECTION_DEFAULT);
         void writeChar(uint8_t digit, char c, LCDSections section = LCDSections::SECTION_DEFAULT) override;
 
-        ///TODO: Remove after implementation
-        void write(uint8_t data, uint8_t address = 0);
-
     private:
         uint8_t _buffer_sigclk = 0;
         uint8_t _buffer_batt = 0;

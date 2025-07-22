@@ -208,8 +208,3 @@ uint8_t SegLCD_PCF85176_T1T2Lcd::_mapSegments(uint8_t val) {
     out |= (val & 0b00000001);        // H
     return out;
 }
-
-// For generic class allow access to low level functions
-void SegLCD_PCF85176_T1T2Lcd::write(uint8_t data, uint8_t address) {
-    _writeRam(data, address);
-}
