@@ -63,7 +63,7 @@ class SegLCDLib : public Print {
         /**
          * @brief Set cursor to 0, 0 without clear display
          */
-        virtual void home() { };
+        void home();
 
         /**
          * @brief Set cursor on exact digit.
@@ -145,6 +145,16 @@ class SegLCDLib : public Print {
          * @brief Helper method to count number of digits in an integer.
          */
         int _countDigits(long num);
+
+        /**
+         * @brief Current Row
+         */
+        uint8_t _cursorRow = 0;
+
+        /**
+         * @brief Current Column
+         */
+        uint8_t _cursorCol = 0;
 };
 
 #endif

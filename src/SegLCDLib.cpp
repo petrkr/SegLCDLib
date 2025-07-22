@@ -1,6 +1,11 @@
 #include <Wire.h>
 #include <SegLCDLib.h>
 
+void SegLCDLib::home() {
+    _cursorRow = 0;
+    _cursorCol = 0;
+}
+
 //Mapping ABCD EFGH
 uint8_t SegLCDLib::_get_char_value(char ch) {
     switch (ch) {
