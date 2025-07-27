@@ -123,11 +123,8 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
 
     if (_cursorRow == 0) { // Temp segments
         if (ch == '.') {
-            if (_cursorCol > 0 && _cursorCol <= 4) {
-                _buffer_temp[_cursorCol - 1] |= 0x08;
-                _writeRam(_buffer_temp[_cursorCol - 1], ADDR_TEMP_SEGS + ((_cursorCol - 1) * 2));
-                return 1;
-            }
+            setDecimal(_cursorRow, _cursorCol, true);
+            return 1;
         } else if (ch == '-' && _cursorRow == 0 && _cursorCol == 0) {
             _buffer_hum[0] |= 0x08;
             _writeRam(_buffer_hum[0], ADDR_HUM_SEGS);
@@ -140,10 +137,7 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
         }
     } else if (_cursorRow == 1) { // Humidity segments
         if (ch == '.') {
-            if (_cursorCol == 2) {
-                _buffer_hum[1] |= 0x08;
-                _writeRam(_buffer_hum[1], ADDR_HUM_SEGS + 2);
-            }
+            setDecimal(_cursorRow, _cursorCol, true);
             return 1;
         } else if (_cursorRow == 1 && _cursorCol >= 0 && _cursorCol < 3) {
             if (_cursorCol == 0) { // This segment has "minus" sign, so we should not remove it by new char
