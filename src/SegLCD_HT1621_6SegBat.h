@@ -11,12 +11,13 @@ class SegLCD_HT1621_6SegBat : public SegDriver_HT1621 {
         void init() override;
         void clear();
         void setBatteryLevel(uint8_t level);
-        void setDecimal(uint8_t digit, bool state, LCDSections section = LCDSections::SECTION_DEFAULT);
+        void setDecimal(uint8_t row, uint8_t col, bool state);
         void setCursor(uint8_t row, uint8_t col) override;
         size_t write(uint8_t ch) override;
 
     private:
         uint8_t _buffer_default[6] = {0};
+        bool _previousDot = false;
 
         uint8_t _mapSegments(uint8_t val);
 };

@@ -24,9 +24,14 @@ void setup() {
 
   delay(1000);
 
-  lcd.print("987.654");
+  lcd.print("987.65.4");
+  delay(2000);
 
-  delay(5000);
+  lcd.setCursor(0, 0);
+  lcd.print("123456");
+  delay(2000);
+
+  lcd.clear();
 }
 
 int counter = 0;

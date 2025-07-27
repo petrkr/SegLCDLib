@@ -37,18 +37,22 @@ void SegLCD_HT1621_6SegBat::setBatteryLevel(uint8_t level) {
     _writeRam(_buffer_default[0], 10);
 }
 
-void SegLCD_HT1621_6SegBat::setDecimal(uint8_t digit, bool state, LCDSections section) {
-    if (digit < 3 || digit > 5) {
+void SegLCD_HT1621_6SegBat::setDecimal(uint8_t row, uint8_t col, bool state) {
+    if (row != 0) {
+        return; // invalid digit
+    }
+
+    if (col < 3 || col > 5) {
         return; // Invalid digit
     }
 
     if (state) {
-        _buffer_default[(digit)] |= 0x80; // Set the decimal point bit
+        _buffer_default[col] |= 0x80; // Set the decimal point bit
     } else {
-        _buffer_default[(digit)] &= ~0x80; // Clear the decimal point bit
+        _buffer_default[col] &= ~0x80; // Clear the decimal point bit
     }
 
-    _writeRam(_buffer_default[(digit)], ((6 - digit - 1) * 2));
+    _writeRam(_buffer_default[col], ((6 - col - 1) * 2));
 }
 
 void SegLCD_HT1621_6SegBat::setCursor(uint8_t row, uint8_t col) {
@@ -57,29 +61,29 @@ void SegLCD_HT1621_6SegBat::setCursor(uint8_t row, uint8_t col) {
 }
 
 size_t SegLCD_HT1621_6SegBat::write(uint8_t ch) {
+    if (_cursorCol < 0 || _cursorCol > 6) {
+        return 0; //Invalid digit
+    }
+
     if (ch == '.') {
-        if (_cursorCol > 0 && _cursorCol <= 6) {
-            uint8_t prev_digit_idx = _cursorCol - 1;
-            _buffer_default[prev_digit_idx] |= 0x80;
-            _writeRam(_buffer_default[prev_digit_idx], (6 - (prev_digit_idx + 1)) * 2);
-        }
+        setDecimal(_cursorRow, _cursorCol, true);
+        _previousDot = true;
         return 1;
     }
 
-    if (_cursorCol >= 0 && _cursorCol < 6) {
-        uint8_t current_digit_idx = _cursorCol;
-        uint8_t segment_data = _mapSegments(_get_char_value(ch));
+    uint8_t current_digit_idx = _cursorCol;
+    uint8_t segment_data = _mapSegments(_get_char_value(ch));
 
-        uint8_t decimal_point = _buffer_default[current_digit_idx] & 0x80;
-
-        _buffer_default[current_digit_idx] = (segment_data & 0b01111111) | decimal_point;
-        _writeRam(_buffer_default[current_digit_idx], (6 - (current_digit_idx + 1)) * 2);
-
-        _cursorCol++;
-        return 1;
+    if ((_cursorCol >= 0 && _cursorCol <= 2) || _previousDot) {
+        segment_data |= _buffer_default[current_digit_idx] & 0x80;
+        _previousDot = false;
     }
 
-    return 0;
+    _buffer_default[current_digit_idx] = segment_data;
+    _writeRam(_buffer_default[current_digit_idx], (6 - (current_digit_idx + 1)) * 2);
+
+    _cursorCol++;
+    return 1;
 }
 
 // ABCD_EFGH to HCBA_DEGF
