@@ -55,11 +55,6 @@ void SegLCD_HT1621_6SegBat::setDecimal(uint8_t row, uint8_t col, bool state) {
     _writeRam(_buffer_default[col], ((6 - col - 1) * 2));
 }
 
-void SegLCD_HT1621_6SegBat::setCursor(uint8_t row, uint8_t col) {
-    _cursorCol = col;
-    _cursorRow = row;
-}
-
 size_t SegLCD_HT1621_6SegBat::write(uint8_t ch) {
     if (_cursorCol < 0 || _cursorCol > 6) {
         return 0; //Invalid digit

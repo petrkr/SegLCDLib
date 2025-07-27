@@ -12,7 +12,6 @@ class SegLCD_HT1621_6SegBat : public SegDriver_HT1621 {
         void clear();
         void setBatteryLevel(uint8_t level);
         void setDecimal(uint8_t row, uint8_t col, bool state);
-        void setCursor(uint8_t row, uint8_t col) override;
         size_t write(uint8_t ch) override;
 
     private:
