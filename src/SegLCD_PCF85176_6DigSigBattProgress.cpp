@@ -130,21 +130,27 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::clearLabels(LabelFlags labels)
     _writeRam(_buffer_labels, ADDR_PRES_LABELS);
 }
 
-void SegLCD_PCF85176_6DigitSignalBatteryProgress::setClockColon(bool state, LCDSections section) {
+void SegLCD_PCF85176_6DigitSignalBatteryProgress::setClockColon(uint8_t row, uint8_t col, bool state) {
     uint8_t address = 0;
     uint8_t digit = 0;
     uint8_t* _buffer = nullptr;
-    switch (section) {
-        case LCDSections::SECTION_DEFAULT:
-            address = ADDR_BIG_SEGS; // Digit 6
-            digit = 6;
-            _buffer = _buffer_default;
-            break;
-        case LCDSections::SECTION_TOP:
-        case LCDSections::SECTION_CLOCK:
-            address = ADDR_SMALL_SEGS + 6; // Digit 4
+    switch (row) {
+        case 0:
+            if (col != 2) {
+                return; // Invalid digit
+            }
             digit = 4;
+            address = ADDR_SMALL_SEGS + 6; // Digit 4
             _buffer = _buffer_top;
+            break;
+        case 1:
+            if (col != 4) {
+                return; // Invalid digit
+            }
+
+            address = ADDR_BIG_SEGS; // Digit 6
+            _buffer = _buffer_default;
+            digit = 6;
             break;
         default:
             return; // Invalid section
@@ -159,114 +165,119 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setClockColon(bool state, LCDS
     _writeRam(_buffer[(digit-1)], address);
 }
 
-void SegLCD_PCF85176_6DigitSignalBatteryProgress::setDecimal(uint8_t digit, bool state, LCDSections section) {
+void SegLCD_PCF85176_6DigitSignalBatteryProgress::setDecimal(uint8_t row, uint8_t col, bool state) {
     uint8_t address = 0;
     uint8_t* _buffer = nullptr;
-    switch (section) {
-        case LCDSections::SECTION_DEFAULT:
-            if (digit < 1 || digit > 4) {
+    switch (row) {
+        case 0:
+            if (col < 0 || col > 2) {
                 return; // Invalid digit
             }
 
-            address = ADDR_BIG_SEGS + ((6 - digit) * 2);
-            _buffer = _buffer_default;
-            break;
-        case LCDSections::SECTION_TOP:
-        case LCDSections::SECTION_CLOCK:
-            if (digit < 1 || digit > 3) {
-                return; // Invalid digit
-            }
-
-            address = ADDR_SMALL_SEGS + ((digit - 1) * 2);
+            address = ADDR_SMALL_SEGS + (col * 2);
             _buffer = _buffer_top;
+            break;
+        case 1:
+            if (col < 0 || col > 4) {
+                return; // Invalid digit
+            }
+
+            address = ADDR_BIG_SEGS + ((6 - col - 1) * 2);
+            _buffer = _buffer_default;
             break;
         default:
             return; // Invalid section
     }
 
     if (state) {
-        _buffer[(digit-1)] |= 0x10; // Set the decimal point bit
+        _buffer[col] |= DECIMAL_POINT_BIT; // Set the decimal point bit
     } else {
-        _buffer[(digit-1)] &= ~0x10; // Clear the decimal point bit
+        _buffer[col] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
     }
 
-    _writeRam(_buffer[(digit-1)], address);
+    _writeRam(_buffer[col], address);
 }
 
-void SegLCD_PCF85176_6DigitSignalBatteryProgress::writeFloat(float input, uint8_t decimals, LCDSections section) {
-    bool isNegative = input < 0.0f;
-    float scale = powf(10, decimals);
-    long scaled = lroundf(fabsf(input) * scale);
-
-    int totalDigits = _countDigits(scaled);
-    int digitCount = totalDigits + (isNegative ? 1 : 0);
-    if (decimals > 0 && totalDigits <= decimals) {
-        digitCount++;
+void SegLCD_PCF85176_6DigitSignalBatteryProgress::setCursor(uint8_t row, uint8_t col) {
+    if (row == 0 && col < 2) {
+        _colon_top = false;
     }
 
-    int startPos;
-    int digitPos = 0;
+    if (row == 1 && col < 5) {
+        _colon_default = false;
+    }
 
-    switch (section) {
-        case LCDSections::SECTION_DEFAULT:
-            startPos = 6 - digitCount + 1;
+    SegDriver_PCF85176::setCursor(row, col);
+}
+
+size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
+    uint8_t segment_data = _mapSegments(_get_char_value(ch));
+
+    switch (_cursorRow) {
+        case 0:
+            if (_cursorCol < 0 || _cursorCol > 3) {
+                return 0; // Invalid digit
+            }
+
+            if (_cursorCol == 2 && ch != ':' && !_colon_top && (_buffer_top[_cursorCol] & DECIMAL_POINT_BIT)) {
+                _buffer_top[_cursorCol] &= ~DECIMAL_POINT_BIT;
+                _writeRam(_buffer_top[_cursorCol], ADDR_SMALL_SEGS + ((_cursorCol) * 2));
+            }
+
+            if (ch == '.') {
+                setDecimal(_cursorRow, _cursorCol - 1, true);
+                return 1;
+            }
+
+            if (ch == ':' && _cursorCol == 2 && !_colon_top) {
+                setClockColon(_cursorRow, _cursorCol, true);
+                _colon_top = true;
+                return 1;
+            }
+
+            if (_cursorCol == 3 && _colon_top) {
+                _buffer_top[_cursorCol] &= DECIMAL_POINT_BIT;
+                _buffer_top[_cursorCol] |= (segment_data & ~DECIMAL_POINT_BIT);
+            } else {
+                _buffer_top[_cursorCol] = segment_data;
+            }
+            _writeRam(_buffer_top[_cursorCol], ADDR_SMALL_SEGS + ((_cursorCol) * 2));
             break;
-        case LCDSections::SECTION_TOP:
-        case LCDSections::SECTION_CLOCK:
-            startPos = 4 - digitCount + 1;
+        case 1:
+            if (_cursorCol < 0 || _cursorCol > 5) {
+                return 0; // Invalid digit
+            }
+
+            if (_cursorCol == 4 && ch != ':' && !_colon_default && (_buffer_default[_cursorCol] & DECIMAL_POINT_BIT)) {
+                _buffer_default[_cursorCol] &= ~DECIMAL_POINT_BIT;
+                _writeRam(_buffer_default[_cursorCol], ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
+            }
+
+            if (ch == '.') {
+                setDecimal(_cursorRow, _cursorCol - 1, true);
+                return 1;
+            }
+
+            if (ch == ':' && _cursorCol == 4 && !_colon_default) {
+                setClockColon(_cursorRow, _cursorCol, true);
+                _colon_default = true;
+                return 1;
+            }
+
+            if (_cursorCol == 5 && _colon_default) {
+                _buffer_default[_cursorCol] &= DECIMAL_POINT_BIT;
+                _buffer_default[_cursorCol] |= (segment_data & ~DECIMAL_POINT_BIT);
+            } else {
+                _buffer_default[_cursorCol] = segment_data;
+            }
+            _writeRam(_buffer_default[_cursorCol], ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
             break;
         default:
-            return; // Invalid section
+            return 0; // invalid digit
     }
 
-    for (int i = 0; i < totalDigits; ++i) {
-        int digit = scaled % 10;
-        int pos = startPos + digitCount - 1 - digitPos;
-        writeChar(pos, digit + '0', section);
-
-        if (i == decimals && decimals > 0) {
-            setDecimal(pos, true, section);
-        }
-
-        scaled /= 10;
-        digitPos++;
-    }
-
-    if (decimals > 0 && totalDigits <= decimals) {
-        int pos = startPos + digitCount - 1 - digitPos;
-        writeChar(pos, '0', section);
-        setDecimal(pos, true, section);
-        digitPos++;
-    }
-
-    if (isNegative) {
-        int pos = startPos + digitCount - 1 - digitPos;
-        writeChar(pos, '-', section);
-        digitPos++;
-    }
-}
-
-
-void SegLCD_PCF85176_6DigitSignalBatteryProgress::writeChar(uint8_t digit, char c, LCDSections section) {
-    uint8_t ch = _mapSegments(_get_char_value(c));
-
-    switch (section) {
-        case LCDSections::SECTION_DEFAULT:
-            if (digit < 1 || digit > 6) {
-                return; // Invalid digit
-            }
-            _buffer_default[digit-1] = ch;
-            _writeRam(_buffer_default[digit-1], ADDR_BIG_SEGS + ((6 - digit) * 2));
-            break;
-        case LCDSections::SECTION_TOP:
-        case LCDSections::SECTION_CLOCK:
-            if (digit < 1 || digit > 4) {
-                return; // Invalid digit
-            }
-            _buffer_top[digit-1] = ch;
-             _writeRam(_buffer_top[digit-1], ADDR_SMALL_SEGS + ((digit - 1) * 2));
-            break;
-    }
+    _cursorCol++;
+    return 1;
 }
 
 // ABCD_EFGH to ABCH FGED

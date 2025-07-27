@@ -38,10 +38,10 @@ class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
         void setWheel(uint16_t value);
         void setLabels(LabelFlags labels);
         void clearLabels(LabelFlags labels);
-        void setClockColon(bool status, LCDSections section = LCDSections::SECTION_CLOCK);
-        void setDecimal(uint8_t digit, bool state, LCDSections section = LCDSections::SECTION_DEFAULT);
-        void writeFloat(float input, uint8_t decimals, LCDSections section = LCDSections::SECTION_DEFAULT);
-        void writeChar(uint8_t digit, char c, LCDSections section = LCDSections::SECTION_DEFAULT);
+        void setClockColon(uint8_t row, uint8_t col, bool state);
+        void setDecimal(uint8_t row, uint8_t col, bool state);
+        void setCursor(uint8_t row, uint8_t col);
+        size_t write(uint8_t ch) override;
 
     private:
         uint8_t _buffer_sigbatt = 0;
@@ -49,6 +49,11 @@ class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
 
         uint8_t _buffer_top[4] = {0};
         uint8_t _buffer_default[6] = {0};
+
+        bool _colon_top = false;
+        bool _colon_default = false;
+
+        static constexpr uint8_t DECIMAL_POINT_BIT = 0x10;
 
         uint8_t _mapSegments(uint8_t val);
 };
