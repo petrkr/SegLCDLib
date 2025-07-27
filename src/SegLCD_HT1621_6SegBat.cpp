@@ -12,6 +12,11 @@ void SegLCD_HT1621_6SegBat::init() {
     command(CMD_NORMAL);
 }
 
+void SegLCD_HT1621_6SegBat::clear() {
+    memset(_buffer_default, 0x00, sizeof(_buffer_default));
+    SegDriver_HT1621::clear();
+}
+
 void SegLCD_HT1621_6SegBat::setBatteryLevel(uint8_t level) {
     if (level > 3)
         level = 3;
