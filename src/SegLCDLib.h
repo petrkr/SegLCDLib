@@ -107,17 +107,6 @@ class SegLCDLib : public Print {
         // SegLCDLib specific part
         // ----------------------
 
-        /**
-         * @brief Write a character to a specific digit/position in a defined section.
-         *
-         * Default implementation does nothing; must be overridden by subclass if needed.
-         *
-         * @param digit Index of the digit (position on display)
-         * @param c Character to be rendered
-         * @param section Display section target
-         */
-        virtual void writeChar(uint8_t digit, char c, LCDSections section) { };
-
     protected:
         /**
          * @brief Low-level method to write a single byte to display RAM.
