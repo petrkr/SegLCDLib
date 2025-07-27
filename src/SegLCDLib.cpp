@@ -7,8 +7,7 @@ void SegLCDLib::clear() {
 }
 
 void SegLCDLib::home() {
-    _cursorRow = 0;
-    _cursorCol = 0;
+    setCursor(0, 0);
 }
 
 void SegLCDLib::setCursor(uint8_t row, uint8_t col) {
