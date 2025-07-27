@@ -39,6 +39,8 @@ void SegDriver_HT1621::clear() {
         default:
             break;
     }
+
+    SegLCDLib::clear();
 }
 
 void SegDriver_HT1621::on() {

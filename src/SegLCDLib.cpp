@@ -1,6 +1,11 @@
 #include <Wire.h>
 #include <SegLCDLib.h>
 
+
+void SegLCDLib::clear() {
+    home();
+}
+
 void SegLCDLib::home() {
     _cursorRow = 0;
     _cursorCol = 0;

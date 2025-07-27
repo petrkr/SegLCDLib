@@ -58,7 +58,7 @@ class SegLCDLib : public Print {
         /**
          * @brief Clear all visible segments on the display.
          */
-        virtual void clear() = 0;
+        virtual void clear();
 
         /**
          * @brief Set cursor to 0, 0 without clear display

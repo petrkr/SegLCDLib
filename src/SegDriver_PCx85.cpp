@@ -56,6 +56,8 @@ void SegDriver_PCx85::clear() {
         default:
             break;
     }
+
+    SegLCDLib::clear();
 }
 
 void SegDriver_PCx85::on() {
