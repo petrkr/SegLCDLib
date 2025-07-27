@@ -9,6 +9,13 @@ void SegLCD_PCF85176_TempHumidity::init() {
     _setMode(MODE_STATUS_ENABLED);
 }
 
+void SegLCD_PCF85176_TempHumidity::clear() {
+    _buffer_sigbatt = 0x00;
+    memset(_buffer_temp, 0x00, sizeof(_buffer_temp));
+    memset(_buffer_hum, 0x00, sizeof(_buffer_hum));
+    SegDriver_PCF85176::clear();
+}
+
 void SegLCD_PCF85176_TempHumidity::setBatteryLevel(uint8_t level) {
     if (level > 4)
         level = 4;
