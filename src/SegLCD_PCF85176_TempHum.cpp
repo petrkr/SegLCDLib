@@ -134,7 +134,7 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
         if (ch == '.') {
             setDecimal(_cursorRow, _cursorCol, true);
             return 1;
-        } else if (ch == '-' && _cursorRow == TEMP_ROW && _cursorCol == 0 && !_specialMinusDisplayed) {
+        } else if (ch == '-' && _cursorCol == 0 && !_specialMinusDisplayed) {
             _buffer_hum[0] |= MINUS_SIGN_BIT;
             _writeRam(_buffer_hum[0], ADDR_HUM_SEGS);
             _specialMinusDisplayed = true;
