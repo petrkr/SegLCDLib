@@ -23,7 +23,7 @@ void setup() {
   delay(500);
 
   lcd.setCursor(0, 0);
-  lcd.print("-1.2");
+  lcd.print("-123");
   lcd.setCursor(1, 0);
   lcd.print("3.45");
 

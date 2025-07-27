@@ -173,9 +173,9 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
             if (_cursorCol > 0 && _cursorCol <= 4) {
                 _buffer_temp[_cursorCol - 1] |= 0x08;
                 _writeRam(_buffer_temp[_cursorCol - 1], ADDR_TEMP_SEGS + ((_cursorCol - 1) * 2));
+                return 1;
             }
-            return 1;
-        } else if (ch == '-') {
+        } else if (ch == '-' && _cursorRow == 0 && _cursorCol == 0) {
             _buffer_hum[0] |= 0x08;
             _writeRam(_buffer_hum[0], ADDR_HUM_SEGS);
             return 1;
@@ -192,8 +192,14 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
                 _writeRam(_buffer_hum[1], ADDR_HUM_SEGS + 2);
             }
             return 1;
-        } else if (_cursorCol >= 0 && _cursorCol < 3) {
-            _buffer_hum[_cursorCol] = c;
+        } else if (_cursorRow == 1 && _cursorCol >= 0 && _cursorCol < 3) {
+            if (_cursorCol == 0) { // This segment has "minus" sign, so we should not remove it by new char
+                _buffer_hum[_cursorCol] &= 0x08; // Clear all bits expect minus char
+                _buffer_hum[_cursorCol] |= (c & ~0x08); // Set char bits
+            }
+            else {
+                _buffer_hum[_cursorCol] = c;
+            }
             _writeRam(_buffer_hum[_cursorCol], ADDR_HUM_SEGS + _cursorCol * 2);
             _cursorCol++;
             return 1;
