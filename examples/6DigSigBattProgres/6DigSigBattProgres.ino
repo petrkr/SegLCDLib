@@ -21,33 +21,25 @@ void setup() {
 
   // Clear LCD
   lcd.clear();
-  delay(500);
+  lcd.print("31:40");
+  lcd.setCursor(1, 0);
+  lcd.print("1.2.3.4:5.0");
+  delay(2000);
 
-  lcd.writeFloat(-3.14, 2);
+  lcd.home();
+  lcd.print("12:3 ");
+  lcd.setCursor(1, 0);
+  lcd.print("567890");
   delay(1000);
 
-  lcd.writeFloat(21.1, 1, SegLCD_PCF85176_6DigitSignalBatteryProgress::LCDSections::SECTION_CLOCK);
-  delay(1000);
+  lcd.setCursor(1, 2);
+  lcd.print("12:24");
 
-  lcd.writeChar(1, '1', SegLCD_PCF85176_6DigitSignalBatteryProgress::LCDSections::SECTION_CLOCK);
-  lcd.writeChar(2, '2', SegLCD_PCF85176_6DigitSignalBatteryProgress::LCDSections::SECTION_CLOCK);
-  lcd.writeChar(3, '2', SegLCD_PCF85176_6DigitSignalBatteryProgress::LCDSections::SECTION_CLOCK);
-  lcd.writeChar(4, '4', SegLCD_PCF85176_6DigitSignalBatteryProgress::LCDSections::SECTION_CLOCK);
-  lcd.setClockColon(true);
-
-  delay(1000);
+  delay(2000);
 
   lcd.setLabels(SegLCD_PCF85176_6DigitSignalBatteryProgress::LABEL_MPA);
-  lcd.writeChar(1, 'h');
-  lcd.writeChar(2, 'e');
-  lcd.writeChar(3, 'l');
-  lcd.writeChar(4, 'l');
-  lcd.writeChar(5, 'o');
-  lcd.writeChar(6, ' ');
-
-  lcd.setDecimal(1, true);
-  lcd.setDecimal(2, true);
-  lcd.setClockColon(true, SegLCD_PCF85176_6DigitSignalBatteryProgress::LCDSections::SECTION_DEFAULT);
+  lcd.setCursor(1, 0);
+  lcd.print("hel.l.o. ");
 
   lcd.setWheel(980);
   lcd.setProgress(110);
