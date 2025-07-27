@@ -76,40 +76,41 @@ void SegLCD_PCF85176_TempHumidity::clearLabels(uint8_t labels) {
     }
 }
 
-void SegLCD_PCF85176_TempHumidity::setDecimal(uint8_t digit, bool state, LCDSections section) {
+void SegLCD_PCF85176_TempHumidity::setDecimal(uint8_t row, uint8_t col, bool state) {
     uint8_t address = 0;
     uint8_t* _buffer = nullptr;
-    switch (section) {
-        case LCDSections::SECTION_DEFAULT:
-        case LCDSections::SECTION_TOP:
-        case LCDSections::SECTION_TEMP:
-            if (digit < 1 || digit > 3) {
-                return; // Invalid digit
-            }
 
-            address = ADDR_TEMP_SEGS + ((digit - 1) * 2);
-            _buffer = _buffer_temp;
-            break;
-        case LCDSections::SECTION_BOTTOM:
-        case LCDSections::SECTION_HUMIDITY:
-            if (digit!=2) {
-                return; // Invalid digit
-            }
+    switch (row) {
+    case 0: // Temp segments
+        if (col < 1 || col > 3) {
+            return; // Invalid digit
+        }
 
-            address = ADDR_HUM_SEGS + ((digit - 1) * 2);
-            _buffer = _buffer_hum;
-            break;
-        default:
-            return; // Invalid section
+        address = ADDR_TEMP_SEGS + ((col - 1) * 2);
+        _buffer = _buffer_temp;
+        break;
+
+
+    case 1: // Hum segments
+        if (col !=2 ) {
+            return; // Invalid digit
+        }
+
+        address = ADDR_HUM_SEGS + ((col - 1) * 2);
+        _buffer = _buffer_hum;
+        break;
+
+    default:
+        return; // Invalid selection
     }
 
     if (state) {
-        _buffer[(digit-1)] |= 0x08; // Set the decimal point bit
+        _buffer[(col-1)] |= 0x08; // Set the decimal point bit
     } else {
-        _buffer[(digit-1)] &= ~0x08; // Clear the decimal point bit
+        _buffer[(col-1)] &= ~0x08; // Clear the decimal point bit
     }
 
-    _writeRam(_buffer[(digit-1)], address);
+    _writeRam(_buffer[(col-1)], address);
 }
 
 void SegLCD_PCF85176_TempHumidity::setCursor(uint8_t row, uint8_t col) {

@@ -23,7 +23,11 @@ void setup() {
   delay(500);
 
   lcd.setCursor(0, 0);
-  lcd.print("-123");
+  lcd.print("-12.3");
+  delay(1000);
+  lcd.setDecimal(0, 1, true);
+  lcd.setDecimal(0, 3, true);
+  delay(1000);
   lcd.setCursor(1, 0);
   lcd.print("3.45");
 
