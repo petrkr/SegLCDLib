@@ -29,7 +29,7 @@ class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
             LABEL_ALL = 0xFF
         } LabelFlags;
 
-        SegLCD_PCF85176_6DigitSignalBatteryProgress(TwoWire& i2c, uint8_t address = 56, uint8_t subaddress = 0);
+        SegLCD_PCF85176_6DigitSignalBatteryProgress(TwoWire& i2c, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
         void init() override;
         void clear();
         void setBatteryLevel(uint8_t value);

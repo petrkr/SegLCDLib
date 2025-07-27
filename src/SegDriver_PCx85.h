@@ -21,6 +21,11 @@ class SegDriver_PCx85 : public SegLCDLib {
     #define CMD_BANK_SELECT     0x78
     #define CMD_LAST_COMMAND    0x80
 
+    // Common hardware constants for PCF85176 displays
+    protected:
+        static constexpr uint8_t DEFAULT_PCF85176_I2C_ADDRESS = 0x38;  // 56 decimal
+        static constexpr uint8_t DEFAULT_SUBADDRESS = 0x00;
+
     public:
         /**
          * @brief Enable/disable display
@@ -138,7 +143,7 @@ class SegDriver_PCF85176 : public SegDriver_PCx85 {
          * @param address I2C address of the PCF85176 device (default is 0x38)
          * @param subaddress Subaddress for the device (default is 0)
          */
-        SegDriver_PCF85176(TwoWire& i2c, uint8_t address = 0x38, uint8_t subaddress = 0) : SegDriver_PCx85(i2c, address, subaddress) {}
+        SegDriver_PCF85176(TwoWire& i2c, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS) : SegDriver_PCx85(i2c, address, subaddress) {}
 };
 
 #endif
