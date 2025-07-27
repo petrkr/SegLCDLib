@@ -77,7 +77,7 @@ class SegLCDLib : public Print {
          * @param row Row, where 0-MAXROWS
          * @param col Column 0-MAXDIGITS in current row
          */
-        virtual void setCursor(uint8_t row, uint8_t col) { };
+        virtual void setCursor(uint8_t row, uint8_t col);
 
         virtual size_t write(uint8_t ch) { };
 

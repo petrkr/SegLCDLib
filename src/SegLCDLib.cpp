@@ -11,6 +11,11 @@ void SegLCDLib::home() {
     _cursorCol = 0;
 }
 
+void SegLCDLib::setCursor(uint8_t row, uint8_t col) {
+    _cursorRow = row;
+    _cursorCol = col;
+}
+
 //Mapping ABCD EFGH
 uint8_t SegLCDLib::_get_char_value(char ch) {
     switch (ch) {

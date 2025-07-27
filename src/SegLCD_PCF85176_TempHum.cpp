@@ -115,11 +115,11 @@ void SegLCD_PCF85176_TempHumidity::setDecimal(uint8_t row, uint8_t col, bool sta
 }
 
 void SegLCD_PCF85176_TempHumidity::setCursor(uint8_t row, uint8_t col) {
-    _cursorRow = row;
-    _cursorCol = col;
     if (row == TEMP_ROW && col == 0) {
         _specialMinusDisplayed = false;
     }
+
+    SegDriver_PCF85176::setCursor(row, col);
 }
 
 size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
