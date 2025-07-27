@@ -45,14 +45,14 @@ void SegDriver_PCx85::clear() {
     switch (_drive) {
         case MODE_DRIVE_STATIC:
             _writeRam(tmps, sizeof(tmps), 0);
-            return;
+            break;
         //TODO: Get riht size values here
         case MODE_DRIVE_12:
         case MODE_DRIVE_13:
             break;
         case MODE_DRIVE_14:
             _writeRam(tmp14, sizeof(tmp14), 0);
-            return;
+            break;
         default:
             break;
     }
