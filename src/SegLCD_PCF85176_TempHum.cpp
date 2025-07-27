@@ -126,6 +126,11 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
     uint8_t c = _mapSegments(_get_char_value(ch));
 
     if (_cursorRow == 0) { // Temp segments
+        if (_cursorCol == 0 && ch != '-' && !_specialMinusDisplayed && (_buffer_hum[0] & 0x08)) {
+            _buffer_hum[0] &= ~0x08;
+            _writeRam(_buffer_hum[0], ADDR_HUM_SEGS);
+        }
+
         if (ch == '.') {
             setDecimal(_cursorRow, _cursorCol, true);
             return 1;
@@ -145,9 +150,9 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
             setDecimal(_cursorRow, _cursorCol, true);
             return 1;
         } else if (_cursorRow == 1 && _cursorCol >= 0 && _cursorCol < 3) {
-            if (_cursorCol == 0) { // This segment has "minus" sign, so we should not remove it by new char
-                _buffer_hum[_cursorCol] &= 0x08; // Clear all bits expect minus char
-                _buffer_hum[_cursorCol] |= (c & ~0x08); // Set char bits
+            if (_cursorCol == 0) {
+                _buffer_hum[_cursorCol] &= 0x08;
+                _buffer_hum[_cursorCol] |= (c & ~0x08);
             }
             else {
                 _buffer_hum[_cursorCol] = c;
@@ -158,7 +163,7 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
         }
     }
 
-    return 0; // invalid position
+    return 0;
 }
 
 // ABCD_EFGH to DEGF_PCBA
