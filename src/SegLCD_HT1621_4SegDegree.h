@@ -10,6 +10,7 @@ class SegLCD_HT1621_4SegDegree : public SegDriver_HT1621 {
     public:
         SegLCD_HT1621_4SegDegree(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read = -1);
         void init() override;
+        void clear();
         void setDegree(bool state, LCDSections section = LCDSections::SECTION_DEFAULT);
         void setMiddleDot(bool state, LCDSections section = LCDSections::SECTION_DEFAULT);
         void setClockColon(bool status, LCDSections section = LCDSections::SECTION_CLOCK);
