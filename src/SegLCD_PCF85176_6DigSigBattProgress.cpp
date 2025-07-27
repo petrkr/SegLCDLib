@@ -9,6 +9,14 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::init() {
     _setMode(MODE_STATUS_ENABLED);
 }
 
+void SegLCD_PCF85176_6DigitSignalBatteryProgress::clear() {
+    _buffer_sigbatt = 0x00;
+    _buffer_labels = 0x00;
+    memset(_buffer_top, 0x00, sizeof(_buffer_top));
+    memset(_buffer_default, 0x00, sizeof(_buffer_default));
+    SegDriver_PCF85176::clear();
+}
+
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setBatteryLevel(uint8_t level) {
     if (level > 4)
         level = 4;
