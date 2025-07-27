@@ -24,30 +24,21 @@ void setup() {
 
   delay(1000);
 
-  lcd.writeChar(1, '9');
-  lcd.writeChar(2, '8');
-  lcd.writeChar(3, '7');
-  lcd.writeChar(4, '6');
-  lcd.writeChar(5, '5');
-  lcd.writeChar(6, '4');
-
-//  lcd.setDecimal(3, true);
-//  lcd.setDecimal(4, true);
-//  lcd.setDecimal(5, true);
+  lcd.print("987.654");
 
   delay(5000);
 }
 
-uint8_t i=1;
+int counter = 0;
 void loop() {
-  lcd.setBatteryLevel(i);
+  lcd.setBatteryLevel(counter % 4);
 
-  lcd.writeChar(i, i + '0');
+  lcd.setCursor(0, 0);
+  lcd.print(counter);
 
-  i++;
-
-  if (i>6) {
-    i = 1;
+  counter++;
+  if (counter > 999999) {
+    counter = 0;
   }
 
   delay(1000);

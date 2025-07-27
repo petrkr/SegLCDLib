@@ -46,20 +46,35 @@ void SegLCD_HT1621_6SegBat::setDecimal(uint8_t digit, bool state, LCDSections se
     _writeRam(_buffer_default[(digit)], ((6 - digit - 1) * 2));
 }
 
-void SegLCD_HT1621_6SegBat::writeChar(uint8_t digit, char c, LCDSections section) {
-    uint8_t ch = _mapSegments(_get_char_value(c));
+void SegLCD_HT1621_6SegBat::setCursor(uint8_t row, uint8_t col) {
+    _cursorCol = col;
+    _cursorRow = row;
+}
 
-    switch (section) {
-        case LCDSections::SECTION_TOP:
-        case LCDSections::SECTION_DEFAULT:
-            if (digit < 1 || digit > 6) {
-                return; // Invalid digit
-            }
-            _buffer_default[digit - 1] &= ~0b01111111;
-            _buffer_default[digit - 1] |= ch & 0b01111111;
-            _writeRam(_buffer_default[digit-1], ((6 - digit) * 2));
-            break;
+size_t SegLCD_HT1621_6SegBat::write(uint8_t ch) {
+    if (ch == '.') {
+        if (_cursorCol > 0 && _cursorCol <= 6) {
+            uint8_t prev_digit_idx = _cursorCol - 1;
+            _buffer_default[prev_digit_idx] |= 0x80;
+            _writeRam(_buffer_default[prev_digit_idx], (6 - (prev_digit_idx + 1)) * 2);
+        }
+        return 1;
     }
+
+    if (_cursorCol >= 0 && _cursorCol < 6) {
+        uint8_t current_digit_idx = _cursorCol;
+        uint8_t segment_data = _mapSegments(_get_char_value(ch));
+
+        uint8_t decimal_point = _buffer_default[current_digit_idx] & 0x80;
+
+        _buffer_default[current_digit_idx] = (segment_data & 0b01111111) | decimal_point;
+        _writeRam(_buffer_default[current_digit_idx], (6 - (current_digit_idx + 1)) * 2);
+
+        _cursorCol++;
+        return 1;
+    }
+
+    return 0;
 }
 
 // ABCD_EFGH to HCBA_DEGF

@@ -136,7 +136,7 @@ void SegLCD_PCF85176_TempHumidity::writeFloat(float input, uint8_t decimals, LCD
     for (int i = 0; i < totalDigits; ++i) {
         int digit = scaled % 10;
         int pos = startPos + digitCount - 1 - digitPos;
-        writeChar(pos, digit + '0', section);
+        write(digit + '0');
 
         if (i == decimals && decimals > 0) {
             setDecimal(pos, true, section);
@@ -148,40 +148,59 @@ void SegLCD_PCF85176_TempHumidity::writeFloat(float input, uint8_t decimals, LCD
 
     if (decimals > 0 && totalDigits <= decimals) {
         int pos = startPos + digitCount - 1 - digitPos;
-        writeChar(pos, '0', section);
+        write('0');
         setDecimal(pos, true, section);
         digitPos++;
     }
 
     if (isNegative) {
         int pos = startPos + digitCount - 1 - digitPos;
-        writeChar(pos, '-', section);
+        write('-');
         digitPos++;
     }
 }
 
-void SegLCD_PCF85176_TempHumidity::writeChar(uint8_t digit, char c, LCDSections section) {
-    uint8_t ch = _mapSegments(_get_char_value(c));
+void SegLCD_PCF85176_TempHumidity::setCursor(uint8_t row, uint8_t col) {
+    _cursorRow = row;
+    _cursorCol = col;
+}
 
-    switch (section) {
-        case LCDSections::SECTION_DEFAULT:
-        case LCDSections::SECTION_TOP:
-        case LCDSections::SECTION_TEMP:
-            if (digit < 1 || digit > 4) {
-                return; // Invalid digit
+size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
+    uint8_t c = _mapSegments(_get_char_value(ch));
+
+    if (_cursorRow == 0) { // Temp segments
+        if (ch == '.') {
+            if (_cursorCol > 0 && _cursorCol <= 4) {
+                _buffer_temp[_cursorCol - 1] |= 0x08;
+                _writeRam(_buffer_temp[_cursorCol - 1], ADDR_TEMP_SEGS + ((_cursorCol - 1) * 2));
             }
-            _buffer_temp[digit-1] = ch;
-            _writeRam(_buffer_temp[digit-1], ADDR_TEMP_SEGS + ((digit -1) * 2));
-            break;
-        case LCDSections::SECTION_BOTTOM:
-        case LCDSections::SECTION_HUMIDITY:
-            if (digit < 1 || digit > 3) {
-                return; // Invalid digit
+            return 1;
+        } else if (ch == '-') {
+            _buffer_hum[0] |= 0x08;
+            _writeRam(_buffer_hum[0], ADDR_HUM_SEGS);
+            return 1;
+        } else if (_cursorCol >= 0 && _cursorCol < 4) {
+            _buffer_temp[_cursorCol] = c;
+            _writeRam(_buffer_temp[_cursorCol], ADDR_TEMP_SEGS + _cursorCol * 2);
+            _cursorCol++;
+            return 1;
+        }
+    } else if (_cursorRow == 1) { // Humidity segments
+        if (ch == '.') {
+            if (_cursorCol == 2) {
+                _buffer_hum[1] |= 0x08;
+                _writeRam(_buffer_hum[1], ADDR_HUM_SEGS + 2);
             }
-            _buffer_hum[digit-1] = ch;
-             _writeRam(_buffer_hum[digit-1], ADDR_HUM_SEGS + ((digit - 1) * 2));
-            break;
+            return 1;
+        } else if (_cursorCol >= 0 && _cursorCol < 3) {
+            _buffer_hum[_cursorCol] = c;
+            _writeRam(_buffer_hum[_cursorCol], ADDR_HUM_SEGS + _cursorCol * 2);
+            _cursorCol++;
+            return 1;
+        }
     }
+
+    return 0; // invalid position
 }
 
 // ABCD_EFGH to DEGF_PCBA

@@ -22,23 +22,27 @@ void setup() {
   lcd.clear();
   delay(500);
 
-  lcd.writeFloat(-3.14, 2);
-  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("-1.2");
+  lcd.setCursor(1, 0);
+  lcd.print("3.45");
 
-  lcd.writeFloat(61.1, 1, SegLCD_PCF85176_TempHumidity::LCDSections::SECTION_HUMIDITY);
-  delay(1000);
+  delay(2000);
 
-  lcd.writeChar(1, '1');
-  lcd.writeChar(2, '2');
-  lcd.writeChar(3, '3');
-  lcd.writeChar(4, '4');
-  lcd.setLabels(SegLCD_PCF85176_TempHumidity::LABEL_C);
-  delay(1000);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("12.34");
+  lcd.setCursor(1, 0);
+  lcd.print("56.7");
 
-  lcd.writeChar(1, '5', SegLCD_PCF85176_TempHumidity::LCDSections::SECTION_HUMIDITY);
-  lcd.writeChar(2, '6', SegLCD_PCF85176_TempHumidity::LCDSections::SECTION_HUMIDITY);
-  lcd.writeChar(3, '7', SegLCD_PCF85176_TempHumidity::LCDSections::SECTION_HUMIDITY);
-  lcd.setLabels(SegLCD_PCF85176_TempHumidity::LABEL_PROC);
+  delay(2000);
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("98.76");
+  lcd.setCursor(1, 0);
+  lcd.print("54.3");
+  lcd.setLabels(SegLCD_PCF85176_TempHumidity::LABEL_C | SegLCD_PCF85176_TempHumidity::LABEL_PROC);
 
   delay(2000);
   lcd.clearLabels(SegLCD_PCF85176_TempHumidity::LABEL_C | SegLCD_PCF85176_TempHumidity::LABEL_PROC);

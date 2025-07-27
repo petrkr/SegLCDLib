@@ -26,8 +26,8 @@ class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
         void clearLabels(uint8_t labels);
         void setDecimal(uint8_t digit, bool state, LCDSections section = LCDSections::SECTION_DEFAULT);
         void writeFloat(float input, uint8_t decimals = 0, LCDSections section = LCDSections::SECTION_DEFAULT);
-        void writeChar(uint8_t digit, char c, LCDSections section = LCDSections::SECTION_DEFAULT) override;
-
+        void setCursor(uint8_t row, uint8_t col) override;
+        size_t write(uint8_t ch) override;
     private:
         uint8_t _buffer_sigbatt = 0;
 
