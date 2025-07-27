@@ -18,62 +18,62 @@ void SegLCD_PCF85176_TempHumidity::clear() {
 }
 
 void SegLCD_PCF85176_TempHumidity::setBatteryLevel(uint8_t level) {
-    if (level > 4)
-        level = 4;
+    if (level > MAX_SIGNAL_BATTERY_LEVEL)
+        level = MAX_SIGNAL_BATTERY_LEVEL;
 
-    _buffer_sigbatt &= ~(0x0f);
+    _buffer_sigbatt &= ~SIGNAL_BATTERY_MASK_LOW;
 
     if (level > 0)
-        _buffer_sigbatt |= 8;
+        _buffer_sigbatt |= BATTERY_LEVEL_BITS[0];
     if (level > 1)
-        _buffer_sigbatt |= 4;
+        _buffer_sigbatt |= BATTERY_LEVEL_BITS[1];
     if (level > 2)
-        _buffer_sigbatt |= 2;
+        _buffer_sigbatt |= BATTERY_LEVEL_BITS[2];
     if (level > 3)
-        _buffer_sigbatt |= 1;
+        _buffer_sigbatt |= BATTERY_LEVEL_BITS[3];
 
     _writeRam(_buffer_sigbatt, ADDR_SIGNAL_BATT);
 }
 
 void SegLCD_PCF85176_TempHumidity::setSignalLevel(uint8_t level) {
-    if (level > 4)
-        level = 4;
+    if (level > MAX_SIGNAL_BATTERY_LEVEL)
+        level = MAX_SIGNAL_BATTERY_LEVEL;
 
-    _buffer_sigbatt &= ~(0xf0);
+    _buffer_sigbatt &= ~SIGNAL_BATTERY_MASK_HIGH;
 
     if (level > 0)
-        _buffer_sigbatt |= 0x10;
+        _buffer_sigbatt |= SIGNAL_LEVEL_BITS[0];
     if (level > 1)
-        _buffer_sigbatt |= 0x20;
+        _buffer_sigbatt |= SIGNAL_LEVEL_BITS[1];
     if (level > 2)
-        _buffer_sigbatt |= 0x40;
+        _buffer_sigbatt |= SIGNAL_LEVEL_BITS[2];
     if (level > 3)
-        _buffer_sigbatt |= 0x80;
+        _buffer_sigbatt |= SIGNAL_LEVEL_BITS[3];
 
     _writeRam(_buffer_sigbatt, ADDR_SIGNAL_BATT);
 }
 
 void SegLCD_PCF85176_TempHumidity::setLabels(uint8_t labels) {
     if (labels & LABEL_C) {
-        _buffer_temp[3] |= 0x08; // Set the C label
-        _writeRam(_buffer_temp[3], ADDR_TEMP_SEGS + 6); // C label is at position 4 (3 in zero-based index)
+        _buffer_temp[3] |= LABEL_BIT; // Set the C label
+        _writeRam(_buffer_temp[3], ADDR_TEMP_SEGS + TEMP_LABEL_OFFSET); // C label is at position 4 (3 in zero-based index)
     }
 
     if (labels & LABEL_PROC) {
-        _buffer_hum[2] |= 0x08; // Set the proc symbol
-        _writeRam(_buffer_hum[2], ADDR_HUM_SEGS + 4); // proc symbol is at position 3 (2 in zero-based index)
+        _buffer_hum[2] |= LABEL_BIT; // Set the proc symbol
+        _writeRam(_buffer_hum[2], ADDR_HUM_SEGS + HUM_LABEL_OFFSET); // proc symbol is at position 3 (2 in zero-based index)
     }
 }
 
 void SegLCD_PCF85176_TempHumidity::clearLabels(uint8_t labels) {
     if (labels & LABEL_C) {
-        _buffer_temp[3] &= ~0x08; // Clear the C label
-        _writeRam(_buffer_temp[3], ADDR_TEMP_SEGS + 6); // C label is at position 4 (3 in zero-based index)
+        _buffer_temp[3] &= ~LABEL_BIT; // Clear the C label
+        _writeRam(_buffer_temp[3], ADDR_TEMP_SEGS + TEMP_LABEL_OFFSET); // C label is at position 4 (3 in zero-based index)
     }
 
     if (labels & LABEL_PROC) {
-        _buffer_hum[2] &= ~0x08; // Clear the proc symbol
-        _writeRam(_buffer_hum[2], ADDR_HUM_SEGS + 4); // proc symbol is at position 3 (2 in zero-based index)
+        _buffer_hum[2] &= ~LABEL_BIT; // Clear the proc symbol
+        _writeRam(_buffer_hum[2], ADDR_HUM_SEGS + HUM_LABEL_OFFSET); // proc symbol is at position 3 (2 in zero-based index)
     }
 }
 
@@ -82,8 +82,8 @@ void SegLCD_PCF85176_TempHumidity::setDecimal(uint8_t row, uint8_t col, bool sta
     uint8_t* _buffer = nullptr;
 
     switch (row) {
-    case 0: // Temp segments
-        if (col < 1 || col > 3) {
+    case TEMP_ROW: // Temp segments
+        if (col < TEMP_DECIMAL_MIN_COL || col > TEMP_DECIMAL_MAX_COL) {
             return; // Invalid digit
         }
 
@@ -92,8 +92,8 @@ void SegLCD_PCF85176_TempHumidity::setDecimal(uint8_t row, uint8_t col, bool sta
         break;
 
 
-    case 1: // Hum segments
-        if (col !=2 ) {
+    case HUM_ROW: // Hum segments
+        if (col != HUM_DECIMAL_COL) {
             return; // Invalid digit
         }
 
@@ -106,9 +106,9 @@ void SegLCD_PCF85176_TempHumidity::setDecimal(uint8_t row, uint8_t col, bool sta
     }
 
     if (state) {
-        _buffer[(col-1)] |= 0x08; // Set the decimal point bit
+        _buffer[(col-1)] |= DECIMAL_POINT_BIT; // Set the decimal point bit
     } else {
-        _buffer[(col-1)] &= ~0x08; // Clear the decimal point bit
+        _buffer[(col-1)] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
     }
 
     _writeRam(_buffer[(col-1)], address);
@@ -117,7 +117,7 @@ void SegLCD_PCF85176_TempHumidity::setDecimal(uint8_t row, uint8_t col, bool sta
 void SegLCD_PCF85176_TempHumidity::setCursor(uint8_t row, uint8_t col) {
     _cursorRow = row;
     _cursorCol = col;
-    if (row == 0 && col == 0) {
+    if (row == TEMP_ROW && col == 0) {
         _specialMinusDisplayed = false;
     }
 }
@@ -125,34 +125,34 @@ void SegLCD_PCF85176_TempHumidity::setCursor(uint8_t row, uint8_t col) {
 size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
     uint8_t c = _mapSegments(_get_char_value(ch));
 
-    if (_cursorRow == 0) { // Temp segments
-        if (_cursorCol == 0 && ch != '-' && !_specialMinusDisplayed && (_buffer_hum[0] & 0x08)) {
-            _buffer_hum[0] &= ~0x08;
+    if (_cursorRow == TEMP_ROW) { // Temp segments
+        if (_cursorCol == 0 && ch != '-' && !_specialMinusDisplayed && (_buffer_hum[0] & MINUS_SIGN_BIT)) {
+            _buffer_hum[0] &= ~MINUS_SIGN_BIT;
             _writeRam(_buffer_hum[0], ADDR_HUM_SEGS);
         }
 
         if (ch == '.') {
             setDecimal(_cursorRow, _cursorCol, true);
             return 1;
-        } else if (ch == '-' && _cursorRow == 0 && _cursorCol == 0 && !_specialMinusDisplayed) {
-            _buffer_hum[0] |= 0x08;
+        } else if (ch == '-' && _cursorRow == TEMP_ROW && _cursorCol == 0 && !_specialMinusDisplayed) {
+            _buffer_hum[0] |= MINUS_SIGN_BIT;
             _writeRam(_buffer_hum[0], ADDR_HUM_SEGS);
             _specialMinusDisplayed = true;
             return 1;
-        } else if (_cursorCol >= 0 && _cursorCol < 4) {
+        } else if (_cursorCol >= 0 && _cursorCol < TEMP_DIGITS) {
             _buffer_temp[_cursorCol] = c;
             _writeRam(_buffer_temp[_cursorCol], ADDR_TEMP_SEGS + _cursorCol * 2);
             _cursorCol++;
             return 1;
         }
-    } else if (_cursorRow == 1) { // Humidity segments
+    } else if (_cursorRow == HUM_ROW) { // Humidity segments
         if (ch == '.') {
             setDecimal(_cursorRow, _cursorCol, true);
             return 1;
-        } else if (_cursorRow == 1 && _cursorCol >= 0 && _cursorCol < 3) {
+        } else if (_cursorRow == HUM_ROW && _cursorCol >= 0 && _cursorCol < HUM_DIGITS) {
             if (_cursorCol == 0) {
-                _buffer_hum[_cursorCol] &= 0x08;
-                _buffer_hum[_cursorCol] |= (c & ~0x08);
+                _buffer_hum[_cursorCol] &= MINUS_SIGN_BIT;
+                _buffer_hum[_cursorCol] |= (c & ~MINUS_SIGN_BIT);
             }
             else {
                 _buffer_hum[_cursorCol] = c;
