@@ -18,23 +18,23 @@ void SegLCD_HT1621_6SegBat::clear() {
 }
 
 void SegLCD_HT1621_6SegBat::setBatteryLevel(uint8_t level) {
-    if (level > 3)
-        level = 3;
+    if (level > MAX_BATTERY_LEVEL)
+        level = MAX_BATTERY_LEVEL;
 
-    _buffer_default[2] &= ~(0x80);
-    _buffer_default[1] &= ~(0x80);
-    _buffer_default[0] &= ~(0x80);
+    _buffer_default[BATTERY_LEVEL_SEG[0]] &= ~(BATTERY_MASK);
+    _buffer_default[BATTERY_LEVEL_SEG[1]] &= ~(BATTERY_MASK);
+    _buffer_default[BATTERY_LEVEL_SEG[2]] &= ~(BATTERY_MASK);
 
     if (level > 0)
-        _buffer_default[2] |= 0x80;
+        _buffer_default[BATTERY_LEVEL_SEG[0]] |= BATTERY_MASK;
     if (level > 1)
-        _buffer_default[1] |= 0x80;
+        _buffer_default[BATTERY_LEVEL_SEG[1]] |= BATTERY_MASK;
     if (level > 2)
-        _buffer_default[0] |= 0x80;
+        _buffer_default[BATTERY_LEVEL_SEG[2]] |= BATTERY_MASK;
 
-    _writeRam(_buffer_default[2], 6);
-    _writeRam(_buffer_default[1], 8);
-    _writeRam(_buffer_default[0], 10);
+    _writeRam(_buffer_default[BATTERY_LEVEL_SEG[0]], 6);
+    _writeRam(_buffer_default[BATTERY_LEVEL_SEG[1]], 8);
+    _writeRam(_buffer_default[BATTERY_LEVEL_SEG[2]], 10);
 }
 
 void SegLCD_HT1621_6SegBat::setDecimal(uint8_t row, uint8_t col, bool state) {
@@ -42,21 +42,21 @@ void SegLCD_HT1621_6SegBat::setDecimal(uint8_t row, uint8_t col, bool state) {
         return; // invalid digit
     }
 
-    if (col < 3 || col > 5) {
+    if (col < DECIMAL_MIN_COL || col > DECIMAL_MAX_COL) {
         return; // Invalid digit
     }
 
     if (state) {
-        _buffer_default[col] |= 0x80; // Set the decimal point bit
+        _buffer_default[col] |= DECIMAL_POINT_BIT; // Set the decimal point bit
     } else {
-        _buffer_default[col] &= ~0x80; // Clear the decimal point bit
+        _buffer_default[col] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
     }
 
-    _writeRam(_buffer_default[col], ((6 - col - 1) * 2));
+    _writeRam(_buffer_default[col], ((DIGITS - col - 1) * 2));
 }
 
 size_t SegLCD_HT1621_6SegBat::write(uint8_t ch) {
-    if (_cursorCol < 0 || _cursorCol > 6) {
+    if (_cursorCol < 0 || _cursorCol > DIGITS) {
         return 0; //Invalid digit
     }
 
@@ -66,16 +66,15 @@ size_t SegLCD_HT1621_6SegBat::write(uint8_t ch) {
         return 1;
     }
 
-    uint8_t current_digit_idx = _cursorCol;
     uint8_t segment_data = _mapSegments(_get_char_value(ch));
 
     if ((_cursorCol >= 0 && _cursorCol <= 2) || _previousDot) {
-        segment_data |= _buffer_default[current_digit_idx] & 0x80;
+        segment_data |= _buffer_default[_cursorCol] & DECIMAL_POINT_BIT;
         _previousDot = false;
     }
 
-    _buffer_default[current_digit_idx] = segment_data;
-    _writeRam(_buffer_default[current_digit_idx], (6 - (current_digit_idx + 1)) * 2);
+    _buffer_default[_cursorCol] = segment_data;
+    _writeRam(_buffer_default[_cursorCol], (DIGITS - (_cursorCol + 1)) * 2);
 
     _cursorCol++;
     return 1;
