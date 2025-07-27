@@ -13,6 +13,7 @@ void SegLCD_PCF85176_TempHumidity::clear() {
     _buffer_sigbatt = 0x00;
     memset(_buffer_temp, 0x00, sizeof(_buffer_temp));
     memset(_buffer_hum, 0x00, sizeof(_buffer_hum));
+    _specialMinusDisplayed = false;
     SegDriver_PCF85176::clear();
 }
 
@@ -116,6 +117,9 @@ void SegLCD_PCF85176_TempHumidity::setDecimal(uint8_t row, uint8_t col, bool sta
 void SegLCD_PCF85176_TempHumidity::setCursor(uint8_t row, uint8_t col) {
     _cursorRow = row;
     _cursorCol = col;
+    if (row == 0 && col == 0) {
+        _specialMinusDisplayed = false;
+    }
 }
 
 size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
@@ -125,9 +129,10 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
         if (ch == '.') {
             setDecimal(_cursorRow, _cursorCol, true);
             return 1;
-        } else if (ch == '-' && _cursorRow == 0 && _cursorCol == 0) {
+        } else if (ch == '-' && _cursorRow == 0 && _cursorCol == 0 && !_specialMinusDisplayed) {
             _buffer_hum[0] |= 0x08;
             _writeRam(_buffer_hum[0], ADDR_HUM_SEGS);
+            _specialMinusDisplayed = true;
             return 1;
         } else if (_cursorCol >= 0 && _cursorCol < 4) {
             _buffer_temp[_cursorCol] = c;
