@@ -24,44 +24,36 @@ void setup() {
   lcd.clear();
   delay(500);
 
-//  lcd.write((uint8_t)0x01, 16);
-//  delay(1000);
-
-  lcd.writeFloat(-3.14, 2);
+  lcd.setCursor(1, 0);
+  lcd.print("-3.14");
   delay(1000);
 
-  lcd.writeFloat(2.4, 1, SegLCD_PCF85176_T1T2Lcd::LCDSections::SECTION_T2);
+  lcd.setCursor(2, 0);
+  lcd.print("2.4");
   delay(1000);
-
 
   lcd.setClockSymbol(true);
-
-  delay(1000);
-  lcd.setClockColon(true);
-
   delay(1000);
 
-  lcd.writeChar(1, '1', SegLCD_PCF85176_T1T2Lcd::LCDSections::SECTION_CLOCK);
-  lcd.writeChar(2, '2', SegLCD_PCF85176_T1T2Lcd::LCDSections::SECTION_CLOCK);
-  lcd.writeChar(3, '2', SegLCD_PCF85176_T1T2Lcd::LCDSections::SECTION_CLOCK);
-  lcd.writeChar(4, '4', SegLCD_PCF85176_T1T2Lcd::LCDSections::SECTION_CLOCK);
+  // Clock
+  lcd.setCursor(0, 0);
+  lcd.print("12:24");
 
-  lcd.writeChar(1, '5', SegLCD_PCF85176_T1T2Lcd::LCDSections::SECTION_DAY);
+  delay(1000);
+  lcd.setCursor(0, 0);
+  lcd.print("2345");
+
+  // Day of week
+  lcd.print("5");
 
   delay(500);
 
   lcd.setLabels(SegLCD_PCF85176_T1T2Lcd::LABEL_T2_HUM | SegLCD_PCF85176_T1T2Lcd::LABEL_T1_C_UP);
-  lcd.writeChar(1, 'h');
-  lcd.setDecimal(1, true);
-  lcd.writeChar(2, 'e');
-  lcd.writeChar(3, 'l');
-  lcd.writeChar(4, 'o');
+  lcd.setCursor(1, 0);
+  lcd.print("h.elo");
 
-
-  lcd.writeChar(1, 'H', SegLCD_PCF85176_T1T2Lcd::LCDSections::SECTION_T2);
-  lcd.writeChar(2, 'E', SegLCD_PCF85176_T1T2Lcd::LCDSections::SECTION_T2);
-  lcd.writeChar(3, 'L', SegLCD_PCF85176_T1T2Lcd::LCDSections::SECTION_T2);
-  lcd.writeChar(4, 'O', SegLCD_PCF85176_T1T2Lcd::LCDSections::SECTION_T2);
+  lcd.setCursor(2, 0);
+  lcd.print("HE.LO");
 
   lcd.setT1T2Labels(SegLCD_PCF85176_T1T2Lcd::LABEL_T1);
   delay(500);

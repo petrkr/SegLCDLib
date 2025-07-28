@@ -62,15 +62,6 @@ void SegLCD_PCF85176_T1T2Lcd::setClockSymbol(bool status) {
     _writeRam(_buffer_sigclk, ADDR_SIGNAL_CLOCK);
 }
 
-void SegLCD_PCF85176_T1T2Lcd::setClockColon(bool status) {
-    if (status)
-        _buffer_sigclk |= 0x02;
-    else
-        _buffer_sigclk &= ~0x02;
-
-    _writeRam(_buffer_sigclk, ADDR_SIGNAL_CLOCK);
-}
-
 void SegLCD_PCF85176_T1T2Lcd::setLabels(uint8_t labels) {
     _buffer_labels |= labels;
     _writeRam(_buffer_labels, ADDR_LABELS);
@@ -101,101 +92,87 @@ void SegLCD_PCF85176_T1T2Lcd::clearT1T2Labels(uint8_t t1t2) {
     _writeRam(_buffer_clock, 2, ADDR_CLOCK_T1T2_LABELS_SEGS);
 }
 
-void SegLCD_PCF85176_T1T2Lcd::setDecimal(uint8_t digit, bool state, LCDSections section) {
-    if (digit < 1 || digit > 4) {
+void SegLCD_PCF85176_T1T2Lcd::setClockColon(uint8_t row, uint8_t col, bool state) {
+    if (state)
+        _buffer_sigclk |= 0x02;
+    else
+        _buffer_sigclk &= ~0x02;
+
+    _writeRam(_buffer_sigclk, ADDR_SIGNAL_CLOCK);
+}
+
+void SegLCD_PCF85176_T1T2Lcd::setDecimal(uint8_t row, uint8_t col, bool state) {
+    if (row < 1 || row > 2) {
+        return; // Invalid digit
+    }
+
+    if (col < 0 || col > 3) {
         return; // Invalid digit
     }
 
     uint8_t address = 0;
     uint8_t* _buffer = nullptr;
-    switch (section) {
-        case LCDSections::SECTION_DEFAULT:
-        case LCDSections::SECTION_T1:
-            address = ADDR_T1_SEGS + ((digit - 1) * 2);
+    switch (row) {
+        case 1:
+            address = ADDR_T1_SEGS + (col * 2);
             _buffer = _bufferT1;
             break;
-        case LCDSections::SECTION_T2:
-            address = ADDR_T2_SEGS + ((digit - 1) * 2);
-            _buffer= _bufferT2;
+        case 2:
+            address = ADDR_T2_SEGS + (col * 2);
+            _buffer = _bufferT2;
             break;
         default:
             return; // Invalid section
     }
 
     if (state) {
-        _buffer[(digit-1)] |= 0x01; // Set the decimal point bit
+        _buffer[col] |= 0x01; // Set the decimal point bit
     } else {
-        _buffer[(digit-1)] &= ~0x01; // Clear the decimal point bit
+        _buffer[col] &= ~0x01; // Clear the decimal point bit
     }
 
-    _writeRam(_buffer[(digit-1)], address);
+    _writeRam(_buffer[col], address);
 }
 
-void SegLCD_PCF85176_T1T2Lcd::writeFloat(float input, uint8_t decimals, LCDSections section) {
-    bool isNegative = input < 0.0f;
-    float scale = powf(10, decimals);
-    long scaled = lroundf(fabsf(input) * scale);
+size_t SegLCD_PCF85176_T1T2Lcd::write(uint8_t ch) {
+    uint8_t segment_data = _mapSegments(_get_char_value(ch));
 
-    int totalDigits = _countDigits(scaled);
-    int digitCount = totalDigits + (isNegative ? 1 : 0);
-    if (decimals > 0 && totalDigits <= decimals) {
-        digitCount++;
-    }
+    switch (_cursorRow) {
+        case 0:
+            if (ch == ':' && _cursorCol == 2) {
+                setClockColon(_cursorRow, _cursorCol, true);
+                return 1;
+            }
 
-    int startPos = 4 - digitCount + 1;
-    int digitPos = 0;
+            if (_cursorCol >=0 && _cursorCol < 4) {
+                _buffer_clock[_cursorCol] &= ~0b11111110;
+                _buffer_clock[_cursorCol] |= segment_data & 0b11111110;
+                _writeRam(_buffer_clock[_cursorCol], ADDR_CLOCK_T1T2_LABELS_SEGS + (_cursorCol * 2));
+            }
 
-    for (int i = 0; i < totalDigits; ++i) {
-        int digit = scaled % 10;
-        int pos = startPos + digitCount - 1 - digitPos;
-        writeChar(pos, digit + '0', section);
-
-        if (i == decimals && decimals > 0) {
-            setDecimal(pos, true, section);
-        }
-
-        scaled /= 10;
-        digitPos++;
-    }
-
-    if (decimals > 0 && totalDigits <= decimals) {
-        int pos = startPos + digitCount - 1 - digitPos;
-        writeChar(pos, '0', section);
-        setDecimal(pos, true, section);
-        digitPos++;
-    }
-
-    if (isNegative) {
-        int pos = startPos + digitCount - 1 - digitPos;
-        writeChar(pos, '-', section);
-        digitPos++;
-    }
-}
-
-void SegLCD_PCF85176_T1T2Lcd::writeChar(uint8_t digit, char c, LCDSections section) {
-    uint8_t ch = _mapSegments(_get_char_value(c));
-
-    // TODO: Do some dot bit mask and make it more generic
-    switch (section) {
-        case LCDSections::SECTION_DEFAULT:
-        case LCDSections::SECTION_T1:
-            _bufferT1[digit - 1] = ch;
-            _writeRam(_bufferT1[digit - 1], ADDR_T1_SEGS + ((digit - 1) * 2));
+            if (_cursorCol == 4) {
+                _writeRam(segment_data, ADDR_DAY_SEG);
+            }
             break;
-        case LCDSections::SECTION_T2:
-            _bufferT2[digit - 1] = ch;
-            _writeRam(_bufferT2[digit - 1], ADDR_T2_SEGS + ((digit - 1) * 2));
-            break;    
-        case LCDSections::SECTION_TOP:
-        case LCDSections::SECTION_CLOCK:
-            _buffer_clock[digit - 1] &= ~0b11111110;
-            _buffer_clock[digit - 1] |= ch & 0b11111110;
-             _writeRam(_buffer_clock[digit - 1], ADDR_CLOCK_T1T2_LABELS_SEGS + ((digit - 1) * 2));
+        case 1:
+            if (ch == '.') {
+                setDecimal(_cursorRow, _cursorCol - 1, true);
+                return 1;
+            }
+            _bufferT1[_cursorCol] = segment_data;
+            _writeRam(_bufferT1[_cursorCol], ADDR_T1_SEGS + (_cursorCol * 2));
             break;
-        case LCDSections::SECTION_DAY:
-             _writeRam(ch, ADDR_DAY_SEG + ((digit - 1) * 2));
+        case 2:
+            if (ch == '.') {
+                setDecimal(_cursorRow, _cursorCol - 1, true);
+                return 1;
+            }
+            _bufferT2[_cursorCol] = segment_data;
+            _writeRam(_bufferT2[_cursorCol], ADDR_T2_SEGS + (_cursorCol * 2));
             break;
     }
+    _cursorCol++;
+    return 1;
 }
 
 // ABCD_EFGH to FGED ABCH..
