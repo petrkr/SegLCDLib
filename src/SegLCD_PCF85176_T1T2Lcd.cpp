@@ -134,14 +134,29 @@ void SegLCD_PCF85176_T1T2Lcd::setDecimal(uint8_t row, uint8_t col, bool state) {
     _writeRam(_buffer[col], address);
 }
 
+void SegLCD_PCF85176_T1T2Lcd::setCursor(uint8_t row, uint8_t col) {
+    if (row == 0 && col < 2) {
+        _colon_clock = false;
+    }
+
+    SegDriver_PCF85176::setCursor(row, col);
+}
+
 size_t SegLCD_PCF85176_T1T2Lcd::write(uint8_t ch) {
     uint8_t segment_data = _mapSegments(_get_char_value(ch));
 
     switch (_cursorRow) {
         case 0:
+            // Set colon if next char is colon and flag, we want it keep
             if (ch == ':' && _cursorCol == 2) {
                 setClockColon(_cursorRow, _cursorCol, true);
+                _colon_clock = true;
                 return 1;
+            }
+
+            // Clear Clock colon if we do not want it and colon column is not colon
+            if (ch != ':' && _cursorCol == 2 && !_colon_clock) {
+                setClockColon(_cursorRow, _cursorCol, false);
             }
 
             if (_cursorCol >=0 && _cursorCol < 4) {
