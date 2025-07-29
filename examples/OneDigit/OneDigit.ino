@@ -13,72 +13,73 @@ void setup() {
   Serial.begin(115200);
   delay(1000);
   Serial.println("Initilalize I2C...");
-  Wire.begin();
+  Wire.begin(0, 1);
 
   Serial.println("Initialize LCD...");
-  lcd.init(true);
+  lcd.init(true, true); // Example display has reversed digits and it  is version 1, so it need fix
 
-  lcd.writeString("HELLO");
+  lcd.print("H.ELLO.");
+  delay(2000);
+
+  lcd.clear();
+  lcd.print(1.2);
+  delay(2000);
+
+  lcd.home();
+  lcd.print(3.14);
   delay(2000);
 }
 
 
 void loop() {
-  lcd.writeFloat(1);
+  lcd.clear();
+  lcd.print(1);
+  delay(1000);
+
+  lcd.clear();
+  lcd.print(12);
+  delay(1000);
+
+  lcd.clear();
+  lcd.print(123);
+  delay(1000);
+
+  lcd.clear();
+  lcd.print((float)123.45);
   delay(2000);
 
-  lcd.writeFloat(12);
+  lcd.clear();
+  lcd.print((float)3.14);
   delay(2000);
 
-  lcd.writeFloat(123);
-  delay(2000);
-
-  lcd.writeFloat(123.45, 2);
-  delay(2000);
-
-  lcd.writeFloat(3.14, 4);
-  delay(2000);
-
-  lcd.writeFloat(3.14, 2);
-  delay(2000);
-
-  lcd.writeChar(1, '1');
-  lcd.writeChar(2, '2');
-  lcd.writeChar(3, '3');
-  lcd.writeChar(4, '4');
-  lcd.writeChar(5, '5');
+  lcd.clear();
+  lcd.print('1');
+  lcd.print('2');
+  lcd.print('3');
+  lcd.print('4');
+  lcd.print('5');
   delay(2000);
 
   lcd.clear();
   delay(500);
 
-  lcd.writeChar(1, '2');
-  lcd.writeChar(5, '3');
-  lcd.setDecimal(5, true);
+  lcd.print("2   5.");
   delay(2000);
 
-  lcd.setDecimal(5, false);
-  lcd.setDecimal(1, true);
-  delay(2000);
-
-  lcd.clear();
+  lcd.setDecimal(0, 4, false);
+  lcd.setDecimal(0, 0, true);
   delay(2000);
 
   lcd.clear();
-  lcd.writeFloat(3.14);
   delay(2000);
 
+
   lcd.clear();
-  for (int i = 0; i < 10; i++) {
-    for (int j = 0; j < 10; j++) {
-      for (int k = 0; k < 10; k++) {
-        lcd.writeChar(1, ((char)k + '0'));
-        lcd.writeChar(2, ((char)j + '0'));
-        lcd.setDecimal(2, true);
-        lcd.writeChar(3, ((char)i + '0'));
-        delay(100);
-      }
-    }
+  for (int i = 0; i < 1001; i++) {
+    lcd.home();
+    lcd.print((float)i/10);
+    delay(100);
   }
-  delay(2000);
+
+  delay(1000);
 }
