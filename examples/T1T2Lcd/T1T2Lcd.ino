@@ -37,23 +37,24 @@ void setup() {
 
   // Clock
   lcd.setCursor(0, 0);
-  lcd.print("12:24");
+  lcd.print("1224");
 
   delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("2345");
+  lcd.setCursor(0, 1);
+  lcd.print("4:77");
+  lcd.print("5");
 
   // Day of week
-  lcd.print("5");
+  lcd.print("2");
 
   delay(500);
 
   lcd.setLabels(SegLCD_PCF85176_T1T2Lcd::LABEL_T2_HUM | SegLCD_PCF85176_T1T2Lcd::LABEL_T1_C_UP);
   lcd.setCursor(1, 0);
-  lcd.print("h.elo");
+  lcd.print("h.e.l.o");
 
   lcd.setCursor(2, 0);
-  lcd.print("HE.LO");
+  lcd.print("HELO");
 
   lcd.setT1T2Labels(SegLCD_PCF85176_T1T2Lcd::LABEL_T1);
   delay(500);
