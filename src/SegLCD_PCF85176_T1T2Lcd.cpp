@@ -16,48 +16,48 @@ void SegLCD_PCF85176_T1T2Lcd::clear() {
 }
 
 void SegLCD_PCF85176_T1T2Lcd::setBatteryLevel(uint8_t level) {
-    if (level > 4)
-        level = 4;
+    if (level > MAX_BATTERY_LEVEL)
+        level = MAX_BATTERY_LEVEL;
 
-        _buffer_batt &= ~(0xf0);
+        _buffer_batt &= ~(BATTERY_MASK);
 
     if (level > 0)
-        _buffer_batt |= 0x10;
+        _buffer_batt |= BATTERY_LEVEL_SEG[0];
     if (level > 1)
-        _buffer_batt |= 0x80;
+        _buffer_batt |= BATTERY_LEVEL_SEG[1];
     if (level > 2)
-        _buffer_batt |= 0x40;
+        _buffer_batt |= BATTERY_LEVEL_SEG[2];
     if (level > 3)
-        _buffer_batt |= 0x20;
+        _buffer_batt |= BATTERY_LEVEL_SEG[3];
 
     _writeRam(_buffer_batt, ADDR_BATT);
 }
 
 void SegLCD_PCF85176_T1T2Lcd::setSignalLevel(uint8_t level) {
-    if (level > 5)
-        level = 5;
+    if (level > MAX_SIGNAL_LEVEL)
+        level = MAX_SIGNAL_LEVEL;
 
-        _buffer_sigclk &= ~(0xf8);
+        _buffer_sigclk &= ~(SIGNAL_MASK);
 
     if (level > 0)
-        _buffer_sigclk |= 0x80;
+        _buffer_sigclk |= SIGNAL_LEVEL_BITS[0];
     if (level > 1)
-        _buffer_sigclk |= 0x40;
+        _buffer_sigclk |= SIGNAL_LEVEL_BITS[1];
     if (level > 2)
-        _buffer_sigclk |= 0x20;
+        _buffer_sigclk |= SIGNAL_LEVEL_BITS[2];
     if (level > 3)
-        _buffer_sigclk |= 0x10;
+        _buffer_sigclk |= SIGNAL_LEVEL_BITS[3];
     if (level > 4)
-        _buffer_sigclk |= 0x08;
+        _buffer_sigclk |= SIGNAL_LEVEL_BITS[4];
 
     _writeRam(_buffer_sigclk, ADDR_SIGNAL_CLOCK);
 }
 
 void SegLCD_PCF85176_T1T2Lcd::setClockSymbol(bool status) {
     if (status)
-        _buffer_sigclk |= 0x04;
+        _buffer_sigclk |= SYMBOL_CLOCK_MASK;
     else
-        _buffer_sigclk &= ~0x04;
+        _buffer_sigclk &= ~SYMBOL_CLOCK_MASK;
 
     _writeRam(_buffer_sigclk, ADDR_SIGNAL_CLOCK);
 }
@@ -74,20 +74,20 @@ void SegLCD_PCF85176_T1T2Lcd::clearLabels(uint8_t labels) {
 
 void SegLCD_PCF85176_T1T2Lcd::setT1T2Labels(uint8_t t1t2) {
     if (t1t2 & SegLCD_PCF85176_T1T2Lcd::LABEL_T1)
-      _buffer_clock[0] |= 0x01;
+      _buffer_clock[0] |= SYMBOL_T1T2_MASK;
 
     if (t1t2 & SegLCD_PCF85176_T1T2Lcd::LABEL_T2)
-      _buffer_clock[1] |= 0x01;
+      _buffer_clock[1] |= SYMBOL_T1T2_MASK;
 
     _writeRam(_buffer_clock, 2, ADDR_CLOCK_T1T2_LABELS_SEGS);
 }
 
 void SegLCD_PCF85176_T1T2Lcd::clearT1T2Labels(uint8_t t1t2) {
     if (t1t2 & SegLCD_PCF85176_T1T2Lcd::LABEL_T1)
-      _buffer_clock[0] &= ~0x01;
+      _buffer_clock[0] &= ~SYMBOL_T1T2_MASK;
 
     if (t1t2 & SegLCD_PCF85176_T1T2Lcd::LABEL_T2)
-      _buffer_clock[1] &= ~0x01;
+      _buffer_clock[1] &= ~SYMBOL_T1T2_MASK;
 
     _writeRam(_buffer_clock, 2, ADDR_CLOCK_T1T2_LABELS_SEGS);
 }
@@ -102,11 +102,11 @@ void SegLCD_PCF85176_T1T2Lcd::setClockColon(uint8_t row, uint8_t col, bool state
 }
 
 void SegLCD_PCF85176_T1T2Lcd::setDecimal(uint8_t row, uint8_t col, bool state) {
-    if (row < 1 || row > 2) {
+    if (row < DECIMAL_MIN_ROW || row > DECIMAL_MAX_ROW) {
         return; // Invalid digit
     }
 
-    if (col < 0 || col > 3) {
+    if (col < DECIMAL_MIN_COL || col > DECIMAL_MAX_COL) {
         return; // Invalid digit
     }
 
@@ -126,16 +126,16 @@ void SegLCD_PCF85176_T1T2Lcd::setDecimal(uint8_t row, uint8_t col, bool state) {
     }
 
     if (state) {
-        _buffer[col] |= 0x01; // Set the decimal point bit
+        _buffer[col] |= DECIMAL_POINT_BIT; // Set the decimal point bit
     } else {
-        _buffer[col] &= ~0x01; // Clear the decimal point bit
+        _buffer[col] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
     }
 
     _writeRam(_buffer[col], address);
 }
 
 void SegLCD_PCF85176_T1T2Lcd::setCursor(uint8_t row, uint8_t col) {
-    if (row == 0 && col < 2) {
+    if (row == ROW_CLOCK && col < 2) {
         _colon_clock = false;
     }
 
@@ -146,7 +146,7 @@ size_t SegLCD_PCF85176_T1T2Lcd::write(uint8_t ch) {
     uint8_t segment_data = _mapSegments(_get_char_value(ch));
 
     switch (_cursorRow) {
-        case 0:
+        case ROW_CLOCK:
             // Set colon if next char is colon and flag, we want it keep
             if (ch == ':' && _cursorCol == 2) {
                 setClockColon(_cursorRow, _cursorCol, true);
@@ -169,7 +169,7 @@ size_t SegLCD_PCF85176_T1T2Lcd::write(uint8_t ch) {
                 _writeRam(segment_data, ADDR_DAY_SEG);
             }
             break;
-        case 1:
+        case ROW_T1:
             if (ch == '.') {
                 setDecimal(_cursorRow, _cursorCol - 1, true);
                 return 1;
@@ -177,7 +177,7 @@ size_t SegLCD_PCF85176_T1T2Lcd::write(uint8_t ch) {
             _bufferT1[_cursorCol] = segment_data;
             _writeRam(_bufferT1[_cursorCol], ADDR_T1_SEGS + (_cursorCol * 2));
             break;
-        case 2:
+        case ROW_T2:
             if (ch == '.') {
                 setDecimal(_cursorRow, _cursorCol - 1, true);
                 return 1;

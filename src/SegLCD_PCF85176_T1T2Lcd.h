@@ -60,6 +60,29 @@ class SegLCD_PCF85176_T1T2Lcd : public SegDriver_PCF85176 {
 
         bool _colon_clock = false;
 
+        static constexpr uint8_t ROW_CLOCK = 0;
+        static constexpr uint8_t ROW_T1 = 1;
+        static constexpr uint8_t ROW_T2 = 2;
+
+        static constexpr uint8_t DECIMAL_POINT_BIT = 0x01;
+        static constexpr uint8_t DECIMAL_MIN_ROW = 1;
+        static constexpr uint8_t DECIMAL_MAX_ROW = 2;
+        static constexpr uint8_t DECIMAL_MIN_COL = 0;
+        static constexpr uint8_t DECIMAL_MAX_COL = 3;
+
+        // Symbols constants
+        static constexpr uint8_t SYMBOL_CLOCK_MASK = 0x04;
+        static constexpr uint8_t SYMBOL_T1T2_MASK = 0x01;
+
+        // Signal/Battery level constants
+        static constexpr uint8_t MAX_BATTERY_LEVEL = 4;
+        static constexpr uint8_t BATTERY_MASK = 0xF0;
+        static constexpr uint8_t BATTERY_LEVEL_SEG[MAX_BATTERY_LEVEL] = {0x10, 0x80, 0x40, 0x20};
+
+        static constexpr uint8_t MAX_SIGNAL_LEVEL = 5;
+        static constexpr uint8_t SIGNAL_MASK = 0xF8;
+        static constexpr uint8_t SIGNAL_LEVEL_BITS[MAX_SIGNAL_LEVEL] = {0x80, 0x40, 0x20, 0x10, 0x08};
+
         uint8_t _mapSegments(uint8_t val);
 };
 #endif
