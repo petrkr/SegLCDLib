@@ -11,14 +11,16 @@ class SegLCD_HT1621_4SegDegree : public SegDriver_HT1621 {
         SegLCD_HT1621_4SegDegree(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read = -1);
         void init() override;
         void clear();
-        void setDegree(bool state, LCDSections section = LCDSections::SECTION_DEFAULT);
-        void setMiddleDot(bool state, LCDSections section = LCDSections::SECTION_DEFAULT);
-        void setClockColon(bool status, LCDSections section = LCDSections::SECTION_CLOCK);
-        void setDecimal(uint8_t digit, bool state, LCDSections section = LCDSections::SECTION_DEFAULT);
-        void writeChar(uint8_t digit, char c, LCDSections section = LCDSections::SECTION_DEFAULT);
+        void setDegree(bool state);
+        void setMiddleDot(bool state);
+        void setClockColon(uint8_t row, uint8_t col, bool state);
+        void setDecimal(uint8_t row, uint8_t col, bool state);
+        size_t write(uint8_t ch) override;
 
     private:
         uint8_t _buffer[4] = {0};
+
+        static constexpr uint8_t DIGITS = 4;
 
         uint8_t _mapSegments(uint8_t val);
         void _writeSymbols(uint8_t bitnum, bool state);

@@ -27,28 +27,23 @@ void setup() {
 
   // Clear LCD
   lcd.clear();
+  lcd.print("1.2:34");
 
-  lcd.setDecimal(2, true);
+  delay(1000);
+
+  lcd.home();
+  lcd.print("5678");
+  delay(1000);
 }
 
 void loop() {
-  lcd.setMiddleDot(false);
+  lcd.home();
   lcd.setDegree(true);
-
-  lcd.writeChar(1, '3');
-  lcd.writeChar(2, '1');
-  lcd.writeChar(3, '7');
-  lcd.writeChar(4, 'C');
-
+  lcd.print("3.17C");
   delay(5000);
 
-  lcd.setMiddleDot(true);
+  lcd.home();
   lcd.setDegree(false);
-
-  lcd.writeChar(1, '1');
-  lcd.writeChar(2, '3');
-  lcd.writeChar(3, '5');
-  lcd.writeChar(4, '6');
-
+  lcd.print("00:56");
   delay(5000);
 }
