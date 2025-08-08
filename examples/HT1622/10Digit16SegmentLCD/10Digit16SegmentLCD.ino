@@ -32,6 +32,7 @@ void setup() {
   delay(1000);
 
   lcd.print("123456789");
+  lcd.setDecimal(0, 7, true);
 }
 
 uint8_t i=0;
