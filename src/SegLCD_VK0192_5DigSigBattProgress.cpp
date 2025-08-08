@@ -327,15 +327,6 @@ uint16_t SegLCD_VK0192_5DigSigBattProgress::_map16Segments(uint16_t val) {
     return out;
 }
 
-// TODO: Remove after display implementation
-void SegLCD_VK0192_5DigSigBattProgress::writeRam(uint8_t data, uint8_t address) {
-    _writeRam(data, address);
-}
-
-void SegLCD_VK0192_5DigSigBattProgress::writeRam(uint8_t *data, size_t length, uint8_t address) {
-    _writeRam(data, length, address);
-}
-
 void SegLCD_VK0192_5DigSigBattProgress::_updateLabels(uint16_t labels, bool set) {
     if (labels & LABEL_P) {
         if (set) {

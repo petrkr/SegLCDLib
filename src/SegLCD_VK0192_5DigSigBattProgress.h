@@ -32,10 +32,6 @@ class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
 
         void writeDigit7seg(uint8_t row, uint8_t col, char c);
         void writeDigit16seg(uint8_t row, uint8_t col, char c);
-        
-        // TODO: Remove after display implementation
-        void writeRam(uint8_t data, uint8_t address = 0);
-        void writeRam(uint8_t *data, size_t length, uint8_t address = 0);
 
     private:
         uint8_t _buffer[48] = {0};  // VK0192 RAM buffer
