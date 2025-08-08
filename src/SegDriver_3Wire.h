@@ -5,7 +5,7 @@
 
 /**
  * @brief Base class for 3-wire serial LCD segment display drivers.
- * 
+ *
  * This class implements the common 3-wire serial communication protocol
  * used by controllers like HT1621, VK0192, and HT1622.
  */
@@ -49,7 +49,7 @@ class SegDriver_3Wire : public SegLCDLib {
     public:
         /**
          * @brief Constructor for 3-wire serial LCD driver.
-         * 
+         *
          * @param chipselect Chip select pin
          * @param data Data pin
          * @param write Write clock pin
@@ -74,7 +74,7 @@ class SegDriver_3Wire : public SegLCDLib {
 
         /**
          * @brief Send command to the controller.
-         * 
+         *
          * @param command Command byte to send
          */
         void command(uint8_t command) override;
@@ -85,12 +85,12 @@ class SegDriver_3Wire : public SegLCDLib {
         uint8_t _data; ///< Data pin for the display
         uint8_t _cs;   ///< Chip select pin for the display
         uint8_t _irq;  ///< Not used, but reserved for future use
-        
+
         uint8_t _maxAddress; ///< Maximum address for this controller
 
         /**
          * @brief Write single byte to RAM at specified address.
-         * 
+         *
          * @param data Data byte to write
          * @param address RAM address (0-based)
          */
@@ -98,7 +98,7 @@ class SegDriver_3Wire : public SegLCDLib {
 
         /**
          * @brief Write multiple bytes to RAM starting at specified address.
-         * 
+         *
          * @param data Pointer to data array
          * @param length Number of bytes to write
          * @param address Starting RAM address (0-based)
@@ -107,10 +107,10 @@ class SegDriver_3Wire : public SegLCDLib {
 
         /**
          * @brief Send bits to the controller.
-         * 
+         *
          * This method can be overridden by derived classes to implement
          * controller-specific timing requirements.
-         * 
+         *
          * @param data Data to send
          * @param bitCount Number of bits to send (default 8)
          */

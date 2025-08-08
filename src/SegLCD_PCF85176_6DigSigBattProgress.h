@@ -8,7 +8,7 @@
 class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
 
     #define MAX_ADDRESS 31
-    
+
     #define ADDR_SIGNAL_BATT 0
     #define ADDR_WHEEL 2
     #define ADDR_SMALL_SEGS 6

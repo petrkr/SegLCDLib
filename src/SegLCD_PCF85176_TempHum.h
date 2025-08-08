@@ -7,7 +7,7 @@
 
 class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
     #define MAX_ADDRESS 31
-    
+
     #define ADDR_SIGNAL_BATT 14
     #define ADDR_TEMP_SEGS 0
     #define ADDR_HUM_SEGS 8
@@ -33,7 +33,7 @@ class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
 
         uint8_t _buffer_temp[4] = {0};
         uint8_t _buffer_hum[3] = {0};
-        
+
         bool _specialMinusDisplayed = false;
 
         // Display-specific constants

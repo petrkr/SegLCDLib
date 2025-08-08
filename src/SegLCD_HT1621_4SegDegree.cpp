@@ -126,6 +126,6 @@ void SegLCD_HT1621_4SegDegree::_writeSymbols(uint8_t bitnum, bool state) {
     } else {
       _buffer[3] &= ~(1 << bitnum);
     }
-    
+
     _writeRam(_buffer[3], ADDR_SYMBOLS);
 }

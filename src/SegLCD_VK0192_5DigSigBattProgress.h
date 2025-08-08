@@ -35,7 +35,7 @@ class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
 
     private:
         uint8_t _buffer[48] = {0};  // VK0192 RAM buffer
-        
+
         static constexpr uint8_t DECIMAL_POINT_BIT = 0x10;
         static constexpr uint8_t NUM_7SEG_DIGITS = 10;  // 3+2+5 7-seg digits
 
