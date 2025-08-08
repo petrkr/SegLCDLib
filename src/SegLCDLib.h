@@ -131,6 +131,11 @@ class SegLCDLib : public Print {
         uint8_t _get_char_value(char ch);
 
         /**
+         * @brief Helper method to convert a character to its 16-segment representation.
+         */
+        uint16_t _get_16char_value(char ch);
+
+        /**
          * @brief Helper method to count number of digits in an integer.
          */
         int _countDigits(long num);
