@@ -1,5 +1,5 @@
 /**
- * @example HT1621-RawLCD.ino
+ * @example RawLCD.ino
  * @brief Example of RAW LCD display using HT1621
  */
 

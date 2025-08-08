@@ -1,6 +1,6 @@
 /**
- * @example SegLCD_VK0192_Raw.ino
- * @brief Example of 4 digits with degree symbol LCD display using HT1621
+ * @example VK0192/5DigSigBattProgress.ino
+ * @brief Example of 5 digit signal, battery and progress display.
  */
 
 #include "SegLCD_VK0192_5DigSigBattProgress.h"

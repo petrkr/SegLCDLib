@@ -1,5 +1,5 @@
 /**
- * @example HT1621-4DigDeg.ino
+ * @example 4DigDeg.ino
  * @brief Example of 4 digits with degree symbol LCD display using HT1621
  */
 
