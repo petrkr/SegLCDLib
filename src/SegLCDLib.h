@@ -33,17 +33,6 @@ class SegLCDLib : public Print {
         /**
          * @brief Logical display sections that can be targeted by higher-level rendering logic.
          */
-        enum class LCDSections {
-            SECTION_DEFAULT,  ///< Default section (fallback)
-            SECTION_TOP,      ///< Top display line or part
-            SECTION_BOTTOM,   ///< Bottom display line or part
-            SECTION_T1,       ///< Custom section T1
-            SECTION_T2,       ///< Custom section T2
-            SECTION_CLOCK,    ///< Clock-related segment section
-            SECTION_DAY,      ///< Day indicator section
-            SECTION_TEMP,     ///< Temperature section
-            SECTION_HUMIDITY  ///< Humidity section
-        };
 
         // ---------------------------
         // LCD API 1.0 Mandatory part
