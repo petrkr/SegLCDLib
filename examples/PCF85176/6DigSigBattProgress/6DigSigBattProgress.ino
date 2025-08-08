@@ -1,5 +1,5 @@
 /**
- * @example 6DigSigBattProgres.ino
+ * @example 6DigSigBattProgress.ino
  * @brief Example of 6 Digit Signal Battery Progress LCD
  */
 
