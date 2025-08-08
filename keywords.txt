@@ -6,6 +6,7 @@
 SegLCDLib	KEYWORD1
 
 # Driver classes
+SegDriver_3Wire	KEYWORD1
 SegDriver_PCx85	KEYWORD1
 SegDriver_PCF85176	KEYWORD1
 SegDriver_HT1621	KEYWORD1
