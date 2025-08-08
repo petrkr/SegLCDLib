@@ -19,6 +19,8 @@ https://petrkr.github.io/SegLCDLib/
 |----------|----------------|
 | PCF85176 | I2C            |
 | HT1621   | 3-wire serial  |
+| VK0192   | 3-wire serial  |
+
 
 ### PCF85176 Board
 ![PCF85176 Board](docs/images/pcf85176board.webp)
@@ -34,6 +36,7 @@ https://petrkr.github.io/SegLCDLib/
 | Temp humidity                      | PCF85176      | https://aliexpress.com/item/1005003044283980.html |
 | 6-digit with battery               | HT1621        | https://aliexpress.com/item/1005005555160141.html |
 | 4-digit with degree                | HT1621        | https://aliexpress.com/item/1005009301473702.html |
+| 5-digit signal battery progress    | VK0192        | https://aliexpress.com/item/1005009000021475.html |
 
 ### RAW LCD
 This LCD type is used for testing new LCD by sending RAW data to controller. It is good to testing and implementing new types of LCD screens before starting to create actually class
@@ -65,6 +68,5 @@ This display use integrated COB HT1621 driver.
 ![4 digit with degree symbols](docs/images/4digdegree-ht1621-temp.webp) ![4 digit with colon](docs/images/4digdegree-ht1621-clock.webp)
 
 
-## TODO
- - Think about some generic charmap/font for 7, 14 and 16 seg digits.
- - Make some generic write* functions, for now only writeFloat and writeChar, think about writeInt, which would be just call of writeFloat with decimal=0, or rename that to writeNumber or some different way? Before first version is released, this still can change.
+### 5-digit signal battery progress
+TBD
