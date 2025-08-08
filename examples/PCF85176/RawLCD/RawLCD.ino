@@ -1,5 +1,5 @@
 /**
- * @example RawLCD.ino
+ * @example PCF85176/RawLCD/RawLCD.ino
  * @brief Example of RAW LCD display using PCF85176
  */
 

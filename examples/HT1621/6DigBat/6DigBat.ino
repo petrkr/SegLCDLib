@@ -1,5 +1,5 @@
 /**
- * @example 6DigBat.ino
+ * @example HT1621/6DigBat/6DigBat.ino
  * @brief Example of 6 digit with battery gauge LCD display using HT1621
  */
 

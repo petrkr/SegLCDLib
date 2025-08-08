@@ -1,5 +1,5 @@
 /**
- * @example TempHumidity.ino
+ * @example PCF85176/TempHumidity/TempHumidity.ino
  * @brief Example of Temperature and Humidity LCD
  */
 

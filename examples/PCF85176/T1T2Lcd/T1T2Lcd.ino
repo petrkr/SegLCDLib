@@ -1,5 +1,5 @@
 /**
- * @example T1T2Lcd.ino
+ * @example PCF85176/T1T2Lcd/T1T2Lcd.ino
  * @brief Example of T1, T2 LCD
  */
 

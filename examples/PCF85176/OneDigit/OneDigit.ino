@@ -1,5 +1,5 @@
 /**
- * @example OneDigit.ino
+ * @example PCF85176/OneDigit/OneDigit.ino
  * @brief Example of Single digit LCD with 5 digits
  */
 
