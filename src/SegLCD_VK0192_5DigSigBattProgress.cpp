@@ -113,6 +113,14 @@ void SegLCD_VK0192_5DigSigBattProgress::setProgress(uint8_t value) {
     _writeRam(_buffer[ADDR_PROGRESS_P4], ADDR_PROGRESS_P4 * 2);
 }
 
+void SegLCD_VK0192_5DigSigBattProgress::setLabels(uint16_t labels) {
+    _updateLabels(labels, true);
+}
+
+void SegLCD_VK0192_5DigSigBattProgress::clearLabels(uint16_t labels) {
+    _updateLabels(labels, false);
+}
+
 void SegLCD_VK0192_5DigSigBattProgress::setCursor(uint8_t row, uint8_t col) {
     SegDriver_VK0192::setCursor(row, col);
 }
@@ -243,4 +251,82 @@ void SegLCD_VK0192_5DigSigBattProgress::writeRam(uint8_t data, uint8_t address) 
 
 void SegLCD_VK0192_5DigSigBattProgress::writeRam(uint8_t *data, size_t length, uint8_t address) {
     _writeRam(data, length, address);
+}
+
+void SegLCD_VK0192_5DigSigBattProgress::_updateLabels(uint16_t labels, bool set) {
+    if (labels & LABEL_P) {
+        if (set) {
+            _buffer[ADDR_LABELS_3] |= 0x20;
+        } else {
+            _buffer[ADDR_LABELS_3] &= ~0x20;
+        }
+    }
+
+    if (labels & LABEL_T) {
+        if (set) {
+            _buffer[ADDR_LABELS_3] |= 0x10;
+        } else {
+            _buffer[ADDR_LABELS_3] &= ~0x10;
+        }
+    }
+
+    if (labels & LABEL_PROC) {
+        if (set) {
+            _buffer[ADDR_LABELS_1] |= 0x80;
+        } else {
+            _buffer[ADDR_LABELS_1] &= ~0x80;
+        }
+    }
+
+    if (labels & LABEL_C) {
+        if (set) {
+            _buffer[ADDR_LABELS_2] |= 0x40;
+        } else {
+            _buffer[ADDR_LABELS_2] &= ~0x40;
+        }
+    }
+
+    if (labels & LABEL_KPA) {
+        if (set) {
+            _buffer[ADDR_LABELS_1] |= 0x40;
+        } else {
+            _buffer[ADDR_LABELS_1] &= ~0x40;
+        }
+    }
+
+    if (labels & LABEL_MPA) {
+        if (set) {
+            _buffer[ADDR_LABELS_1] |= 0x20;
+        } else {
+            _buffer[ADDR_LABELS_1] &= ~0x20;
+        }
+    }
+
+    if (labels & LABEL_M) {
+        if (set) {
+            _buffer[ADDR_LABELS_1] |= 0x10;
+        } else {
+            _buffer[ADDR_LABELS_1] &= ~0x10;
+        }
+    }
+
+    if (labels & LABEL_A) {
+        if (set) {
+            _buffer[ADDR_LABELS_2] |= 0x10;
+        } else {
+            _buffer[ADDR_LABELS_2] &= ~0x10;
+        }
+    }
+
+    if (labels & LABEL_V) {
+        if (set) {
+            _buffer[ADDR_LABELS_2] |= 0x20;
+        } else {
+            _buffer[ADDR_LABELS_2] &= ~0x20;
+        }
+    }
+
+    _writeRam(_buffer[ADDR_LABELS_1], ADDR_LABELS_1 * 2);
+    _writeRam(_buffer[ADDR_LABELS_2], ADDR_LABELS_2 * 2);
+    _writeRam(_buffer[ADDR_LABELS_3], ADDR_LABELS_3 * 2);
 }

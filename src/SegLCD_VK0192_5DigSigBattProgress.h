@@ -6,12 +6,26 @@
 
 class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
     public:
+        typedef enum {
+            LABEL_P = 0x0001,
+            LABEL_T = 0x0002,
+            LABEL_PROC = 0x0004,
+            LABEL_C = 0x0008,
+            LABEL_KPA = 0x0010,
+            LABEL_MPA = 0x0020,
+            LABEL_M = 0x0040,
+            LABEL_A = 0x0080,
+            LABEL_V = 0x0100,
+        } LabelFlags;
+
         SegLCD_VK0192_5DigSigBattProgress(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read = -1);
         void init() override;
         void clear() override;
         void setBatteryLevel(uint8_t value);
         void setSignalLevel(uint8_t value);
         void setProgress(uint8_t value);
+        void setLabels(uint16_t labels);
+        void clearLabels(uint16_t labels);
         void setCursor(uint8_t row, uint8_t col) override;
         void setDecimal(uint8_t row, uint8_t col, bool state);
         size_t write(uint8_t ch) override;
@@ -53,8 +67,12 @@ class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
               0x08, 0x04, 0x02,
               0x08, 0x04, 0x02, 0x01 };
 
+        static constexpr uint8_t ADDR_LABELS_1 = 0x0E;
+        static constexpr uint8_t ADDR_LABELS_2 = 0x0F;
+        static constexpr uint8_t ADDR_LABELS_3 = 0x10;
 
         uint8_t _mapSegments(uint8_t val);
         int8_t _get7SegmentsAddress(uint8_t row, uint8_t col);
+        void _updateLabels(uint16_t labels, bool set);
 };
 #endif
