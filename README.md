@@ -37,6 +37,7 @@ https://petrkr.github.io/SegLCDLib/
 | Temp humidity                      | PCF85176      | https://aliexpress.com/item/1005003044283980.html |
 | 6-digit with battery               | HT1621        | https://aliexpress.com/item/1005005555160141.html |
 | 4-digit with degree                | HT1621        | https://aliexpress.com/item/1005009301473702.html |
+| 10-digit 16 segments LCD           | HT1622        | https://aliexpress.com/item/1005003062619251.html |
 | 5-digit signal battery progress    | VK0192        | https://aliexpress.com/item/1005009000021475.html |
 
 ### RAW LCD
