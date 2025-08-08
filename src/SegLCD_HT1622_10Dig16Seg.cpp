@@ -16,6 +16,45 @@ void SegLCD_HT1622_10Dig16Seg::clear() {
     _writeRam(_buffer, sizeof(_buffer), 0);
 }
 
+void SegLCD_HT1622_10Dig16Seg::setDecimal(uint8_t row, uint8_t col, bool state) {
+    // HT1622 10-digit display has specific decimal point mapping:
+    // Address 40: decimal points for digits 0, 1, 2 (but reversed!)
+    // Address 42: decimal points for digits 3, 4, 5 (but reversed!)
+    // Address 44: decimal points for digits 6, 7, 8 (but reversed!)
+    // bit 0 controls digit 2, bit 1 controls digit 1, bit 2 controls digit 0
+
+    if (row != 0) {
+        return; // Only row 0 is valid for this display
+    }
+
+    if (col > 8) {
+        return; // Only digits 0-8 have decimal points
+    }
+
+    uint8_t address;
+    uint8_t bitPosition;
+
+    if (col <= 2) {
+        address = 40;
+        bitPosition = 2 - col; // Reverse: col 0→bit 2, col 1→bit 1, col 2→bit 0
+    } else if (col <= 5) {
+        address = 42;
+        bitPosition = 5 - col; // Reverse: col 3→bit 2, col 4→bit 1, col 5→bit 0
+    } else { // col 6-8
+        address = 44;
+        bitPosition = 8 - col; // Reverse: col 6→bit 2, col 7→bit 1, col 8→bit 0
+    }
+
+    // Read current value, modify bit, write back
+    if (state) {
+        _buffer[address] |= (1 << bitPosition);
+    } else {
+        _buffer[address] &= ~(1 << bitPosition);
+    }
+
+    _writeRam(_buffer[address], address);
+}
+
 size_t SegLCD_HT1622_10Dig16Seg::write(uint8_t ch) {
     writeDigit16seg(_cursorRow, _cursorCol, ch);
     _cursorCol++;

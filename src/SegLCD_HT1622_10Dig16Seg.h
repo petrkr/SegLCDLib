@@ -9,6 +9,7 @@ class SegLCD_HT1622_10Dig16Seg : public SegDriver_HT1622 {
         SegLCD_HT1622_10Dig16Seg(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read = -1);
         void init() override;
         void clear() override;
+        void setDecimal(uint8_t row, uint8_t col, bool state);
         void writeRam(uint8_t data, uint8_t address = 0);
         void writeRam(uint8_t *data, size_t length, uint8_t address = 0);
         void writeDigit16seg(uint8_t row, uint8_t col, char c);
