@@ -30,18 +30,34 @@ void setup() {
 
   //uint8_t _buffer[2] = {0x00, 0x60};
   //lcd.writeRam(_buffer, sizeof(_buffer), 0);
-  lcd.writeDigit7seg(0, '1');
-  lcd.writeDigit7seg(1, '2');
-  lcd.writeDigit7seg(2, '3');
-  lcd.writeDigit7seg(3, '4');
-  lcd.writeDigit7seg(4, '5');
-  lcd.writeDigit7seg(5, '6');
-  lcd.writeDigit7seg(6, '7');
-  lcd.writeDigit7seg(7, '8');
-  lcd.writeDigit7seg(8, '9');
-  lcd.writeDigit7seg(9, '0');
+
+  lcd.setCursor(0,0);
+  lcd.print("123");
+
+  lcd.setCursor(2, 0);
+  lcd.print("Hello");
+
+
+  delay(1000);
+  //lcd.clearLabels(SegLCD_VK0192_5DigSigBattProgress::LABEL_M);
+
+  for (int i=0; i <= 150; i+=10) {
+    lcd.setProgress(i);
+    delay(500);
+  }
+
+  delay(1000);
+
 }
 
 void loop() {
-  delay(5000);
+  for (int i=0; i < 5; i++) {
+    lcd.setBatteryLevel(i);
+    delay(1000);
+  }
+
+  for (int i=0; i < 4; i++) {
+    lcd.setSignalLevel(i);
+    delay(1000);
+  }
 }
