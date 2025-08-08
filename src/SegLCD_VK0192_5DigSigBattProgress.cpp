@@ -183,8 +183,13 @@ void SegLCD_VK0192_5DigSigBattProgress::writeDigit7seg(uint8_t row, uint8_t col,
         mapped = (mapped & 0xF0) | ((mapped & 0x0E) >> 1);
     }
 
-    _buffer[addr] = (mapped & 0x0F) << 4;   // lower 4 bits
-    _buffer[addr + 1] = (mapped >> 4) << 4; // upper 4 bits
+    // Clear only high bits
+    _buffer[addr] &= ~0xF0;
+    _buffer[addr + 1] &= ~0xF0;
+
+    // Set only high bits
+    _buffer[addr] |= (mapped & 0x0F) << 4;   // lower 4 bits
+    _buffer[addr + 1] |= (mapped >> 4) << 4; // upper 4 bits
 
     // Write to RAM
     _writeRam(_buffer[addr], addr * 2);
@@ -200,10 +205,15 @@ void SegLCD_VK0192_5DigSigBattProgress::writeDigit16seg(uint8_t row, uint8_t col
         return;
     }
 
-    _buffer[addr]     = (mapped >> 12) & 0x0F;
-    _buffer[addr + 1] = (mapped >> 8) & 0x0F;
-    _buffer[addr + 2] = (mapped >> 4) & 0x0F;
-    _buffer[addr + 3] = (mapped) & 0x0F;
+    _buffer[addr]   &= ~0x0F;
+    _buffer[addr+1] &= ~0x0F;
+    _buffer[addr+2] &= ~0x0F;
+    _buffer[addr+3] &= ~0x0F;
+
+    _buffer[addr]   |= (mapped >> 12) & 0x0F;
+    _buffer[addr+1] |= (mapped >> 8) & 0x0F;
+    _buffer[addr+2] |= (mapped >> 4) & 0x0F;
+    _buffer[addr+3] |= (mapped) & 0x0F;
 
     // Write to RAM
     _writeRam(_buffer[addr], addr * 2);
@@ -282,7 +292,6 @@ int8_t SegLCD_VK0192_5DigSigBattProgress::_get16SegmentsAddress(uint8_t row, uin
     return addr;
 }
 
-// ABCD_EFGP to VK0192 specific mapping based on the table
 uint8_t SegLCD_VK0192_5DigSigBattProgress::_mapSegments(uint8_t val) {
     uint8_t out = 0;
     out |= (val & 0b11110000);           // ABCD: bits 7-4
@@ -293,7 +302,6 @@ uint8_t SegLCD_VK0192_5DigSigBattProgress::_mapSegments(uint8_t val) {
     return out;
 }
 
-// ABCD_EFGP to VK0192 specific mapping based on the table
 uint16_t SegLCD_VK0192_5DigSigBattProgress::_map16Segments(uint16_t val) {
     uint16_t out = 0;
     out |= (val & 0b1000000000000000);       // A1
