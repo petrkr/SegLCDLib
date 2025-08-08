@@ -62,15 +62,6 @@ size_t SegLCD_HT1622_10Dig16Seg::write(uint8_t ch) {
     return 1;
 }
 
-// For generic class allow access to low level functions
-void SegLCD_HT1622_10Dig16Seg::writeRam(uint8_t data, uint8_t address) {
-    _writeRam(data, address);
-}
-
-void SegLCD_HT1622_10Dig16Seg::writeRam(uint8_t *data, size_t length, uint8_t address) {
-    _writeRam(data, length, address);
-}
-
 void SegLCD_HT1622_10Dig16Seg::writeDigit16seg(uint8_t row, uint8_t col, char c) {
     uint16_t mapped = _map16Segments(_get_16char_value(c));
     int8_t addr = _get16SegmentsAddress(row, col);
