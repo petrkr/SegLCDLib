@@ -11,8 +11,8 @@ class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
         void clear() override;
         void setCursor(uint8_t row, uint8_t col) override;
         size_t write(uint8_t ch) override;
-        
-        void writeDigit7seg(uint8_t digitIndex, char c);
+
+        void writeDigit7seg(uint8_t row, uint8_t col, char c);
         
         // TODO: Remove after display implementation
         void writeRam(uint8_t data, uint8_t address = 0);
@@ -24,5 +24,6 @@ class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
         static constexpr uint8_t NUM_7SEG_DIGITS = 10;  // 3+2+5 7-seg digits
         
         uint8_t _mapSegments(uint8_t val);
+        int8_t _get7SegmentsAddress(uint8_t row, uint8_t col);
 };
 #endif

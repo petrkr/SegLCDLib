@@ -30,15 +30,59 @@ size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
     return 0;
 }
 
-void SegLCD_VK0192_5DigSigBattProgress::writeDigit7seg(uint8_t digitIndex, char c) {  
+size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
+    writeDigit7seg(_cursorRow, _cursorCol, ch);
+    _cursorCol++;
+
+    return 1;
+}
+
+// TODO: rename to private function and use in write
+void SegLCD_VK0192_5DigSigBattProgress::writeDigit7seg(uint8_t row, uint8_t col, char c) {
     uint8_t mapped = _mapSegments(_get_char_value(c));
+    int8_t addr = _get7SegmentsAddress(row, col);
+
+    // Invalid address
+    if (addr < 0) {
+        return;
+    }
+
+    if (row == 0 && (col == 0 || col == 3 || col == 4)) {
+        // Shift bits 0x0E → 0x07, keep upper 4 bits unchanged
+        mapped = (mapped & 0xF0) | ((mapped & 0x0E) >> 1);
+    }
+
+    if (row == 1 && col == 0) {
+        // Shift bits 0x0E → 0x07, keep upper 4 bits unchanged
+        mapped = (mapped & 0xF0) | ((mapped & 0x0E) >> 1);
+    }
+
+    _buffer[addr] = (mapped & 0x0F) << 4;   // lower 4 bits
+    _buffer[addr + 1] = (mapped >> 4) << 4; // upper 4 bits
+
+    // Write to RAM
+    _writeRam(_buffer[addr], addr * 2);
+    _writeRam(_buffer[addr+1], addr * 2 + 2);
+}
+
+int8_t SegLCD_VK0192_5DigSigBattProgress::_get7SegmentsAddress(uint8_t row, uint8_t col) {
     uint8_t addr;
+    uint8_t digitIndex = col;
+
+    if (row < 0 || row > 1) {
+        return -1; // Invalid row
+    }
+
+    if (col > 5) {
+        return -1; // Invalid col
+    }
+
+    if (row == 1) {
+        digitIndex += 5;
+    }
 
     switch (digitIndex) {
         case 0:
-            // Shift bits 0x0E → 0x07, keep upper 4 bits unchanged
-            mapped = (mapped & 0xF0) | ((mapped & 0x0E) >> 1);
-            // address same as for 1 and 2, so do not break here
         case 1:
         case 2:
             addr = 8 + (digitIndex * 2);
@@ -46,13 +90,9 @@ void SegLCD_VK0192_5DigSigBattProgress::writeDigit7seg(uint8_t digitIndex, char 
         case 3:
         case 4:
             addr = 20 + ((digitIndex-3) * 2);
-            // Shift bits 0x0E → 0x07, keep upper 4 bits unchanged
-            mapped = (mapped & 0xF0) | ((mapped & 0x0E) >> 1);
             break;
         case 5:
             addr = 18;
-            // Shift bits 0x0E → 0x07, keep upper 4 bits unchanged
-            mapped = (mapped & 0xF0) | ((mapped & 0x0E) >> 1);
             break;
         case 6:
         case 7:
@@ -61,15 +101,10 @@ void SegLCD_VK0192_5DigSigBattProgress::writeDigit7seg(uint8_t digitIndex, char 
             addr = (digitIndex-6) * 2;
             break;
         default:
-            return;
+            return -1;
     }
 
-    _buffer[addr] = (mapped & 0x0F) << 4;   // lower 4 bits
-    _buffer[addr + 1] = (mapped >> 4) << 4; // upper 4 bits
-
-    // Write to RAM
-    _writeRam(_buffer[addr], addr * 2);     
-    _writeRam(_buffer[addr+1], addr * 2 + 2);        
+    return addr;
 }
 
 // ABCD_EFGP to VK0192 specific mapping based on the table
