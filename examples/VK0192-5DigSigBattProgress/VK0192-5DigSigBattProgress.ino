@@ -32,7 +32,12 @@ void setup() {
   //lcd.writeRam(_buffer, sizeof(_buffer), 0);
 
   lcd.setCursor(0,0);
-  lcd.print("123");
+  lcd.print("12342");
+
+  lcd.setCursor(1,0);
+  lcd.print(" 2340");
+  lcd.setDecimal(1, 2, true);
+  lcd.setLabels(SegLCD_VK0192_5DigSigBattProgress::LABEL_C);
 
   lcd.setCursor(2, 0);
   lcd.print("Hello");
@@ -41,7 +46,7 @@ void setup() {
   delay(1000);
   //lcd.clearLabels(SegLCD_VK0192_5DigSigBattProgress::LABEL_M);
 
-  for (int i=0; i <= 150; i+=10) {
+  for (int i=0; i <= 100; i+=10) {
     lcd.setProgress(i);
     delay(500);
   }
