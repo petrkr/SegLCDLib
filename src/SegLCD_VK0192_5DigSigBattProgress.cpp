@@ -157,7 +157,13 @@ void SegLCD_VK0192_5DigSigBattProgress::setDecimal(uint8_t row, uint8_t col, boo
 }
 
 size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
-    writeDigit7seg(_cursorRow, _cursorCol, ch);
+    if (_cursorRow == 0 || _cursorRow == 1) {
+        writeDigit7seg(_cursorRow, _cursorCol, ch);
+    }
+
+    if (_cursorRow == 2 ) {
+        writeDigit16seg(_cursorRow, _cursorCol, ch);
+    }
     _cursorCol++;
 
     return 1;
