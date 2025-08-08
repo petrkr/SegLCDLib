@@ -191,6 +191,27 @@ void SegLCD_VK0192_5DigSigBattProgress::writeDigit7seg(uint8_t row, uint8_t col,
     _writeRam(_buffer[addr+1], addr * 2 + 2);
 }
 
+void SegLCD_VK0192_5DigSigBattProgress::writeDigit16seg(uint8_t row, uint8_t col, char c) {
+    uint16_t mapped = _map16Segments(_get_16char_value(c));
+    int8_t addr = _get16SegmentsAddress(row, col);
+
+    // Invalid address
+    if (addr < 0) {
+        return;
+    }
+
+    _buffer[addr]     = (mapped >> 12) & 0x0F;
+    _buffer[addr + 1] = (mapped >> 8) & 0x0F;
+    _buffer[addr + 2] = (mapped >> 4) & 0x0F;
+    _buffer[addr + 3] = (mapped) & 0x0F;
+
+    // Write to RAM
+    _writeRam(_buffer[addr], addr * 2);
+    _writeRam(_buffer[addr+1], addr * 2 + 2);
+    _writeRam(_buffer[addr+2], addr * 2 + 4);
+    _writeRam(_buffer[addr+3], addr * 2 + 6);
+}
+
 int8_t SegLCD_VK0192_5DigSigBattProgress::_get7SegmentsAddress(uint8_t row, uint8_t col) {
     uint8_t addr;
     uint8_t digitIndex = col;
@@ -233,14 +254,62 @@ int8_t SegLCD_VK0192_5DigSigBattProgress::_get7SegmentsAddress(uint8_t row, uint
     return addr;
 }
 
+int8_t SegLCD_VK0192_5DigSigBattProgress::_get16SegmentsAddress(uint8_t row, uint8_t col) {
+    uint8_t addr;
+
+    if (row != 2) {
+        return -1; // Invalid row
+    }
+
+    if (col > 5) {
+        return -1; // Invalid col
+    }
+
+    switch (col) {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+            addr =  col * 4;
+            break;
+        case 4:
+            addr = 0x14;
+            break;
+        default:
+            return -1;
+    }
+
+    return addr;
+}
+
 // ABCD_EFGP to VK0192 specific mapping based on the table
 uint8_t SegLCD_VK0192_5DigSigBattProgress::_mapSegments(uint8_t val) {
     uint8_t out = 0;
     out |= (val & 0b11110000);           // ABCD: bits 7-4
-    out |= (val & 0b00001000) >> 2;      // E: bit 3 → 1 
-    out |= (val & 0b00000100) << 1;      // F: bit 2 → 3 
+    out |= (val & 0b00001000) >> 2;      // E: bit 3 → 1
+    out |= (val & 0b00000100) << 1;      // F: bit 2 → 3
     out |= (val & 0b00000010) << 1;      // G: bit 1 → 2
     out |= (val & 0b00000001);           // P: bit 0
+    return out;
+}
+
+// ABCD_EFGP to VK0192 specific mapping based on the table
+uint16_t SegLCD_VK0192_5DigSigBattProgress::_map16Segments(uint16_t val) {
+    uint16_t out = 0;
+    out |= (val & 0b1000000000000000);       // A1
+    out |= (val & 0b0100000000000000) >> 3;  // A2
+    out |= (val & 0b0010000000000000) >> 10; // B
+    out |= (val & 0b0001000000000000) >> 12; // C
+    out |= (val & 0b0000100000000000) >> 7;  // D2
+    out |= (val & 0b0000010000000000) >> 2;  // D1
+    out |= (val & 0b0000001000000000) << 3;  // E
+    out |= (val & 0b0000000110000000) << 6;  // F, G1
+    out |= (val & 0b0000000001000000) >> 4;  // G2
+    out |= (val & 0b0000000000100000) << 5;  // H
+    out |= (val & 0b0000000000010000) << 2;  // I
+    out |= (val & 0b0000000000001010) << 4;  // J, L
+    out |= (val & 0b0000000000000100) << 7;  // K
+    out |= (val & 0b0000000000000001) << 1;  // M
     return out;
 }
 
