@@ -69,4 +69,4 @@ This display use integrated COB HT1621 driver.
 
 
 ### 5-digit signal battery progress
-TBD
+![5 digit signal battery progress](docs/images/5digsigbatprogress.webp)
