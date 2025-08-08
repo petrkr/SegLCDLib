@@ -1,5 +1,5 @@
 /**
- * @example VK0192/5DigSigBattProgress.ino
+ * @example VK0192/5DigSigBattProgress/5DigSigBattProgress.ino
  * @brief Example of 5 digit signal, battery and progress display.
  */
 
