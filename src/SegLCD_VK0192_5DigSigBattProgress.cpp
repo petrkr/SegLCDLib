@@ -20,14 +20,35 @@ void SegLCD_VK0192_5DigSigBattProgress::setCursor(uint8_t row, uint8_t col) {
     SegDriver_VK0192::setCursor(row, col);
 }
 
-size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
-    // Basic implementation - write to main 5 digits for now
-    if (_cursorCol >= 0 && _cursorCol < 5) {
-        writeDigit7seg(_cursorCol + 5, ch);  // Main digits start at index 5 (after 3+2)
-        _cursorCol++;
-        return 1;
+void SegLCD_VK0192_5DigSigBattProgress::setDecimal(uint8_t row, uint8_t col, bool state) {
+    if (row > 2) {
+        return; // invalid digit
     }
-    return 0;
+
+    if (row == 0 && (col < 0 || col > 1)) {
+        return; // Invalid digit
+    }
+
+    if (row == 1 && (col < 0 || col > 3)) {
+        return; // Invalid digit
+    }
+
+    // decimal is on next digit address
+    int8_t addr = _get7SegmentsAddress(row, col + 1);
+
+    // Invalid address
+    if (addr < 0) {
+        return;
+    }
+
+    if (state) {
+        _buffer[addr] |= DECIMAL_POINT_BIT; // Set the decimal point bit
+    } else {
+        _buffer[addr] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
+    }
+
+    // Write to RAM
+    _writeRam(_buffer[addr], addr * 2);
 }
 
 size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
