@@ -124,10 +124,6 @@ class SegLCDLib : public Print {
          */
         uint16_t _get_16char_value(char ch);
 
-        /**
-         * @brief Helper method to count number of digits in an integer.
-         */
-        int _countDigits(long num);
 
         /**
          * @brief Current Row

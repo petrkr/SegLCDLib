@@ -193,11 +193,3 @@ uint16_t SegLCDLib::_get_16char_value(char ch) {
     }
 }
 
-int SegLCDLib::_countDigits(long num) {
-    int count = 0;
-    do {
-        count++;
-        num /= 10;
-    } while (num > 0);
-    return count;
-}
