@@ -45,6 +45,7 @@ This LCD type is used for testing new LCD by sending RAW data to controller. It 
 ### 6-digit signal, battery, progress
 ![6-digit, signal, battery, progress](docs/images/6digsigbatprogress.webp)
 
+
 ### One digit
 ![Onedigit](docs/images/onedigit.webp)
 
@@ -58,7 +59,6 @@ This LCD type is used for testing new LCD by sending RAW data to controller. It 
 
 
 ### 6-digit with battery
-
 This display use integrated COB HT1621 driver.
 
 ![6 digit with battery symbols](docs/images/6digbatht1621.webp)
