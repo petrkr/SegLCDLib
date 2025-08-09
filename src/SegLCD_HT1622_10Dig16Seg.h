@@ -14,7 +14,7 @@ class SegLCD_HT1622_10Dig16Seg : public SegDriver_HT1622 {
         size_t write(uint8_t ch) override;
 
     private:
-        uint8_t _buffer[48] = {0};  // VK0192 RAM buffer
+        uint8_t _buffer[45] = {0};
 
         uint16_t _map16Segments(uint16_t val);
         int8_t _get16SegmentsAddress(uint8_t row, uint8_t col);
