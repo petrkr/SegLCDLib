@@ -17,12 +17,6 @@ void SegLCD_HT1622_10Dig16Seg::clear() {
 }
 
 void SegLCD_HT1622_10Dig16Seg::setDecimal(uint8_t row, uint8_t col, bool state) {
-    // HT1622 10-digit display has specific decimal point mapping:
-    // Address 40: decimal points for digits 0, 1, 2 (but reversed!)
-    // Address 42: decimal points for digits 3, 4, 5 (but reversed!)
-    // Address 44: decimal points for digits 6, 7, 8 (but reversed!)
-    // bit 0 controls digit 2, bit 1 controls digit 1, bit 2 controls digit 0
-
     if (row != 0) {
         return; // Only row 0 is valid for this display
     }
