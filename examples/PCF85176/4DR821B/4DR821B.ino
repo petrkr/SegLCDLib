@@ -1,6 +1,6 @@
 /**
- * @example PCF85176/RawLCD/RawLCD.ino
- * @brief Example of RAW LCD display using PCF85176
+ * @example PCF85176/4DR821B/4DR821B.ino
+ * @brief Example of Tesla 4DR821B LCD display using PCF85176
  */
 
 #include "SegLCD_PCF85176_4DR821B.h"
@@ -17,7 +17,6 @@ void setup() {
 
   Serial.println("Initialize LCD...");
 
-  // Demo for static one segment LCD display
   lcd.init();
 
   // Clear LCD
@@ -25,10 +24,7 @@ void setup() {
 
   delay(1000);
 
-  // Write at address 0 one byte
-  lcd.print("1254");
-
-  lcd.setClockColon(0, 0, true);
+  lcd.print("12:54");
 }
 
 
