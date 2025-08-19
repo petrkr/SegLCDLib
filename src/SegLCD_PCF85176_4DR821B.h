@@ -21,6 +21,7 @@ class SegLCD_PCF85176_4DR821B : public SegDriver_PCF85176 {
         bool _previousDot = false;
 
         static constexpr uint8_t ADDR_SYMBOLS = 0x00;
+        static constexpr uint8_t ADDR_SEGS = 0x01;
         static constexpr uint8_t DIGITS = 4;
         static constexpr uint8_t DECIMAL_POINT_BIT = 0x01;
         static constexpr uint8_t DECIMAL_MIN_COL = 0;

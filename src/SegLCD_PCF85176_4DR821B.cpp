@@ -15,9 +15,9 @@ void SegLCD_PCF85176_4DR821B::clear() {
 
 void SegLCD_PCF85176_4DR821B::setClockColon(uint8_t row, uint8_t col, bool state) {
     if (state)
-        _buffer[ADDR_SYMBOLS] |= 0x01;
+        _buffer[ADDR_SYMBOLS] |= DECIMAL_POINT_BIT;
     else
-        _buffer[ADDR_SYMBOLS] &= ~0x01;
+        _buffer[ADDR_SYMBOLS] &= ~DECIMAL_POINT_BIT;
 
     _writeRam(_buffer[ADDR_SYMBOLS], ADDR_SYMBOLS);
 }
@@ -33,12 +33,12 @@ void SegLCD_PCF85176_4DR821B::setDecimal(uint8_t row, uint8_t col, bool state) {
     }
 
     if (state) {
-        _buffer[col+1] |= DECIMAL_POINT_BIT; // Set the decimal point bit
+        _buffer[ADDR_SEGS + col] |= DECIMAL_POINT_BIT; // Set the decimal point bit
     } else {
-        _buffer[col+1] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
+        _buffer[ADDR_SEGS + col] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
     }
 
-    _writeRam(_buffer[col + 1], (col + 1) * 8);
+    _writeRam(_buffer[ADDR_SEGS + col], (ADDR_SEGS + col) * 8);
     
 }
 
@@ -52,12 +52,17 @@ size_t SegLCD_PCF85176_4DR821B::write(uint8_t ch) {
         return 1;
     }
 
+    if (ch == ':') {
+        setClockColon(_cursorRow, _cursorCol - 1, true);
+        return 1;
+    }
+
     uint8_t segment_data = _get_char_value(ch);
 
-    _buffer[_cursorCol+1] = segment_data;
+    _buffer[ADDR_SEGS + _cursorCol] = segment_data;
 
     
-    _writeRam(_buffer[_cursorCol+1], (_cursorCol + 1) * 8);
+    _writeRam(_buffer[ADDR_SEGS + _cursorCol], (ADDR_SEGS + _cursorCol) * 8);
     
 
     _cursorCol++;
