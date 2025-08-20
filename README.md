@@ -39,6 +39,7 @@ https://petrkr.github.io/SegLCDLib/
 | 4-digit with degree                | HT1621        | https://aliexpress.com/item/1005009301473702.html |
 | 10-digits of 16 segment            | HT1622        | https://aliexpress.com/item/1005003062619251.html |
 | 5-digit signal battery progress    | VK0192        | https://aliexpress.com/item/1005009000021475.html |
+| 4DR821B / 4DT821B                  | PCF85176      | http://www.hezkyden.cz/shop/displeje-lcd-tesla    |
 
 ### RAW LCD
 This LCD type is used for testing new LCD by sending RAW data to controller. It is good to testing and implementing new types of LCD screens before starting to create actually class
@@ -78,3 +79,8 @@ Based on HT1622 controller
 
 ### 5-digit signal battery progress
 ![5 digit signal battery progress](docs/images/5digsigbatprogress.webp)
+
+
+### 4DR821B / 4DT821B
+Tesla display 4DR821B https://www.teslakatalog.cz/4DR821B.html
+![4DR821B](docs/images/4DR821B.webp)
