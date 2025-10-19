@@ -15,6 +15,7 @@ class SegLCD_PCF85176_4DR821B : public SegDriver_PCF85176 {
         void clear() override;
         void setClockColon(uint8_t row, uint8_t col, bool state);
         void setDecimal(uint8_t row, uint8_t col, bool state);
+        void setCursor(uint8_t row, uint8_t col) override;
         size_t write(uint8_t ch) override;
     private:
         uint8_t _buffer[5];

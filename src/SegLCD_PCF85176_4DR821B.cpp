@@ -45,8 +45,20 @@ void SegLCD_PCF85176_4DR821B::setDecimal(uint8_t row, uint8_t col, bool state) {
     
 }
 
+void SegLCD_PCF85176_4DR821B::setCursor(uint8_t row, uint8_t col) {
+    if (row == 0 && col <= 2) {
+        _colonDisplayed = false;
+    }
+
+    if (row == 0 && col == 0) {
+        _col0OverlayActive = false;
+    }
+
+    SegDriver_PCF85176::setCursor(row, col);
+}
+
 size_t SegLCD_PCF85176_4DR821B::write(uint8_t ch) {
-    if (_cursorCol < 0 || _cursorCol > DIGITS) {
+    if (_cursorCol < 0 || _cursorCol > DIGITS - 1) {
         return 0; //Invalid digit
     }
 
@@ -55,9 +67,16 @@ size_t SegLCD_PCF85176_4DR821B::write(uint8_t ch) {
         return 1;
     }
 
-    if (ch == ':') {
+    // Handle clock/middle colon
+    if (ch != ':' && _cursorCol == 2 && !_colonDisplayed) {
+        setClockColon(_cursorRow, _cursorCol - 1, false);
+        _colonDisplayed = false;
+    }
+
+    if (ch == ':' && _cursorCol == 2 && !_colonDisplayed) {
         setClockColon(_cursorRow, _cursorCol - 1, true);
-        return 1;
+        _colonDisplayed = true;
+        return true;
     }
 
     uint8_t segment_data = _get_char_value(ch);
