@@ -35,6 +35,7 @@ class SegLCD_PCF85176_4DR821B : public SegDriver_PCF85176 {
         static constexpr uint8_t DECIMAL_MIN_COL = 0;
         static constexpr uint8_t DECIMAL_MAX_COL = 2;
 
+        bool _handleCol0Overlay(uint8_t ch);
         void _setSymbol(uint8_t symbol, bool state);
 };
 #endif

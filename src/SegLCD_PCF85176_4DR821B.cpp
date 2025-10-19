@@ -79,6 +79,11 @@ size_t SegLCD_PCF85176_4DR821B::write(uint8_t ch) {
         return true;
     }
 
+    // Handle overlay symbols in column 0: '-', '+', ':'
+    if (!_handleCol0Overlay(ch)) {
+        return 1;
+    }
+
     uint8_t segment_data = _get_char_value(ch);
 
     _buffer[ADDR_SEGS + _cursorCol] = segment_data;
@@ -89,6 +94,46 @@ size_t SegLCD_PCF85176_4DR821B::write(uint8_t ch) {
 
     _cursorCol++;
     return 1;
+}
+
+bool SegLCD_PCF85176_4DR821B::_handleCol0Overlay(uint8_t ch) {
+    // overlay applies only at column 0
+    if (_cursorCol != 0)
+        return true;
+
+    switch (ch)
+    {
+        case '-':
+            _setSymbol(MINUS_BIT, true);
+            _setSymbol(LEFT_COLON_BIT, false);
+            _col0OverlayActive = true;
+            return false;
+
+        case ':':
+            _setSymbol(MINUS_BIT, false);
+            _setSymbol(LEFT_COLON_BIT, true);
+            _col0OverlayActive = true;
+            return false;
+
+        case '+':
+            _setSymbol(MINUS_BIT, true);
+            _setSymbol(LEFT_COLON_BIT, true);
+            _col0OverlayActive = true;
+            return false;
+
+        default:
+            break;
+    }
+
+    // non-overlay char in column 0
+    if (_col0OverlayActive) {
+        _col0OverlayActive = false;
+    } else {
+        _setSymbol(MINUS_BIT, false);
+        _setSymbol(LEFT_COLON_BIT, false);
+    }
+
+    return true;
 }
 
 void SegLCD_PCF85176_4DR821B::_setSymbol(uint8_t symbol, bool state) {
