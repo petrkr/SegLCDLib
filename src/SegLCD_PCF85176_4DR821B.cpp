@@ -13,16 +13,25 @@ void SegLCD_PCF85176_4DR821B::clear() {
     SegDriver_PCF85176::clear();
 }
 
+void SegLCD_PCF85176_4DR821B::setSymbol(uint8_t symbol, bool state) {
+    if (state)
+        _buffer[ADDR_SYMBOLS] |= symbol;
+    else
+        _buffer[ADDR_SYMBOLS] &= ~symbol;
+
+    _writeRam(_buffer[ADDR_SYMBOLS], ADDR_SYMBOLS);
+}
+
 void SegLCD_PCF85176_4DR821B::setClockColon(uint8_t row, uint8_t col, bool state) {
     if (col == 0) {
         if (state) {
-            _setSymbol(MINUS_BIT, false);
+            setSymbol(MINUS_BIT, false);
         }
-        _setSymbol(LEFT_COLON_BIT, state);
+        setSymbol(LEFT_COLON_BIT, state);
     }
 
     if (col == 1) {
-        _setSymbol(MIDDLE_COLON_BIT, state);
+        setSymbol(MIDDLE_COLON_BIT, state);
     }
 }
 
@@ -104,20 +113,20 @@ bool SegLCD_PCF85176_4DR821B::_handleCol0Overlay(uint8_t ch) {
     switch (ch)
     {
         case '-':
-            _setSymbol(MINUS_BIT, true);
-            _setSymbol(LEFT_COLON_BIT, false);
+            setSymbol(MINUS_BIT, true);
+            setSymbol(LEFT_COLON_BIT, false);
             _col0OverlayActive = true;
             return false;
 
         case ':':
-            _setSymbol(MINUS_BIT, false);
-            _setSymbol(LEFT_COLON_BIT, true);
+            setSymbol(MINUS_BIT, false);
+            setSymbol(LEFT_COLON_BIT, true);
             _col0OverlayActive = true;
             return false;
 
         case '+':
-            _setSymbol(MINUS_BIT, true);
-            _setSymbol(LEFT_COLON_BIT, true);
+            setSymbol(MINUS_BIT, true);
+            setSymbol(LEFT_COLON_BIT, true);
             _col0OverlayActive = true;
             return false;
 
@@ -129,18 +138,9 @@ bool SegLCD_PCF85176_4DR821B::_handleCol0Overlay(uint8_t ch) {
     if (_col0OverlayActive) {
         _col0OverlayActive = false;
     } else {
-        _setSymbol(MINUS_BIT, false);
-        _setSymbol(LEFT_COLON_BIT, false);
+        setSymbol(MINUS_BIT, false);
+        setSymbol(LEFT_COLON_BIT, false);
     }
 
     return true;
-}
-
-void SegLCD_PCF85176_4DR821B::_setSymbol(uint8_t symbol, bool state) {
-    if (state)
-        _buffer[ADDR_SYMBOLS] |= symbol;
-    else
-        _buffer[ADDR_SYMBOLS] &= ~symbol;
-
-    _writeRam(_buffer[ADDR_SYMBOLS], ADDR_SYMBOLS);
 }

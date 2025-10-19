@@ -10,9 +10,15 @@ class SegLCD_PCF85176_4DR821B : public SegDriver_PCF85176 {
     #define MAX_ADDRESS 38
 
     public:
+        typedef enum {
+            SYMBOL_ARROW = 0x10,
+            SYMBOL_TILDA = 0x80
+        } SymbolFlags;
+
         SegLCD_PCF85176_4DR821B(TwoWire& i2c, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
         void init() override;
         void clear() override;
+        void setSymbol(uint8_t symbol, bool state);
         void setClockColon(uint8_t row, uint8_t col, bool state);
         void setDecimal(uint8_t row, uint8_t col, bool state);
         void setCursor(uint8_t row, uint8_t col) override;
@@ -28,14 +34,11 @@ class SegLCD_PCF85176_4DR821B : public SegDriver_PCF85176 {
         static constexpr uint8_t DIGITS = 4;
         static constexpr uint8_t DECIMAL_POINT_BIT = 0x01;
         static constexpr uint8_t MIDDLE_COLON_BIT = 0x01;
-        static constexpr uint8_t ARROW_BIT = 0x10;
         static constexpr uint8_t LEFT_COLON_BIT = 0x20;
         static constexpr uint8_t MINUS_BIT = 0x40;
-        static constexpr uint8_t TILDA_BIT = 0x80;
         static constexpr uint8_t DECIMAL_MIN_COL = 0;
         static constexpr uint8_t DECIMAL_MAX_COL = 2;
 
         bool _handleCol0Overlay(uint8_t ch);
-        void _setSymbol(uint8_t symbol, bool state);
 };
 #endif
