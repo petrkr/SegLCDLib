@@ -19,12 +19,21 @@ class SegLCD_PCF85176_4DR821B : public SegDriver_PCF85176 {
     private:
         uint8_t _buffer[5];
         bool _previousDot = false;
+        bool _colonDisplayed = false;
+        bool _col0OverlayActive = false;
 
         static constexpr uint8_t ADDR_SYMBOLS = 0x00;
         static constexpr uint8_t ADDR_SEGS = 0x01;
         static constexpr uint8_t DIGITS = 4;
         static constexpr uint8_t DECIMAL_POINT_BIT = 0x01;
+        static constexpr uint8_t MIDDLE_COLON_BIT = 0x01;
+        static constexpr uint8_t ARROW_BIT = 0x10;
+        static constexpr uint8_t LEFT_COLON_BIT = 0x20;
+        static constexpr uint8_t MINUS_BIT = 0x40;
+        static constexpr uint8_t TILDA_BIT = 0x80;
         static constexpr uint8_t DECIMAL_MIN_COL = 0;
         static constexpr uint8_t DECIMAL_MAX_COL = 2;
+
+        void _setSymbol(uint8_t symbol, bool state);
 };
 #endif
