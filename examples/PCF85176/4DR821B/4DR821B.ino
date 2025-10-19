@@ -18,16 +18,42 @@ void setup() {
   Serial.println("Initialize LCD...");
 
   lcd.init();
-
-  // Clear LCD
-  lcd.clear();
-
-  delay(1000);
-
-  lcd.print("12:54");
 }
 
 
 void loop() {
+  Serial.println("Testing clock colon");
+  lcd.clear();
+  lcd.print("12:54");
+  delay(1000);
 
+  Serial.println("Testing decimals");
+  lcd.clear();
+  lcd.print("1.24");
+  delay(1000);
+
+  lcd.home();
+  lcd.print("12.4");
+  delay(1000);
+
+  lcd.home();
+  lcd.print("124.");
+  delay(1000);
+
+  Serial.println("Testing column 0 symbols");
+  lcd.clear();
+  lcd.print("-1234");
+  delay(1000);
+
+  lcd.clear();
+  lcd.print("+1234");
+  delay(1000);
+
+  lcd.home();
+  lcd.print(":1234");
+  delay(1000);
+
+  lcd.clear();
+  lcd.print("+12:34");
+  delay(1000);
 }
