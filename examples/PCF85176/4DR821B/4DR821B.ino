@@ -56,4 +56,17 @@ void loop() {
   lcd.clear();
   lcd.print("+12:34");
   delay(1000);
+
+  Serial.println("Testing symbols");
+  lcd.setSymbol(SegLCD_PCF85176_4DR821B::SymbolFlags::SYMBOL_ARROW, true);
+  delay(1000);
+
+  lcd.setSymbol(SegLCD_PCF85176_4DR821B::SymbolFlags::SYMBOL_TILDA, true);
+  delay(1000);
+
+  lcd.setSymbol(SegLCD_PCF85176_4DR821B::SymbolFlags::SYMBOL_ARROW, false);
+  delay(1000);
+
+  lcd.setSymbol(SegLCD_PCF85176_4DR821B::SymbolFlags::SYMBOL_TILDA, false);
+  delay(1000);
 }
