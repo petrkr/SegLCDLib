@@ -26,18 +26,18 @@ void setup() {
   delay(1000);
 
   // Write at address 0 one byte
-  lcd.write((uint8_t)0b10000000, 0);
+  lcd.writeRam((uint8_t)0b10000000, 0);
 
   delay(1000);
 
   // Write at address 8 one byte
-  lcd.write((uint8_t)0b01000000, 8);
+  lcd.writeRam((uint8_t)0b01000000, 8);
 
   delay(1000);
 
   // Write few bytes at address 0
   uint8_t data[2] = { 0b11111111, 0b11111111 };  
-  lcd.write(data, sizeof(data), 0);
+  lcd.writeRam(data, sizeof(data), 0);
 }
 
 
