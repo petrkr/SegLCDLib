@@ -254,6 +254,23 @@ uint8_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_mapSegments(uint8_t val)
     return out;
 }
 
+void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_setRamMasked(uint8_t addr, uint8_t mask, uint8_t value) {
+    uint8_t byteIndex = addr >> 1;
+    bool high = (addr & 0x01) != 0;
+    uint8_t m = mask & 0x0F;
+    uint8_t v = value & 0x0F;
+
+    if (high) {
+        uint8_t cur = (_buffer[byteIndex] >> 4) & 0x0F;
+        cur = (cur & ~m) | (v & m);
+        _buffer[byteIndex] = (_buffer[byteIndex] & 0x0F) | (cur << 4);
+    } else {
+        uint8_t cur = _buffer[byteIndex] & 0x0F;
+        cur = (cur & ~m) | (v & m);
+        _buffer[byteIndex] = (_buffer[byteIndex] & 0xF0) | cur;
+    }
+}
+
 
 
 // For generic class allow access to low level functions
