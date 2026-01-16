@@ -49,7 +49,6 @@ void setup() {
   lcd.print("5");
   lcd.print("6");
 
-//  lcd.writeRam((uint8_t)0xFF, 13);
   return;
   delay(1000);
 

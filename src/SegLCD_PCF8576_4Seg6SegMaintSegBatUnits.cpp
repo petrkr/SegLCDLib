@@ -11,7 +11,6 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::init() {
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::clear() {
     memset(_buffer, 0x00, sizeof(_buffer));
-    memset(_buffer_labels, 0x00, sizeof(_buffer_labels));
     memset(_buffer_top, 0x00, sizeof(_buffer_top));
     memset(_buffer_default, 0x00, sizeof(_buffer_default));
     SegDriver_PCF85176::clear();
@@ -53,56 +52,98 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setSignalLevel(uint8_t level) {
     _writeRamAtAddr(data, ADDR_SIGNAL, 0xF0);
 }
 
-void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setLabels(LabelFlags labels) {
-    //_buffer_labels |= labels;
+void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setLabels(uint8_t labels) {
+    uint8_t label_bits = 0;
+    if (labels & LABEL_MPA) {
+        label_bits |= 0x01;
+    }
+    if (labels & LABEL_KPA) {
+        label_bits |= 0x02;
+    }
+    if (labels & LABEL_UEPS) {
+        label_bits |= 0x04;
+    }
+    if (labels & LABEL_MM) {
+        label_bits |= 0x08;
+    }
+    if (labels & LABEL_MV) {
+        label_bits |= 0x10;
+    }
+    if (labels & LABEL_NM) {
+        label_bits |= 0x20;
+    }
+    if (labels & LABEL_KG) {
+        label_bits |= 0x40;
+    }
+    if (labels & LABEL_G) {
+        label_bits |= 0x80;
+    }
 
-    //_writeRam(_buffer_labels, ADDR_LABELS);
+    _writeRamAtAddr(label_bits, ADDR_LABELS, label_bits);
 }
 
-void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::clearLabels(LabelFlags labels) {
-    //_buffer_labels &= ~labels;
+void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::clearLabels(uint8_t labels) {
+    uint8_t label_bits = 0;
+    if (labels & LABEL_MPA) {
+        label_bits |= 0x01;
+    }
+    if (labels & LABEL_KPA) {
+        label_bits |= 0x02;
+    }
+    if (labels & LABEL_UEPS) {
+        label_bits |= 0x04;
+    }
+    if (labels & LABEL_MM) {
+        label_bits |= 0x08;
+    }
+    if (labels & LABEL_MV) {
+        label_bits |= 0x10;
+    }
+    if (labels & LABEL_NM) {
+        label_bits |= 0x20;
+    }
+    if (labels & LABEL_KG) {
+        label_bits |= 0x40;
+    }
+    if (labels & LABEL_G) {
+        label_bits |= 0x80;
+    }
 
-    //_writeRam(_buffer_labels, ADDR_LABELS);
+    _writeRamAtAddr(0x00, ADDR_LABELS, label_bits);
+}
+
+void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setDegree(bool state) {
+    _writeRamAtAddr(state ? 0x10 : 0x00, 0x0B, 0x10);
+}
+
+void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setMaintenance(bool state) {
+    _writeRamAtAddr(state ? 0x20 : 0x00, 0x08, 0x20);
 }
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setClockColon(uint8_t row, uint8_t col, bool state) {
-    uint8_t address = 0;
-    uint8_t digit = 0;
-    uint8_t* _buffer = nullptr;
     switch (row) {
         case 0:
             if (col != 2) {
                 return; // Invalid digit
             }
-            digit = 4;
-            address = ADDR_SMALL_SEGS + 6; // Digit 4
-            _buffer = _buffer_top;
+            _writeRamAtAddr(state ? 0x80 : 0x00, 0x07, 0x80);
             break;
         case 1:
             if (col != 4) {
                 return; // Invalid digit
             }
 
-            address = ADDR_BIG_SEGS; // Digit 6
-            _buffer = _buffer_default;
-            digit = 6;
+            _writeRamAtAddr(state ? 0xC0 : 0x00, 0x08, 0xC0);
             break;
         default:
             return; // Invalid section
     }
-
-    if (state) {
-        _buffer[(digit-1)] |= 0x10; // Set the decimal point bit
-    } else {
-        _buffer[(digit-1)] &= ~0x10; // Clear the decimal point bit
-    }
-
-    _writeRamAtAddr(_buffer[(digit-1)], address);
 }
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setDecimal(uint8_t row, uint8_t col, bool state) {
     uint8_t address = 0;
     uint8_t* _buffer = nullptr;
+    uint8_t mask = 0xFF;
     switch (row) {
         case 0:
             if (col < 0 || col > 2) {
@@ -118,6 +159,9 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setDecimal(uint8_t row, uint8_t co
             }
 
             address = ADDR_BIG_SEGS + ((6 - col - 1) * 2);
+            if (address >= 0x11) {
+                address += 2; // Skip labels at 0x11/0x12
+            }
             _buffer = _buffer_default;
             break;
         default:
@@ -130,7 +174,13 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setDecimal(uint8_t row, uint8_t co
         _buffer[col] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
     }
 
-    _writeRamAtAddr(_buffer[col], address);
+    if (address == 0x06) {
+        mask &= 0xF7;
+    } else if (address == 0x0B) {
+        mask &= 0xEF;
+    }
+
+    _writeRamAtAddr(_buffer[col], address, mask);
 }
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setCursor(uint8_t row, uint8_t col) {
@@ -185,7 +235,12 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::write(uint8_t ch) {
             } else {
                 _buffer_top[_cursorCol] = segment_data;
             }
-            _writeRamAtAddr(_buffer_top[_cursorCol], ADDR_SMALL_SEGS + ((_cursorCol) * 2));
+            addr = (uint8_t)(ADDR_SMALL_SEGS + ((_cursorCol) * 2));
+            if (addr == 0x06) {
+                _writeRamAtAddr(_buffer_top[_cursorCol], addr, 0xF7);
+            } else {
+                _writeRamAtAddr(_buffer_top[_cursorCol], addr);
+            }
             break;
         case 1:
             if (_cursorCol < 0 || _cursorCol > 5) {
@@ -218,8 +273,12 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::write(uint8_t ch) {
 
             col = (uint8_t)(5 - _cursorCol);
             addr = (uint8_t)(ADDR_BIG_SEGS + (col * 2));
-            if (addr >= 17) { addr += 2; } // Skip labels
-            _writeRamAtAddr(_buffer_default[_cursorCol], addr);
+            if (addr >= 0x11) { addr += 2; } // Skip labels at 0x11/0x12
+            if (addr == 0x0B) {
+                _writeRamAtAddr(_buffer_default[_cursorCol], addr, 0xEF);
+            } else {
+                _writeRamAtAddr(_buffer_default[_cursorCol], addr);
+            }
             break;
         default:
             return 0; // invalid digit

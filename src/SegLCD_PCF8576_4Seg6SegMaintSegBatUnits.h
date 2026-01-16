@@ -11,20 +11,20 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
 
     #define ADDR_SIGNAL 0x0A
     #define ADDR_BATT 0x08
-    #define ADDR_SMALL_SEGS 0
-    #define ADDR_LABELS 17
-    #define ADDR_BIG_SEGS 11
+    #define ADDR_SMALL_SEGS 0x00
+    #define ADDR_LABELS 0x11
+    #define ADDR_BIG_SEGS 0x0B
 
     public:
         typedef enum {
             LABEL_MPA = 0x01,
             LABEL_KPA = 0x02,
-            LABEL_BAR = 0x04,
-            LABEL_PSI = 0x08,
-            LABEL_MH2O = 0x10,
-            LABEL_MMHG = 0x20,
-            LABEL_ATM = 0x40,
-            LABEL_KGFCM2 = 0x80,
+            LABEL_UEPS = 0x04,
+            LABEL_MM = 0x08,
+            LABEL_MV = 0x10,
+            LABEL_NM = 0x20,
+            LABEL_KG = 0x40,
+            LABEL_G = 0x80,
             LABEL_ALL = 0xFF
         } LabelFlags;
 
@@ -33,8 +33,10 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
         void clear() override;
         void setBatteryLevel(uint8_t value);
         void setSignalLevel(uint8_t value);
-        void setLabels(LabelFlags labels);
-        void clearLabels(LabelFlags labels);
+        void setLabels(uint8_t labels);
+        void clearLabels(uint8_t labels);
+        void setDegree(bool state);
+        void setMaintenance(bool state);
         void setClockColon(uint8_t row, uint8_t col, bool state);
         void setDecimal(uint8_t row, uint8_t col, bool state);
         void setCursor(uint8_t row, uint8_t col);
@@ -48,8 +50,6 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
         static constexpr uint8_t RAM_ADDR_LAST = 0x18;
         static constexpr uint8_t RAM_BYTE_COUNT = (RAM_ADDR_LAST + 2) / 2;
         uint8_t _buffer[RAM_BYTE_COUNT] = {0};
-
-        uint8_t _buffer_labels[2] = {0};
 
         uint8_t _buffer_top[4] = {0};
         uint8_t _buffer_default[6] = {0};
