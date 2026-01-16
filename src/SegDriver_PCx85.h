@@ -146,4 +146,18 @@ class SegDriver_PCF85176 : public SegDriver_PCx85 {
         SegDriver_PCF85176(TwoWire& i2c, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS) : SegDriver_PCx85(i2c, address, subaddress) {}
 };
 
+/**
+ * @brief PCF8576 LCD segment driver.
+ *
+ * This class is a thin wrapper around SegDriver_PCF85176.
+ * The PCF8576 uses the same I2C protocol and command set as the PCF85176,
+ * therefore no separate implementation is required.
+ *
+ * The class exists to provide a chip-specific type for user code and
+ * to allow future divergence if PCF8576-specific behavior is needed.
+ */
+class SegDriver_PCF8576 : public SegDriver_PCF85176 {
+    public:
+        using SegDriver_PCF85176::SegDriver_PCF85176; // inherit constructors
+};
 #endif
