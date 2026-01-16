@@ -45,6 +45,9 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
         void writeRam(uint8_t *data, size_t length, uint8_t address = 0);
 
     private:
+        static constexpr uint8_t RAM_ADDR_LAST = 0x18;
+        static constexpr uint8_t RAM_BYTE_COUNT = (RAM_ADDR_LAST + 2) / 2;
+        uint8_t _buffer[RAM_BYTE_COUNT] = {0};
 
         uint8_t _buffer_batt = 0;
         uint8_t _buffer_sig = 0;

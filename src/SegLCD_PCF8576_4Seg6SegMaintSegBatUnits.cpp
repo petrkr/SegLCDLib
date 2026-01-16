@@ -10,6 +10,7 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::init() {
 }
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::clear() {
+    memset(_buffer, 0x00, sizeof(_buffer));
     _buffer_batt = 0x00;
     _buffer_sig = 0x00;
     memset(_buffer_labels, 0x00, sizeof(_buffer_labels));
