@@ -5,7 +5,7 @@
 #include <SegDriver_PCx85.h>
 
 
-class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF85176 {
+class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
 
     #define MAX_ADDRESS 24
 

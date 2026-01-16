@@ -2,7 +2,7 @@
 #include <SegLCD_PCF8576_4Seg6SegMaintSegBatUnits.h>
 
 
-SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::SegLCD_PCF8576_4Seg6SegMaintSegBatUnits(TwoWire& i2c, uint8_t address, uint8_t subaddress) :  SegDriver_PCF85176(i2c, address, subaddress) {}
+SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::SegLCD_PCF8576_4Seg6SegMaintSegBatUnits(TwoWire& i2c, uint8_t address, uint8_t subaddress) :  SegDriver_PCF8576(i2c, address, subaddress) {}
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::init() {
     SegDriver_PCF85176::init();
