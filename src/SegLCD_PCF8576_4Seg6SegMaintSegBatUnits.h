@@ -9,8 +9,8 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
 
     #define MAX_ADDRESS 24
 
-    #define ADDR_SIGNAL 9
-    #define ADDR_BATT 8
+    #define ADDR_SIGNAL 0x0A
+    #define ADDR_BATT 0x08
     #define ADDR_SMALL_SEGS 0
     #define ADDR_LABELS 17
     #define ADDR_BIG_SEGS 11
@@ -49,8 +49,6 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
         static constexpr uint8_t RAM_BYTE_COUNT = (RAM_ADDR_LAST + 2) / 2;
         uint8_t _buffer[RAM_BYTE_COUNT] = {0};
 
-        uint8_t _buffer_batt = 0;
-        uint8_t _buffer_sig = 0;
         uint8_t _buffer_labels[2] = {0};
 
         uint8_t _buffer_top[4] = {0};

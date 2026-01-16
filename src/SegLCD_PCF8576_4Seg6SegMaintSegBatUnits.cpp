@@ -11,8 +11,6 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::init() {
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::clear() {
     memset(_buffer, 0x00, sizeof(_buffer));
-    _buffer_batt = 0x00;
-    _buffer_sig = 0x00;
     memset(_buffer_labels, 0x00, sizeof(_buffer_labels));
     memset(_buffer_top, 0x00, sizeof(_buffer_top));
     memset(_buffer_default, 0x00, sizeof(_buffer_default));
@@ -20,39 +18,39 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::clear() {
 }
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setBatteryLevel(uint8_t level) {
-    if (level > 4)
-        level = 4;
-
-    _buffer_batt &= ~(0x0f);
+    uint8_t data = 0x00;
+    if (level > 5)
+        level = 5;
 
     if (level > 0)
-        _buffer_batt |= 8;
+        data |= 0x10;  // W1 (0x08 COM4)
     if (level > 1)
-        _buffer_batt |= 1;
+        data |= 0x08;  // W5 (0x09 COM1)
     if (level > 2)
-        _buffer_batt |= 2;
+        data |= 0x04;  // W4 (0x09 COM2)
     if (level > 3)
-        _buffer_batt |= 4;
+        data |= 0x02;  // W3 (0x09 COM3)
+    if (level > 4)
+        data |= 0x01;  // W2 (0x09 COM4)
 
-    _writeRam(_buffer_batt, ADDR_BATT);
+    _writeRamAtAddr(data, ADDR_BATT, 0x1F);
 }
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setSignalLevel(uint8_t level) {
+    uint8_t data = 0x00;
     if (level > 4)
         level = 4;
 
-    _buffer_sig &= ~(0x0f);
-
     if (level > 0)
-        _buffer_sig |= 0x08;
+        data |= 0x80;
     if (level > 1)
-        _buffer_sig |= 0x04;
+        data |= 0x40;
     if (level > 2)
-        _buffer_sig |= 0x02;
+        data |= 0x20;
     if (level > 3)
-        _buffer_sig |= 0x01;
+        data |= 0x10;
 
-    _writeRam(_buffer_sig, ADDR_SIGNAL);
+    _writeRamAtAddr(data, ADDR_SIGNAL, 0xF0);
 }
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setLabels(LabelFlags labels) {
