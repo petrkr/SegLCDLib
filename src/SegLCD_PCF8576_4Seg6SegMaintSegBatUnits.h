@@ -63,6 +63,6 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
 
         uint8_t _mapSegmentsTop(uint8_t val);
         uint8_t _mapSegments(uint8_t val);
-        void _setRamMasked(uint8_t addr, uint8_t mask, uint8_t value);
+        void _writeRamAtAddr(uint8_t data, uint8_t address, uint8_t mask = 0xFF);
 };
 #endif

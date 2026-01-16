@@ -99,7 +99,7 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setClockColon(uint8_t row, uint8_t
         _buffer[(digit-1)] &= ~0x10; // Clear the decimal point bit
     }
 
-    _writeRam(_buffer[(digit-1)], address);
+    _writeRamAtAddr(_buffer[(digit-1)], address);
 }
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setDecimal(uint8_t row, uint8_t col, bool state) {
@@ -132,7 +132,7 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setDecimal(uint8_t row, uint8_t co
         _buffer[col] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
     }
 
-    _writeRam(_buffer[col], address);
+    _writeRamAtAddr(_buffer[col], address);
 }
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setCursor(uint8_t row, uint8_t col) {
@@ -167,7 +167,7 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::write(uint8_t ch) {
 
             if (_cursorCol == 2 && ch != ':' && !_colon_top && (_buffer_top[_cursorCol] & DECIMAL_POINT_BIT)) {
                 _buffer_top[_cursorCol] &= ~DECIMAL_POINT_BIT;
-                _writeRam(_buffer_top[_cursorCol], ADDR_SMALL_SEGS + ((_cursorCol) * 2));
+                _writeRamAtAddr(_buffer_top[_cursorCol], ADDR_SMALL_SEGS + ((_cursorCol) * 2));
             }
 
             if (ch == '.') {
@@ -187,7 +187,7 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::write(uint8_t ch) {
             } else {
                 _buffer_top[_cursorCol] = segment_data;
             }
-            _writeRam(_buffer_top[_cursorCol], ADDR_SMALL_SEGS + ((_cursorCol) * 2));
+            _writeRamAtAddr(_buffer_top[_cursorCol], ADDR_SMALL_SEGS + ((_cursorCol) * 2));
             break;
         case 1:
             if (_cursorCol < 0 || _cursorCol > 5) {
@@ -197,7 +197,7 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::write(uint8_t ch) {
 
             if (_cursorCol == 4 && ch != ':' && !_colon_default && (_buffer_default[_cursorCol] & DECIMAL_POINT_BIT)) {
                 _buffer_default[_cursorCol] &= ~DECIMAL_POINT_BIT;
-                _writeRam(_buffer_default[_cursorCol], ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
+                _writeRamAtAddr(_buffer_default[_cursorCol], ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
             }
 
             if (ch == '.') {
@@ -221,7 +221,7 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::write(uint8_t ch) {
             col = (uint8_t)(5 - _cursorCol);
             addr = (uint8_t)(ADDR_BIG_SEGS + (col * 2));
             if (addr >= 17) { addr += 2; } // Skip labels
-            _writeRam(_buffer_default[_cursorCol], addr);
+            _writeRamAtAddr(_buffer_default[_cursorCol], addr);
             break;
         default:
             return 0; // invalid digit
@@ -254,21 +254,33 @@ uint8_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_mapSegments(uint8_t val)
     return out;
 }
 
-void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_setRamMasked(uint8_t addr, uint8_t mask, uint8_t value) {
-    uint8_t byteIndex = addr >> 1;
-    bool high = (addr & 0x01) != 0;
-    uint8_t m = mask & 0x0F;
-    uint8_t v = value & 0x0F;
-
-    if (high) {
-        uint8_t cur = (_buffer[byteIndex] >> 4) & 0x0F;
-        cur = (cur & ~m) | (v & m);
-        _buffer[byteIndex] = (_buffer[byteIndex] & 0x0F) | (cur << 4);
-    } else {
-        uint8_t cur = _buffer[byteIndex] & 0x0F;
-        cur = (cur & ~m) | (v & m);
-        _buffer[byteIndex] = (_buffer[byteIndex] & 0xF0) | cur;
+void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRamAtAddr(uint8_t data, uint8_t address, uint8_t mask) {
+    uint8_t byteIndex = address >> 1;
+    if (mask != 0xFF) {
+        uint8_t current;
+        if ((address & 0x01) == 0) {
+            current = _buffer[byteIndex];
+        } else {
+            uint8_t high = _buffer[byteIndex] & 0x0F;
+            uint8_t low = 0;
+            if (byteIndex + 1 < RAM_BYTE_COUNT) {
+                low = (_buffer[byteIndex + 1] >> 4) & 0x0F;
+            }
+            current = low | (high << 4);
+        }
+        data = (current & ~mask) | (data & mask);
     }
+    if ((address & 0x01) == 0) {
+        _buffer[byteIndex] = data;
+    } else {
+        uint8_t low = data & 0x0F;
+        uint8_t high = (data >> 4) & 0x0F;
+        _buffer[byteIndex] = (_buffer[byteIndex] & 0xF0) | high;
+        if (byteIndex + 1 < RAM_BYTE_COUNT) {
+            _buffer[byteIndex + 1] = (_buffer[byteIndex + 1] & 0x0F) | (low << 4);
+        }
+    }
+    _writeRam(data, address);
 }
 
 
