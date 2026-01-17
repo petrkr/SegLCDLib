@@ -126,6 +126,7 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setClockColon(uint8_t row, uint8_t
                 return; // Invalid digit
             }
             _writeRamAtAddr(state ? 0x80 : 0x00, 0x07, 0x80);
+            _colon_top = state;
             break;
         case 1:
             if (col != 2 && col != 4) {
@@ -134,8 +135,10 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setClockColon(uint8_t row, uint8_t
 
             if (col == 2) {
                 _writeRamAtAddr(state ? 0x80 : 0x00, 0x08, 0x80);
+                _colon_default_left = state;
             } else {
                 _writeRamAtAddr(state ? 0x40 : 0x00, 0x08, 0x40);
+                _colon_default_right = state;
             }
             break;
         default:
@@ -193,13 +196,17 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setDecimal(uint8_t row, uint8_t co
 }
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setCursor(uint8_t row, uint8_t col) {
-    if (row == 0 && col < 2) {
+    if (row == 0 && col <= 2) {
         _colon_top = false;
     }
 
-    if (row == 1 && col < 5) {
-        _colon_default_left = false;
-        _colon_default_right = false;
+    if (row == 1) {
+        if (col <= 2) {
+            _colon_default_left = false;
+        }
+        if (col <= 4) {
+            _colon_default_right = false;
+        }
     }
 
     SegDriver_PCF85176::setCursor(row, col);
@@ -225,6 +232,10 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::write(uint8_t ch) {
             segment_data = _mapSegmentsTop(_get_char_value(ch));
             dp_mask = 0x08;
             addr = (uint8_t)(ADDR_SMALL_SEGS + ((_cursorCol) * 2));
+
+            if (_cursorCol == 2 && ch != ':' && !_colon_top) {
+                setClockColon(_cursorRow, _cursorCol, false);
+            }
 
             if (_cursorCol == 2 && ch != ':' && !_colon_top && (_buffer[addr >> 1] & dp_mask)) {
                 uint8_t cleared = _buffer[addr >> 1] & ~dp_mask;
@@ -262,6 +273,14 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::write(uint8_t ch) {
             }
             segment_data = _mapSegments(_get_char_value(ch));
             dp_mask = 0x10;
+
+            if (_cursorCol == 2 && ch != ':' && !_colon_default_left) {
+                setClockColon(_cursorRow, _cursorCol, false);
+            }
+
+            if (_cursorCol == 4 && ch != ':' && !_colon_default_right) {
+                setClockColon(_cursorRow, _cursorCol, false);
+            }
 
             if (_cursorCol == 4 && ch != ':' && !_colon_default_right && (_buffer_default[_cursorCol] & dp_mask)) {
                 _buffer_default[_cursorCol] &= ~dp_mask;
