@@ -218,12 +218,6 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::write(uint8_t ch) {
     uint8_t col = 0x00;
     uint8_t dp_mask = 0x00;
 
-    Serial.println(_cursorRow);
-    Serial.println(_cursorCol);
-    Serial.println(ch);
-    Serial.println();
-    
-
     switch (_cursorRow) {
         case 0:
             if (_cursorCol < 0 || _cursorCol > 3) {
