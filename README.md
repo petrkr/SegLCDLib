@@ -89,4 +89,4 @@ Tesla display 4DR821B https://www.teslakatalog.cz/4DR821B.html
 
 
 ### 4+6 digit maint bat sig units
-TBD
+Example: `examples/PCF8576/4Seg6SegMaintSegBatUnits`
