@@ -18,6 +18,7 @@ https://petrkr.github.io/SegLCDLib/
 | Name     | Type           |
 |----------|----------------|
 | PCF85176 | I2C            |
+| PCF8576  | I2C            |
 | HT1621   | 3-wire serial  |
 | HT1622   | 3-wire serial  |
 | VK0192   | 3-wire serial  |
