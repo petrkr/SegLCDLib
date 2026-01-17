@@ -51,7 +51,6 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
         static constexpr uint8_t RAM_BYTE_COUNT = (RAM_ADDR_LAST + 2) / 2;
         uint8_t _buffer[RAM_BYTE_COUNT] = {0};
 
-        uint8_t _buffer_top[4] = {0};
         uint8_t _buffer_default[6] = {0};
 
         bool _colon_top = false;

@@ -11,7 +11,6 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::init() {
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::clear() {
     memset(_buffer, 0x00, sizeof(_buffer));
-    memset(_buffer_top, 0x00, sizeof(_buffer_top));
     memset(_buffer_default, 0x00, sizeof(_buffer_default));
     SegDriver_PCF85176::clear();
 }
@@ -146,9 +145,9 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setClockColon(uint8_t row, uint8_t
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setDecimal(uint8_t row, uint8_t col, bool state) {
     uint8_t address = 0;
-    uint8_t* _buffer = nullptr;
     uint8_t mask = 0xFF;
     uint8_t dp_mask = 0;
+    uint8_t current = 0;
     switch (row) {
         case 0:
             if (col < 0 || col > 2) {
@@ -156,8 +155,8 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setDecimal(uint8_t row, uint8_t co
             }
 
             address = ADDR_SMALL_SEGS + (col * 2);
-            _buffer = _buffer_top;
             dp_mask = 0x08;
+            current = _buffer[address >> 1];
             break;
         case 1:
             if (col < 0 || col > 4) {
@@ -171,17 +170,17 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setDecimal(uint8_t row, uint8_t co
             if (address == 0x0B) {
                 return; // No decimal point on this digit
             }
-            _buffer = _buffer_default;
             dp_mask = 0x10;
+            current = _buffer_default[col];
             break;
         default:
             return; // Invalid section
     }
 
     if (state) {
-        _buffer[col] |= dp_mask; // Set the decimal point bit
+        current |= dp_mask; // Set the decimal point bit
     } else {
-        _buffer[col] &= ~dp_mask; // Clear the decimal point bit
+        current &= ~dp_mask; // Clear the decimal point bit
     }
 
     if (address == 0x06) {
@@ -190,7 +189,7 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setDecimal(uint8_t row, uint8_t co
         mask &= 0xEF;
     }
 
-    _writeRamAtAddr(_buffer[col], address, mask);
+    _writeRamAtAddr(current, address, mask);
 }
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setCursor(uint8_t row, uint8_t col) {
@@ -225,10 +224,15 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::write(uint8_t ch) {
             }
             segment_data = _mapSegmentsTop(_get_char_value(ch));
             dp_mask = 0x08;
+            addr = (uint8_t)(ADDR_SMALL_SEGS + ((_cursorCol) * 2));
 
-            if (_cursorCol == 2 && ch != ':' && !_colon_top && (_buffer_top[_cursorCol] & dp_mask)) {
-                _buffer_top[_cursorCol] &= ~dp_mask;
-                _writeRamAtAddr(_buffer_top[_cursorCol], ADDR_SMALL_SEGS + ((_cursorCol) * 2));
+            if (_cursorCol == 2 && ch != ':' && !_colon_top && (_buffer[addr >> 1] & dp_mask)) {
+                uint8_t cleared = _buffer[addr >> 1] & ~dp_mask;
+                if (addr == 0x06) {
+                    _writeRamAtAddr(cleared, addr, 0xF7);
+                } else {
+                    _writeRamAtAddr(cleared, addr);
+                }
             }
 
             if (ch == '.') {
@@ -243,16 +247,13 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::write(uint8_t ch) {
             }
 
             if (_cursorCol == 3 && _colon_top) {
-                _buffer_top[_cursorCol] &= dp_mask;
-                _buffer_top[_cursorCol] |= (segment_data & ~dp_mask);
-            } else {
-                _buffer_top[_cursorCol] = segment_data;
+                uint8_t current = _buffer[addr >> 1] & dp_mask;
+                segment_data = current | (segment_data & ~dp_mask);
             }
-            addr = (uint8_t)(ADDR_SMALL_SEGS + ((_cursorCol) * 2));
             if (addr == 0x06) {
-                _writeRamAtAddr(_buffer_top[_cursorCol], addr, 0xF7);
+                _writeRamAtAddr(segment_data, addr, 0xF7);
             } else {
-                _writeRamAtAddr(_buffer_top[_cursorCol], addr);
+                _writeRamAtAddr(segment_data, addr);
             }
             break;
         case 1:
