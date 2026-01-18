@@ -3,7 +3,18 @@
 
 #include <SegDriver_VK0192.h>
 
-
+/**
+ * @brief VK0192 driver for 5-digit LCD with signal/battery/progress indicators
+ *
+ * 5-digit 7-segment display with integrated VK0192 controller.
+ * Features: signal bars, battery level, progress indicator, unit labels.
+ *
+ * @note Integrated controller on LCD module (no separate IC)
+ * @note 3-wire serial protocol (CLK, DATA, CS pins)
+ * @note Irregular RAM addressing (requires careful segment mapping)
+ *
+ * @example examples/VK0192/5DigSigBattProgress/5DigSigBattProgress.ino
+ */
 class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
     public:
         typedef enum {

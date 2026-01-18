@@ -3,7 +3,17 @@
 
 #include <SegDriver_HT1621.h>
 
-
+/**
+ * @brief HT1621 driver for 4-digit LCD with degree symbol and colon
+ *
+ * 4-digit 7-segment display with integrated HT1621 controller.
+ * Features: degree symbol (°), colon (:), decimal points.
+ *
+ * @note Integrated controller on LCD module (no separate IC)
+ * @note 3-wire serial protocol (CLK, DATA, CS pins)
+ *
+ * @example examples/HT1621/4DigDeg/4DigDeg.ino
+ */
 class SegLCD_HT1621_4SegDegree : public SegDriver_HT1621 {
     #define ADDR_SYMBOLS 6
 

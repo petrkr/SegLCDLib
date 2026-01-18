@@ -4,7 +4,18 @@
 #include <Wire.h>
 #include <SegDriver_PCx85.h>
 
-
+/**
+ * @brief PCF8576 driver for 4+6 digit LCD with maintenance/battery/signal/units
+ *
+ * Dual-display: 4-digit main + 6-digit status with symbol zones.
+ * Features: maintenance indicator, battery level, signal strength, unit labels.
+ *
+ * @note Separate PCF8576 I2C controller (older variant of PCF85176)
+ * @note I2C protocol (SDA, SCL pins)
+ * @note Default I2C address: 0x38
+ *
+ * @example examples/PCF8576/4Seg6SegMaintSegBatUnits/4Seg6SegMaintSegBatUnits.ino
+ */
 class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
 
     #define MAX_ADDRESS 24
