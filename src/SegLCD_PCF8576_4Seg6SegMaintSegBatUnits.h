@@ -42,14 +42,9 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
         void setCursor(uint8_t row, uint8_t col);
         size_t write(uint8_t ch) override;
 
-        // TODO: Remove after implementation
-        void writeRam(uint8_t data, uint8_t address = 0);
-        void writeRam(uint8_t *data, size_t length, uint8_t address = 0);
-
     private:
         static constexpr uint8_t RAM_ADDR_LAST = 0x18;
         static constexpr uint8_t RAM_BYTE_COUNT = (RAM_ADDR_LAST + 2) / 2;
-        uint8_t _buffer[RAM_BYTE_COUNT] = {0};
 
         uint8_t _buffer_default[6] = {0};
 
@@ -62,6 +57,5 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
         uint8_t _convertLabelFlags(uint8_t labels);
         size_t _writeRow0(uint8_t ch);
         size_t _writeRow1(uint8_t ch);
-        void _writeRamAtAddr(uint8_t data, uint8_t address, uint8_t mask = 0xFF);
 };
 #endif
