@@ -50,11 +50,6 @@ Connect 3 GPIO pins and power to your Arduino:
 SegLCD_HT1621_4SegDegree lcd(5, 6, 7);
 
 void setup() {
-  // Configure GPIO pins for 3-wire protocol
-  pinMode(5, OUTPUT);   // CLK
-  pinMode(6, OUTPUT);   // DATA
-  pinMode(7, OUTPUT);   // CS
-
   lcd.init();           // Initialize display
 }
 
