@@ -10,19 +10,23 @@ SegLCD_PCF8576_4Seg6SegMaintSegBatUnits lcd(Wire);
 
 void setup() {
   Wire.begin(1, 2);
+  lcd.initBacklight(10, SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::BACKLIGHT_PWM);
+  lcd.setBacklight(128);
+
   lcd.init();
   lcd.clear();
 
   lcd.setSignalLevel(3);
-  lcd.setBatteryLevel(4);
+  lcd.setBatteryLevel(2);
   lcd.setMaintenance(true);
-  lcd.setLabels(SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::LABEL_MPA);
+  //lcd.setLabels(SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::LABEL_);
+  lcd.setDegree(true);
 
   lcd.setCursor(0, 0);
-  lcd.print("1.2:3");
+  lcd.print("17:37");
 
   lcd.setCursor(1, 0);
-  lcd.print("12.3:45");
+  lcd.print("T1:-3.41");
 }
 
 
