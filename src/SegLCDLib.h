@@ -39,6 +39,11 @@ class SegLCDLib : public Print {
         };
 
         /**
+         * @brief Virtual destructor to ensure proper cleanup in derived classes.
+         */
+        virtual ~SegLCDLib();
+
+        /**
          * @brief Logical display sections that can be targeted by higher-level rendering logic.
          */
 
@@ -148,6 +153,36 @@ class SegLCDLib : public Print {
          * @brief Cached backlight brightness
          */
         uint8_t _backlightBrightness = 0;
+
+        /**
+         * @brief Dynamic RAM buffer for display data (allocated by derived classes).
+         */
+        uint8_t* _ramBuffer = nullptr;
+
+        /**
+         * @brief Size of allocated RAM buffer in bytes.
+         */
+        size_t _ramBufferSize = 0;
+
+        /**
+         * @brief Allocate RAM buffer for display data.
+         *
+         * @param size Buffer size in bytes
+         */
+        void _allocateBuffer(size_t size);
+
+        /**
+         * @brief Write to display RAM with nibble-aware masking support.
+         *
+         * Handles both byte-aligned and nibble-aligned addresses with read-modify-write
+         * when mask is not 0xFF. Updates internal buffer and writes to hardware.
+         *
+         * @param data Value to write
+         * @param address RAM address (nibble-level addressing)
+         * @param mask Bitmask for selective bit updates (0xFF = write all bits)
+         */
+        void _writeRamMasked(uint8_t data, uint8_t address, uint8_t mask = 0xFF);
+
         /**
          * @brief Low-level method to write a single byte to display RAM.
          *

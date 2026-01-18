@@ -2,7 +2,62 @@
 #include <SegLCDLib.h>
 
 
+SegLCDLib::~SegLCDLib() {
+    if (_ramBuffer) {
+        free(_ramBuffer);
+        _ramBuffer = nullptr;
+    }
+}
+
+void SegLCDLib::_allocateBuffer(size_t size) {
+    if (_ramBuffer) free(_ramBuffer);
+    _ramBuffer = (uint8_t*)malloc(size);
+    _ramBufferSize = size;
+}
+
+void SegLCDLib::_writeRamMasked(uint8_t data, uint8_t address, uint8_t mask) {
+    uint8_t byteIndex = address >> 1;
+
+    if (!_ramBuffer || byteIndex >= _ramBufferSize) return;
+
+    // Read-modify-write with mask
+    if (mask != 0xFF) {
+        uint8_t current;
+        if ((address & 0x01) == 0) {
+            // Even address: full byte
+            current = _ramBuffer[byteIndex];
+        } else {
+            // Odd address: nibble split across two bytes
+            uint8_t high = _ramBuffer[byteIndex] & 0x0F;
+            uint8_t low = 0;
+            if (byteIndex + 1 < _ramBufferSize) {
+                low = (_ramBuffer[byteIndex + 1] >> 4) & 0x0F;
+            }
+            current = low | (high << 4);
+        }
+        data = (current & ~mask) | (data & mask);
+    }
+
+    // Update buffer
+    if ((address & 0x01) == 0) {
+        _ramBuffer[byteIndex] = data;
+    } else {
+        uint8_t low = data & 0x0F;
+        uint8_t high = (data >> 4) & 0x0F;
+        _ramBuffer[byteIndex] = (_ramBuffer[byteIndex] & 0xF0) | high;
+        if (byteIndex + 1 < _ramBufferSize) {
+            _ramBuffer[byteIndex + 1] = (_ramBuffer[byteIndex + 1] & 0x0F) | (low << 4);
+        }
+    }
+
+    // Write to hardware
+    _writeRam(data, address);
+}
+
 void SegLCDLib::clear() {
+    if (_ramBuffer) {
+        memset(_ramBuffer, 0x00, _ramBufferSize);
+    }
     home();
 }
 
