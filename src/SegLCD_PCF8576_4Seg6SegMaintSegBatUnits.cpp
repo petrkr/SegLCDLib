@@ -51,63 +51,26 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setSignalLevel(uint8_t level) {
     _writeRamAtAddr(data, ADDR_SIGNAL, 0xF0);
 }
 
-void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setLabels(uint8_t labels) {
+uint8_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_convertLabelFlags(uint8_t labels) {
     uint8_t label_bits = 0;
-    if (labels & LABEL_MPA) {
-        label_bits |= 0x01;
-    }
-    if (labels & LABEL_KPA) {
-        label_bits |= 0x02;
-    }
-    if (labels & LABEL_UEPS) {
-        label_bits |= 0x04;
-    }
-    if (labels & LABEL_MM) {
-        label_bits |= 0x08;
-    }
-    if (labels & LABEL_MV) {
-        label_bits |= 0x10;
-    }
-    if (labels & LABEL_NM) {
-        label_bits |= 0x20;
-    }
-    if (labels & LABEL_KG) {
-        label_bits |= 0x40;
-    }
-    if (labels & LABEL_G) {
-        label_bits |= 0x80;
-    }
+    if (labels & LABEL_MPA)  label_bits |= 0x01;
+    if (labels & LABEL_KPA)  label_bits |= 0x02;
+    if (labels & LABEL_UEPS) label_bits |= 0x04;
+    if (labels & LABEL_MM)   label_bits |= 0x08;
+    if (labels & LABEL_MV)   label_bits |= 0x10;
+    if (labels & LABEL_NM)   label_bits |= 0x20;
+    if (labels & LABEL_KG)   label_bits |= 0x40;
+    if (labels & LABEL_G)    label_bits |= 0x80;
+    return label_bits;
+}
 
+void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setLabels(uint8_t labels) {
+    uint8_t label_bits = _convertLabelFlags(labels);
     _writeRamAtAddr(label_bits, ADDR_LABELS, label_bits);
 }
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::clearLabels(uint8_t labels) {
-    uint8_t label_bits = 0;
-    if (labels & LABEL_MPA) {
-        label_bits |= 0x01;
-    }
-    if (labels & LABEL_KPA) {
-        label_bits |= 0x02;
-    }
-    if (labels & LABEL_UEPS) {
-        label_bits |= 0x04;
-    }
-    if (labels & LABEL_MM) {
-        label_bits |= 0x08;
-    }
-    if (labels & LABEL_MV) {
-        label_bits |= 0x10;
-    }
-    if (labels & LABEL_NM) {
-        label_bits |= 0x20;
-    }
-    if (labels & LABEL_KG) {
-        label_bits |= 0x40;
-    }
-    if (labels & LABEL_G) {
-        label_bits |= 0x80;
-    }
-
+    uint8_t label_bits = _convertLabelFlags(labels);
     _writeRamAtAddr(0x00, ADDR_LABELS, label_bits);
 }
 
