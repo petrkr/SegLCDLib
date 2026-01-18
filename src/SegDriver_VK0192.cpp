@@ -47,3 +47,19 @@ void SegDriver_VK0192::_sendBits(uint16_t data, uint8_t bitCount) {
         delayMicroseconds(4);     // Write pulse HIGH: 3.34μs @ 3V (4μs safe)
     }
 }
+
+void SegDriver_VK0192::flush(uint8_t startAddr, uint8_t length) {
+    if (!_ramBuffer || startAddr >= _ramBufferSize) return;
+
+    // Clamp length to buffer bounds
+    if (startAddr + length > _ramBufferSize) {
+        length = _ramBufferSize - startAddr;
+    }
+
+    // VK0192 writes individual addresses (no bulk write support)
+    // Loop through each byte in the range
+    for (uint8_t i = 0; i < length; i++) {
+        uint8_t addr = (startAddr + i) * 2;  // Convert byte index to nibble address
+        _writeRam(_ramBuffer[startAddr + i], addr);
+    }
+}

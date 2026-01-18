@@ -50,8 +50,10 @@ void SegLCDLib::_writeRamMasked(uint8_t data, uint8_t address, uint8_t mask) {
         }
     }
 
-    // Write to hardware
-    _writeRam(data, address);
+    // Write to hardware ONLY if autoflush is enabled
+    if (_autoFlush) {
+        _writeRam(data, address);
+    }
 }
 
 void SegLCDLib::clear() {
@@ -297,6 +299,34 @@ uint16_t SegLCDLib::_get_16char_value(char ch) {
         case '}': return 0b1000010001010010;
 
         default: return 0b0000000000000000;
+    }
+}
+
+void SegLCDLib::setAutoFlush(bool enable) {
+    _autoFlush = enable;
+}
+
+bool SegLCDLib::getAutoFlush() const {
+    return _autoFlush;
+}
+
+void SegLCDLib::flush() {
+    flush(0, _ramBufferSize);
+}
+
+void SegLCDLib::flush(uint8_t startAddr, uint8_t length) {
+    if (!_ramBuffer || startAddr >= _ramBufferSize) return;
+
+    // Clamp length to buffer bounds
+    if (startAddr + length > _ramBufferSize) {
+        length = _ramBufferSize - startAddr;
+    }
+
+    // Base implementation: write entire buffer from start address
+    // Address parameter expects nibble-level addressing (startAddr * 2)
+    // Derived classes can override for more efficient implementations
+    for (uint8_t i = 0; i < length; i++) {
+        _writeRam(_ramBuffer[startAddr + i], (startAddr + i) * 2);
     }
 }
 

@@ -30,6 +30,18 @@ class SegDriver_VK0192 : public SegDriver_3Wire {
 
         void clear() override;
 
+        /**
+         * @brief Flush specific range of buffered changes to the display.
+         *
+         * Optimized implementation for VK0192 that loops through each address
+         * since the 3-wire protocol doesn't support bulk write.
+         *
+         * @param startAddr Starting buffer address in bytes (RAM buffer index)
+         * @param length Number of bytes to flush
+         */
+        void flush(uint8_t startAddr, uint8_t length) override;
+        using SegLCDLib::flush;  // Inherit base flush() without parameters
+
     protected:
         /**
          * @brief Override _writeRam to implement VK0192-specific timing requirements.

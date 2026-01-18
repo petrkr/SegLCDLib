@@ -234,10 +234,87 @@ class SegLCDLib : public Print {
         virtual void setBacklight(int brightness);
 
         // ----------------------
+        // Flush/Autoflush API
+        // ----------------------
+
+        /**
+         * @brief Enable or disable autoflush mode.
+         *
+         * In autoflush mode (default), each write() call immediately updates the display.
+         * This maintains LCD API 1.0 compatibility but can cause flicker when multiple
+         * segments are updated rapidly (e.g., writing "123.4" causes decimal point to flicker).
+         *
+         * In manual flush mode, write() only updates the internal buffer. Call flush()
+         * to write all buffered changes to the display at once, eliminating flicker.
+         *
+         * Example usage:
+         * \code{.cpp}
+         * // Disable autoflush for rapid updates
+         * lcd.setAutoFlush(false);
+         *
+         * void loop() {
+         *     lcd.setCursor(0, 0);
+         *     lcd.print(value);  // Buffer only, no HW write
+         *     lcd.flush();       // Single HW write of all changes
+         *     delay(100);
+         * }
+         * \endcode
+         *
+         * @param enable true to enable autoflush (default), false for manual flush mode
+         * @see flush()
+         */
+        void setAutoFlush(bool enable);
+
+        /**
+         * @brief Get current autoflush state.
+         *
+         * @return true if autoflush is enabled, false if in manual flush mode
+         */
+        bool getAutoFlush() const;
+
+        /**
+         * @brief Flush all buffered changes to the display.
+         *
+         * Writes the entire display buffer to the hardware. This is useful when
+         * autoflush is disabled to batch multiple write() calls into a single
+         * hardware update cycle.
+         *
+         * Safe to call even when autoflush is enabled (no effect).
+         *
+         * @see setAutoFlush()
+         */
+        virtual void flush();
+
+        /**
+         * @brief Flush specific range of buffered changes to the display.
+         *
+         * Writes a specific address range from the display buffer to hardware.
+         * This is an advanced API for optimizing updates when only part of the
+         * display needs to be refreshed.
+         *
+         * For example, to update only the first row of a multi-row display:
+         * \code{.cpp}
+         * lcd.flush(0, 6);  // Update first 6 bytes (row 0)
+         * \endcode
+         *
+         * Safe to call even when autoflush is enabled (no effect).
+         *
+         * @param startAddr Starting buffer address in bytes (RAM buffer index)
+         * @param length Number of bytes to flush
+         * @see setAutoFlush()
+         */
+        virtual void flush(uint8_t startAddr, uint8_t length);
+
+        // ----------------------
         // SegLCDLib specific part
         // ----------------------
 
     protected:
+        /**
+         * @brief Autoflush mode enabled flag (default: true for LCD API 1.0 compatibility).
+         */
+        bool _autoFlush = true;
+
         /**
          * @brief Backlight GPIO pin (-1 if disabled)
          */

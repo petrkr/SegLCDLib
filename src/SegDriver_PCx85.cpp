@@ -115,3 +115,16 @@ void SegDriver_PCx85::_setMode(ModeStatus status, ModeDrive drive, ModeBias bias
     _i2c.write(data);
     _i2c.endTransmission();
 }
+
+void SegDriver_PCx85::flush(uint8_t startAddr, uint8_t length) {
+    if (!_ramBuffer || startAddr >= _ramBufferSize) return;
+
+    // Clamp length to buffer bounds
+    if (startAddr + length > _ramBufferSize) {
+        length = _ramBufferSize - startAddr;
+    }
+
+    // PCx85 supports efficient bulk write from any address
+    // Convert byte index to nibble-level address (startAddr * 2)
+    _writeRam(_ramBuffer + startAddr, length, startAddr * 2);
+}

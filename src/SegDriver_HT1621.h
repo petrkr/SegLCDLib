@@ -43,6 +43,18 @@ class SegDriver_HT1621 : public SegDriver_3Wire {
 
         void clear() override;
 
+        /**
+         * @brief Flush specific range of buffered changes to the display.
+         *
+         * Optimized implementation for HT1621 that loops through each address
+         * since the 3-wire protocol doesn't support bulk write.
+         *
+         * @param startAddr Starting buffer address in bytes (RAM buffer index)
+         * @param length Number of bytes to flush
+         */
+        void flush(uint8_t startAddr, uint8_t length) override;
+        using SegLCDLib::flush;  // Inherit base flush() without parameters
+
     protected:
         /**
          * @brief Set the mode of the display.
