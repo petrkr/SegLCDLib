@@ -5,14 +5,14 @@
 SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::SegLCD_PCF8576_4Seg6SegMaintSegBatUnits(TwoWire& i2c, uint8_t address, uint8_t subaddress) :  SegDriver_PCF8576(i2c, address, subaddress) {}
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::init() {
-    SegDriver_PCF85176::init();
+    SegDriver_PCF8576::init();
     _setMode(MODE_STATUS_ENABLED);
 }
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::clear() {
     memset(_buffer, 0x00, sizeof(_buffer));
     memset(_buffer_default, 0x00, sizeof(_buffer_default));
-    SegDriver_PCF85176::clear();
+    SegDriver_PCF8576::clear();
 }
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setBatteryLevel(uint8_t level) {
@@ -209,7 +209,7 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setCursor(uint8_t row, uint8_t col
         }
     }
 
-    SegDriver_PCF85176::setCursor(row, col);
+    SegDriver_PCF8576::setCursor(row, col);
 }
 
 size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::write(uint8_t ch) {
