@@ -15,6 +15,58 @@ void SegLCDLib::setCursor(uint8_t row, uint8_t col) {
     _cursorCol = col;
 }
 
+void SegLCDLib::initBacklight(int8_t backlightPin, BacklightMode backlightMode, bool backlightActiveHigh) {
+    _backlightPin = backlightPin;
+    _backlightMode = backlightMode;
+    _backlightActiveHigh = backlightActiveHigh;
+
+    if (_backlightPin < 0) return;
+
+    if (_backlightMode == BACKLIGHT_PWM) {
+        #ifdef ESP32
+            // ESP32 PWM setup
+            ledcSetup(0, 5000, 8);  // channel 0, 5kHz, 8-bit
+            ledcAttachPin(_backlightPin, 0);
+        #else
+            pinMode(_backlightPin, OUTPUT);
+        #endif
+    } else {
+        pinMode(_backlightPin, OUTPUT);
+    }
+
+    // Initialize to off
+    setBacklight(false);
+}
+
+void SegLCDLib::setBacklight(bool state) {
+    if (_backlightPin < 0) return;
+
+    bool outputState = _backlightActiveHigh ? state : !state;
+    digitalWrite(_backlightPin, outputState ? HIGH : LOW);
+}
+
+void SegLCDLib::setBacklight(int brightness) {
+    if (_backlightPin < 0) return;
+
+    _backlightBrightness = brightness;
+
+    uint8_t pwmValue = brightness;
+    if (!_backlightActiveHigh) {
+        pwmValue = 255 - brightness;
+    }
+
+    if (_backlightMode == BACKLIGHT_PWM) {
+        #ifdef ESP32
+            ledcWrite(0, pwmValue);
+        #else
+            analogWrite(_backlightPin, pwmValue);
+        #endif
+    } else {
+        // Digital mode - convert to boolean
+        digitalWrite(_backlightPin, brightness > 127 ? HIGH : LOW);
+    }
+}
+
 //Mapping ABCD EFGH
 uint8_t SegLCDLib::_get_char_value(char ch) {
     switch (ch) {

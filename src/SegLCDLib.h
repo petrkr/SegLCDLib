@@ -31,6 +31,14 @@ typedef enum {
 class SegLCDLib : public Print {
     public:
         /**
+         * @brief Backlight mode for GPIO control.
+         */
+        enum BacklightMode {
+            BACKLIGHT_DIGITAL,  ///< Digital on/off mode
+            BACKLIGHT_PWM       ///< PWM brightness control (0-255)
+        };
+
+        /**
          * @brief Logical display sections that can be targeted by higher-level rendering logic.
          */
 
@@ -91,12 +99,55 @@ class SegLCDLib : public Print {
          */
         virtual void off() = 0;
 
+        /**
+         * @brief Initialize GPIO backlight control.
+         *
+         * Must be called from init() of concrete implementations to setup the backlight GPIO.
+         *
+         * @param backlightPin GPIO pin for backlight control (-1 to disable)
+         * @param backlightMode Backlight mode (DIGITAL or PWM)
+         * @param backlightActiveHigh true if backlight is active high (default), false for active low
+         */
+        void initBacklight(int8_t backlightPin, BacklightMode backlightMode = BACKLIGHT_DIGITAL, bool backlightActiveHigh = true);
+
+        /**
+         * @brief Set backlight state (on/off).
+         *
+         * @param state true to turn backlight on, false to turn off
+         */
+        virtual void setBacklight(bool state);
+
+        /**
+         * @brief Set backlight brightness (0-255).
+         *
+         * @param brightness Brightness level 0-255, where 0 is off and 255 is full brightness
+         */
+        virtual void setBacklight(int brightness);
 
         // ----------------------
         // SegLCDLib specific part
         // ----------------------
 
     protected:
+        /**
+         * @brief Backlight GPIO pin (-1 if disabled)
+         */
+        int8_t _backlightPin = -1;
+
+        /**
+         * @brief Backlight mode (DIGITAL or PWM)
+         */
+        BacklightMode _backlightMode = BACKLIGHT_DIGITAL;
+
+        /**
+         * @brief Backlight active high flag
+         */
+        bool _backlightActiveHigh = true;
+
+        /**
+         * @brief Cached backlight brightness
+         */
+        uint8_t _backlightBrightness = 0;
         /**
          * @brief Low-level method to write a single byte to display RAM.
          *
