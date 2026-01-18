@@ -116,7 +116,7 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setDecimal(uint8_t row, uint8_t co
     uint8_t current = 0;
     switch (row) {
         case 0:
-            if (col < 0 || col > 2) {
+            if (col > 2) {
                 return; // Invalid digit
             }
 
@@ -125,7 +125,7 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setDecimal(uint8_t row, uint8_t co
             current = _buffer[address >> 1];
             break;
         case 1:
-            if (col < 0 || col > 4) {
+            if (col > 4) {
                 return; // Invalid digit
             }
 
@@ -175,114 +175,109 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setCursor(uint8_t row, uint8_t col
     SegDriver_PCF8576::setCursor(row, col);
 }
 
-size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::write(uint8_t ch) {
-    uint8_t segment_data = 0x00;
-    uint8_t addr = 0x00;
-    uint8_t col = 0x00;
-    uint8_t dp_mask = 0x00;
-
-    switch (_cursorRow) {
-        case 0:
-            if (_cursorCol < 0 || _cursorCol > 3) {
-                return 0; // Invalid digit
-            }
-            segment_data = _mapSegmentsTop(_get_char_value(ch));
-            dp_mask = 0x08;
-            addr = (uint8_t)(ADDR_SMALL_SEGS + ((_cursorCol) * 2));
-
-            if (_cursorCol == 2 && ch != ':' && !_colon_top) {
-                setClockColon(_cursorRow, _cursorCol, false);
-            }
-
-            if (_cursorCol == 2 && ch != ':' && !_colon_top && (_buffer[addr >> 1] & dp_mask)) {
-                uint8_t cleared = _buffer[addr >> 1] & ~dp_mask;
-                if (addr == 0x06) {
-                    _writeRamAtAddr(cleared, addr, 0xF7);
-                } else {
-                    _writeRamAtAddr(cleared, addr);
-                }
-            }
-
-            if (ch == '.') {
-                setDecimal(_cursorRow, _cursorCol - 1, true);
-                return 1;
-            }
-
-            if (ch == ':' && _cursorCol == 2 && !_colon_top) {
-                setClockColon(_cursorRow, _cursorCol, true);
-                _colon_top = true;
-                return 1;
-            }
-
-            if (_cursorCol == 3 && _colon_top) {
-                uint8_t current = _buffer[addr >> 1] & dp_mask;
-                segment_data = current | (segment_data & ~dp_mask);
-            }
-            if (addr == 0x06) {
-                _writeRamAtAddr(segment_data, addr, 0xF7);
-            } else {
-                _writeRamAtAddr(segment_data, addr);
-            }
-            break;
-        case 1:
-            if (_cursorCol < 0 || _cursorCol > 5) {
-                return 0; // Invalid digit
-            }
-            segment_data = _mapSegments(_get_char_value(ch));
-            dp_mask = 0x10;
-
-            if (_cursorCol == 2 && ch != ':' && !_colon_default_left) {
-                setClockColon(_cursorRow, _cursorCol, false);
-            }
-
-            if (_cursorCol == 4 && ch != ':' && !_colon_default_right) {
-                setClockColon(_cursorRow, _cursorCol, false);
-            }
-
-            if (_cursorCol == 4 && ch != ':' && !_colon_default_right && (_buffer_default[_cursorCol] & dp_mask)) {
-                _buffer_default[_cursorCol] &= ~dp_mask;
-                _writeRamAtAddr(_buffer_default[_cursorCol], ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
-            }
-
-            if (ch == '.') {
-                setDecimal(_cursorRow, _cursorCol - 1, true);
-                return 1;
-            }
-
-            if (ch == ':' && _cursorCol == 2 && !_colon_default_left) {
-                setClockColon(_cursorRow, _cursorCol, true);
-                _colon_default_left = true;
-                return 1;
-            }
-
-            if (ch == ':' && _cursorCol == 4 && !_colon_default_right) {
-                setClockColon(_cursorRow, _cursorCol, true);
-                _colon_default_right = true;
-                return 1;
-            }
-
-            if (_cursorCol == 5 && _colon_default_right) {
-                _buffer_default[_cursorCol] &= dp_mask;
-                _buffer_default[_cursorCol] |= (segment_data & ~dp_mask);
-            } else {
-                _buffer_default[_cursorCol] = segment_data;
-            }
-
-            col = (uint8_t)(5 - _cursorCol);
-            addr = (uint8_t)(ADDR_BIG_SEGS + (col * 2));
-            if (addr >= 0x11) { addr += 2; } // Skip labels at 0x11/0x12
-            if (addr == 0x0B) {
-                _writeRamAtAddr(_buffer_default[_cursorCol], addr, 0xEF);
-            } else {
-                _writeRamAtAddr(_buffer_default[_cursorCol], addr);
-            }
-            break;
-        default:
-            return 0; // invalid digit
+size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow0(uint8_t ch) {
+    if (_cursorCol > 3) {
+        return 0;
     }
+
+    if (ch == '.') {
+        setDecimal(_cursorRow, _cursorCol - 1, true);
+        return 1;
+    }
+
+    if (ch == ':' && _cursorCol == 2 && !_colon_top) {
+        setClockColon(_cursorRow, _cursorCol, true);
+        return 1;
+    }
+
+    if (_cursorCol == 2 && ch != ':' && !_colon_top) {
+        setClockColon(_cursorRow, _cursorCol, false);
+    }
+
+    uint8_t segment_data = _mapSegmentsTop(_get_char_value(ch));
+    uint8_t addr = ADDR_SMALL_SEGS + (_cursorCol * 2);
+    uint8_t dp_mask = 0x08;
+
+    if (_cursorCol == 2 && ch != ':' && !_colon_top && (_buffer[addr >> 1] & dp_mask)) {
+        uint8_t cleared = _buffer[addr >> 1] & ~dp_mask;
+        _writeRamAtAddr(cleared, addr, addr == 0x06 ? 0xF7 : 0xFF);
+    }
+
+    if (_cursorCol == 3 && _colon_top) {
+        uint8_t current = _buffer[addr >> 1] & dp_mask;
+        segment_data = current | (segment_data & ~dp_mask);
+    }
+
+    _writeRamAtAddr(segment_data, addr, addr == 0x06 ? 0xF7 : 0xFF);
+    _cursorCol++;
+    return 1;
+}
+
+size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow1(uint8_t ch) {
+    if (_cursorCol > 5) {
+        return 0;
+    }
+
+    if (ch == '.') {
+        setDecimal(_cursorRow, _cursorCol - 1, true);
+        return 1;
+    }
+
+    if (ch == ':') {
+        if (_cursorCol == 2 && !_colon_default_left) {
+            setClockColon(_cursorRow, _cursorCol, true);
+            return 1;
+        }
+        if (_cursorCol == 4 && !_colon_default_right) {
+            setClockColon(_cursorRow, _cursorCol, true);
+            return 1;
+        }
+    }
+
+    if (_cursorCol == 2 && ch != ':' && !_colon_default_left) {
+        setClockColon(_cursorRow, _cursorCol, false);
+    }
+    if (_cursorCol == 4 && ch != ':' && !_colon_default_right) {
+        setClockColon(_cursorRow, _cursorCol, false);
+    }
+
+    uint8_t dp_mask = 0x10;
+    if (_cursorCol == 4 && ch != ':' && !_colon_default_right &&
+        (_buffer_default[_cursorCol] & dp_mask)) {
+        _buffer_default[_cursorCol] &= ~dp_mask;
+        _writeRamAtAddr(_buffer_default[_cursorCol],
+                       ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
+    }
+
+    uint8_t segment_data = _mapSegments(_get_char_value(ch));
+
+    if (_cursorCol == 5 && _colon_default_right) {
+        _buffer_default[_cursorCol] &= dp_mask;
+        _buffer_default[_cursorCol] |= (segment_data & ~dp_mask);
+    } else {
+        _buffer_default[_cursorCol] = segment_data;
+    }
+
+    uint8_t col = 5 - _cursorCol;
+    uint8_t addr = ADDR_BIG_SEGS + (col * 2);
+    if (addr >= 0x11) addr += 2;
+
+    _writeRamAtAddr(_buffer_default[_cursorCol], addr,
+                   addr == 0x0B ? 0xEF : 0xFF);
 
     _cursorCol++;
     return 1;
+}
+
+size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::write(uint8_t ch) {
+    switch (_cursorRow) {
+        case 0:
+            return _writeRow0(ch);
+        case 1:
+            return _writeRow1(ch);
+        default:
+            return 0;
+    }
 }
 
 // ABCD EFGH to 
@@ -310,6 +305,11 @@ uint8_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_mapSegments(uint8_t val)
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRamAtAddr(uint8_t data, uint8_t address, uint8_t mask) {
     uint8_t byteIndex = address >> 1;
+
+    if (byteIndex >= RAM_BYTE_COUNT) {
+        return;  // Invalid address
+    }
+
     if (mask != 0xFF) {
         uint8_t current;
         if ((address & 0x01) == 0) {
