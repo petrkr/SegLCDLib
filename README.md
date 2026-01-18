@@ -1,93 +1,108 @@
-# SegLCDlib
-Arduino library for segment LCD displayes and controlers.
+# SegLCDLib
 
-It include abstract class, drivers and LCD display implementations.
+Arduino library for segment LCD displays. Provides abstract interface, controller drivers (PCF85176/HT1621/HT1622/VK0192), and implementations for common displays.
 
+## Quick Start
 
-For now LCD class is derivered from controller's class, because mostly those controllers are part of LCD already and there is no intent to use it with different.
+```cpp
+#include "SegLCD_HT1621_4SegDegree.h"
 
-But there could be possible to detach it and somehow redone interface, but then there must be two instances in main code. First for controller, second for LCD itself. Maybe in some next version if that will be even actual.
+// Pins: CLK=5, DATA=6, CS=7 (adjust to your pins)
+SegLCD_HT1621_4SegDegree lcd(5, 6, 7);
+
+void setup() {
+    pinMode(5, OUTPUT);   // CLK
+    pinMode(6, OUTPUT);   // DATA
+    pinMode(7, OUTPUT);   // CS
+    lcd.init();
+}
+
+void loop() {
+    lcd.setCursor(0, 0);
+    lcd.print(25);        // Display: 25
+    delay(1000);
+}
+```
 
 ## Documentation
 
-https://petrkr.github.io/SegLCDLib/
+- **[Getting Started](docs/getting-started.md)**: Installation, first project, LCD selection
+- **[Supported LCDs](docs/supported-lcds.md)**: Complete catalog with pinout and examples
+- **[Architecture](docs/architecture.md)**: Class hierarchy and design patterns
+- **[Controllers](docs/controllers.md)**: Protocol details (I2C, 3-wire serial)
+- **[Adding New LCD](docs/adding-new-lcd.md)**: Tutorial for custom displays
+- **[API Reference](https://petrkr.github.io/SegLCDLib/)**: Full Doxygen documentation
 
+## Supported Controllers
 
-## Supported controllers
+| Controller | Protocol | Pins | Max Digits |
+|-----------|----------|------|-----------|
+| PCF85176 | I2C | 2 | 13 |
+| PCF8576 | I2C | 2 | 13 |
+| HT1621 | 3-wire | 3 | 6 |
+| HT1622 | 3-wire | 3 | 10+ |
+| VK0192 | 3-wire | 3 | 5 |
 
-| Name     | Type           |
-|----------|----------------|
-| PCF85176 | I2C            |
-| PCF8576  | I2C            |
-| HT1621   | 3-wire serial  |
-| HT1622   | 3-wire serial  |
-| VK0192   | 3-wire serial  |
+## Featured Displays
 
+See [Supported LCDs](docs/supported-lcds.md) for full catalog.
 
-### PCF85176 Board
-![PCF85176 Board](docs/images/pcf85176board.webp)
+| Display | Controller | Features |
+|---------|-----------|----------|
+| Temperature/Humidity | PCF85176 | 6-digit, icons |
+| 6-Digit Signal/Battery | PCF85176 | Signal bars, battery, progress |
+| 4-Digit with Degree | HT1621 | Colon, degree symbol |
+| 6-Digit with Battery | HT1621 | Battery indicator |
+| 10-Digit 16-Segment | HT1622 | Enhanced segments |
+| 5-Digit Signal/Battery | VK0192 | Advanced controller |
 
-## Supported LCD
+## Installation
 
-| Name                               | Controller(s) | Link |
-|------------------------------------|---------------|------|
-| RAW LCD                            | PCF85176      | N/A  |
-| 6-digit signal battery progress    | PCF85176      | https://aliexpress.com/item/1005009214559485.html |
-| One Digit (up to 5 segments)       | PCF85176      | https://aliexpress.com/item/1005005410565386.html |
-| T1T2 Lcd                           | PCF85176      | https://aliexpress.com/item/32333296186.html      |
-| Temp humidity                      | PCF85176      | https://aliexpress.com/item/1005003044283980.html |
-| 6-digit with battery               | HT1621        | https://aliexpress.com/item/1005005555160141.html |
-| 4-digit with degree                | HT1621        | https://aliexpress.com/item/1005009301473702.html |
-| 10-digits of 16 segment            | HT1622        | https://aliexpress.com/item/1005003062619251.html |
-| 5-digit signal battery progress    | VK0192        | https://aliexpress.com/item/1005009000021475.html |
-| 4DR821B / 4DT821B                  | PCF85176      | http://www.hezkyden.cz/shop/displeje-lcd-tesla    |
-| 4+6 digit maint bat sig units      | PCF8576       | https://aliexpress.com/item/1005009599538480.html |
+### Arduino Library Manager
+1. **Sketch** → **Include Library** → **Manage Libraries**
+2. Search `SegLCDLib`
+3. Click **Install**
 
-### RAW LCD
-This LCD type is used for testing new LCD by sending RAW data to controller. It is good to testing and implementing new types of LCD screens before starting to create actually class
+### Manual
+1. Download: https://github.com/petrkr/SegLCDLib
+2. Copy to `Arduino/libraries/SegLCDLib`
+3. Restart Arduino IDE
 
+## Examples
 
-### 6-digit signal, battery, progress
-![6-digit, signal, battery, progress](docs/images/6digsigbatprogress.webp)
+13 complete examples in `examples/` directory:
+- PCF85176: 6 examples (RawLCD, TempHum, 6DigSigBat, etc.)
+- HT1621: 3 examples (4DigDeg, 6DigBat, RawLCD)
+- HT1622: 2 examples (10Digit16Segment, RawLCD)
+- VK0192: 1 example (5DigSigBatProg)
+- PCF8576: 1 example (4Seg6SegMaintSegBatUnits)
 
+## Features
 
-### One digit
-![Onedigit](docs/images/onedigit.webp)
+- **Abstract Interface**: Consistent LCD API 1.0 (Arduino LCD standard)
+- **Multiple Protocols**: I2C (PCF85176) and 3-wire serial (HT1621/1622/VK0192)
+- **RAM Efficient**: Buffered writes, minimal memory overhead
+- **Print Compatibility**: Inherits from `Print` class for `print()`/`println()`
+- **Flexible**: Easy to add support for new displays
 
+## Architecture
 
-### T1T2 Lcd
-![T1T2](docs/images/t1t2lcd.webp)
+```
+Application Code
+    ↓
+SegLCDLib Base (LCD API 1.0)
+    ↓
+Controller Driver (PCF85176, HT1621, etc.)
+    ↓
+LCD Implementation (display-specific)
+    ↓
+Hardware (I2C / 3-wire serial)
+```
 
+See [Architecture](docs/architecture.md) for details.
 
-### Temp humidity
-![Onedigit](docs/images/temphumlcd.webp)
+## Support
 
-
-### 6-digit with battery
-This display use integrated COB HT1621 driver.
-
-![6 digit with battery symbols](docs/images/6digbatht1621.webp)
-
-### 10-digits of 16 segment
-
-Based on HT1622 controller
-
-![10 digits of 16 segment](docs/images/10digs16segs.webp)
-
-
-### 4-digit with degree
-![4 digit with degree symbols](docs/images/4digdegree-ht1621-temp.webp) ![4 digit with colon](docs/images/4digdegree-ht1621-clock.webp)
-
-
-### 5-digit signal battery progress
-![5 digit signal battery progress](docs/images/5digsigbatprogress.webp)
-
-
-### 4DR821B / 4DT821B
-Tesla display 4DR821B https://www.teslakatalog.cz/4DR821B.html
-![4DR821B](docs/images/4DR821B.webp)
-
-
-### 4+6 digit maint bat sig units
-![4+6 digit maint bat sig units](docs/images/4Seg6SegMaintSegBatUnits.webp)
-Example: `examples/PCF8576/4Seg6SegMaintSegBatUnits`
+- **Issues**: https://github.com/petrkr/SegLCDLib/issues
+- **Documentation**: https://petrkr.github.io/SegLCDLib/
+- **Reference**: https://playground.arduino.cc/Code/LCDAPI/

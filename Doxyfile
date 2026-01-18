@@ -954,8 +954,8 @@ WARN_LINE_FORMAT       = "at line $line of file $file"
 # (stdout).
 
 WARN_LOGFILE           =
-INPUT                  = src examples README.md
-FILE_PATTERNS          = *.c *.cpp *.h *.hpp *.ino
+INPUT                  = src examples docs README.md
+FILE_PATTERNS          = *.c *.cpp *.h *.hpp *.ino *.md
 RECURSIVE              = YES
 
 
@@ -983,7 +983,7 @@ EXAMPLE_RECURSIVE      = YES
 # that contain images that are to be included in the documentation (see the
 # \image command).
 
-IMAGE_PATH             = docs/images
+IMAGE_PATH             = docs/images docs
 
 # The INPUT_FILTER tag can be used to specify a program that Doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program
