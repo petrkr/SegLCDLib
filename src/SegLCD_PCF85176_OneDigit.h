@@ -30,7 +30,6 @@ class SegLCD_PCF85176_OneDigit : public SegDriver_PCF85176 {
         size_t write(uint8_t ch) override;
     private:
         uint8_t _buffer[MAX_ADDRESS/8];
-        bool _previousDot = false;
 
         // Support for reverse arranged digits
         bool _reverse;
