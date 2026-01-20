@@ -237,8 +237,18 @@ void SegLCD_VK0192_5DigSigBattProgress::writeDigit7seg(uint8_t row, uint8_t col,
         mapped = (mapped & 0xF0) | ((mapped & 0x0E) >> 1);
     }
 
-    // Clear only high bits (segment data), keep decimal bit (0x10) and low nibble
-    _ramBuffer[addr] &= ~0xE0;
+    // Clear only high bits (segment data), preserve low nibble and shared flags
+    uint8_t preserveMask = 0x1F;
+    if (addr == DECIMAL_16SEG_ADDR_COL0 || addr == DECIMAL_16SEG_ADDR_COL1 ||
+        addr == DECIMAL_16SEG_ADDR_COL2 || addr == DECIMAL_16SEG_ADDR_COL3) {
+        preserveMask |= DECIMAL_16SEG_BIT;
+    }
+
+    if (addr == ADDR_SIGNAL_HIGH) {
+        preserveMask |= SIGNAL_MASK_HIGH;
+    }
+
+    _ramBuffer[addr] &= preserveMask;
     _ramBuffer[addr + 1] &= ~0xF0;
 
     // Set only high bits
