@@ -42,10 +42,10 @@ class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
         void setCursor(uint8_t row, uint8_t col) override;
         size_t write(uint8_t ch) override;
     private:
-        uint8_t _buffer_sigbatt = 0;
-
-        uint8_t _buffer_temp[4] = {0};
-        uint8_t _buffer_hum[3] = {0};
+        static constexpr uint8_t RAM_SIZE = 8;
+        static constexpr uint8_t OFFSET_SIGBATT = 0;
+        static constexpr uint8_t OFFSET_TEMP = 1;
+        static constexpr uint8_t OFFSET_HUM = 5;
 
         static constexpr uint8_t FLAG_MINUS_DISPLAYED = 0x01;
 
