@@ -1,7 +1,9 @@
 #include <SegLCD_HT1622_10Dig16Seg.h>
 
 
-SegLCD_HT1622_10Dig16Seg::SegLCD_HT1622_10Dig16Seg(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read) : SegDriver_HT1622(chipselect, data, write, read) {}
+SegLCD_HT1622_10Dig16Seg::SegLCD_HT1622_10Dig16Seg(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read) : SegDriver_HT1622(chipselect, data, write, read) {
+    _allocateBuffer(RAM_SIZE);
+}
 
 void SegLCD_HT1622_10Dig16Seg::init() {
     SegDriver_HT1622::init();
@@ -12,11 +14,12 @@ void SegLCD_HT1622_10Dig16Seg::init() {
 }
 
 void SegLCD_HT1622_10Dig16Seg::clear() {
-    memset(_buffer, 0, sizeof(_buffer));
-    _writeRam(_buffer, sizeof(_buffer), 0);
+    memset(_ramBuffer, 0, RAM_SIZE);
+    _writeRam(_ramBuffer, RAM_SIZE, 0);
 }
 
 void SegLCD_HT1622_10Dig16Seg::setDecimal(uint8_t row, uint8_t col, bool state) {
+
     if (row != 0) {
         return; // Only row 0 is valid for this display
     }
@@ -41,12 +44,12 @@ void SegLCD_HT1622_10Dig16Seg::setDecimal(uint8_t row, uint8_t col, bool state) 
 
     // Read current value, modify bit, write back
     if (state) {
-        _buffer[address] |= (1 << bitPosition);
+        _ramBuffer[address] |= (1 << bitPosition);
     } else {
-        _buffer[address] &= ~(1 << bitPosition);
+        _ramBuffer[address] &= ~(1 << bitPosition);
     }
 
-    _writeRam(_buffer[address], address);
+    _writeRam(_ramBuffer[address], address);
 }
 
 size_t SegLCD_HT1622_10Dig16Seg::write(uint8_t ch) {
@@ -69,6 +72,7 @@ size_t SegLCD_HT1622_10Dig16Seg::write(uint8_t ch) {
 }
 
 void SegLCD_HT1622_10Dig16Seg::writeDigit16seg(uint8_t row, uint8_t col, char c) {
+
     uint16_t mapped = _map16Segments(_get_16char_value(c));
     int8_t addr = _get16SegmentsAddress(row, col);
 
@@ -77,12 +81,12 @@ void SegLCD_HT1622_10Dig16Seg::writeDigit16seg(uint8_t row, uint8_t col, char c)
         return;
     }
 
-    _buffer[addr]   = (mapped >> 8) & 0xFF;
-    _buffer[addr+1] = (mapped) & 0xFF;
+    _ramBuffer[addr]   = (mapped >> 8) & 0xFF;
+    _ramBuffer[addr+1] = (mapped) & 0xFF;
 
     // Write to RAM
-    _writeRam(_buffer[addr], addr * 2);
-    _writeRam(_buffer[addr+1], addr * 2 + 2);
+    _writeRam(_ramBuffer[addr], addr * 2);
+    _writeRam(_ramBuffer[addr+1], addr * 2 + 2);
 }
 
 int8_t SegLCD_HT1622_10Dig16Seg::_get16SegmentsAddress(uint8_t row, uint8_t col) {
