@@ -29,7 +29,7 @@ class SegLCD_PCF85176_OneDigit : public SegDriver_PCF85176 {
         void setDecimal(uint8_t row, uint8_t col, bool state);
         size_t write(uint8_t ch) override;
     private:
-        uint8_t _buffer[MAX_ADDRESS/8];
+        static constexpr uint8_t RAM_SIZE = MAX_ADDRESS/8;
 
         static constexpr uint8_t FLAG_REVERSE = 0x01;
         static constexpr uint8_t FLAG_V1FIX = 0x02;

@@ -1,7 +1,9 @@
 #include <Wire.h>
 #include <SegLCD_PCF85176_OneDigit.h>
 
-SegLCD_PCF85176_OneDigit::SegLCD_PCF85176_OneDigit(TwoWire& i2c, uint8_t address, uint8_t subaddress) :  SegDriver_PCF85176(i2c, address, subaddress) {}
+SegLCD_PCF85176_OneDigit::SegLCD_PCF85176_OneDigit(TwoWire& i2c, uint8_t address, uint8_t subaddress) :  SegDriver_PCF85176(i2c, address, subaddress) {
+    _allocateBuffer(RAM_SIZE);
+}
 
 void SegLCD_PCF85176_OneDigit::init() {
     init(false);
@@ -19,11 +21,12 @@ void SegLCD_PCF85176_OneDigit::init(bool reverse, bool v1fix) {
 }
 
 void SegLCD_PCF85176_OneDigit::clear() {
-    memset(_buffer, 0x00, sizeof(_buffer));
+    memset(_ramBuffer, 0x00, RAM_SIZE);
     SegDriver_PCF85176::clear();
 }
 
 void SegLCD_PCF85176_OneDigit::setDecimal(uint8_t row, uint8_t col, bool state) {
+
     if (row != 0) {
         return; // invalid digit
     }
@@ -33,19 +36,20 @@ void SegLCD_PCF85176_OneDigit::setDecimal(uint8_t row, uint8_t col, bool state) 
     }
 
     if (state) {
-        _buffer[col] |= DECIMAL_POINT_BIT; // Set the decimal point bit
+        _ramBuffer[col] |= DECIMAL_POINT_BIT; // Set the decimal point bit
     } else {
-        _buffer[col] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
+        _ramBuffer[col] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
     }
 
     if (_isFlagSet(FLAG_REVERSE)) {
-        _writeRam(_buffer[col], (DIGITS - (col + 1)) * 8);
+        _writeRam(_ramBuffer[col], (DIGITS - (col + 1)) * 8);
     } else {
-        _writeRam(_buffer[col], col * 8);
+        _writeRam(_ramBuffer[col], col * 8);
     }
 }
 
 size_t SegLCD_PCF85176_OneDigit::write(uint8_t ch) {
+
     if (_cursorCol < 0 || _cursorCol >= DIGITS) {
         return 0;  // Invalid digit
     }
@@ -72,14 +76,14 @@ size_t SegLCD_PCF85176_OneDigit::write(uint8_t ch) {
     }
 
     // Preserve existing decimal point
-    segment_data |= _buffer[_cursorCol] & DECIMAL_POINT_BIT;
+    segment_data |= _ramBuffer[_cursorCol] & DECIMAL_POINT_BIT;
 
-    _buffer[_cursorCol] = segment_data;
+    _ramBuffer[_cursorCol] = segment_data;
 
     if (_isFlagSet(FLAG_REVERSE)) {
-        _writeRam(_buffer[_cursorCol], (DIGITS - (_cursorCol + 1)) * 8);
+        _writeRam(_ramBuffer[_cursorCol], (DIGITS - (_cursorCol + 1)) * 8);
     } else {
-        _writeRam(_buffer[_cursorCol], _cursorCol * 8);
+        _writeRam(_ramBuffer[_cursorCol], _cursorCol * 8);
     }
 
     _cursorCol++;
