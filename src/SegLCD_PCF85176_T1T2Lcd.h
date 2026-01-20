@@ -58,17 +58,15 @@ class SegLCD_PCF85176_T1T2Lcd : public SegDriver_PCF85176 {
         size_t write(uint8_t ch) override;
 
     private:
-        uint8_t _buffer_sigclk = 0;
-        uint8_t _buffer_batt = 0;
+        static constexpr uint8_t RAM_SIZE = 30;
 
-        // Clock has T1:, T2: labels in the first 2 segments
-        uint8_t _buffer_clock[4] = {0};
-
-        // Celsius / Humidity after T1 / T2
-        uint8_t _buffer_labels = 0;
-
-        uint8_t _bufferT1[4] = {0};
-        uint8_t _bufferT2[4] = {0};
+        // RAM layout (matches _ramBuffer allocation):
+        static constexpr uint8_t OFFSET_SIGCLK = 0;
+        static constexpr uint8_t OFFSET_BATT = 1;
+        static constexpr uint8_t OFFSET_LABELS = 2;
+        static constexpr uint8_t OFFSET_CLOCK = 6;
+        static constexpr uint8_t OFFSET_T1 = 14;
+        static constexpr uint8_t OFFSET_T2 = 22;
 
         static constexpr uint8_t FLAG_COLON_CLOCK = 0x01;
 
