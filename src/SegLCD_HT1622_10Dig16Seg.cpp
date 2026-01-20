@@ -50,6 +50,18 @@ void SegLCD_HT1622_10Dig16Seg::setDecimal(uint8_t row, uint8_t col, bool state) 
 }
 
 size_t SegLCD_HT1622_10Dig16Seg::write(uint8_t ch) {
+    if (_cursorRow != 0 || _cursorCol >= 10) {
+        return 0;
+    }
+
+    // Decimal point - does NOT move cursor (RAM offset -1)
+    if (ch == '.') {
+        if (_cursorCol > 0 && _cursorCol <= 9) {
+            setDecimal(_cursorRow, _cursorCol - 1, true);
+        }
+        return 1;
+    }
+
     writeDigit16seg(_cursorRow, _cursorCol, ch);
     _cursorCol++;
 

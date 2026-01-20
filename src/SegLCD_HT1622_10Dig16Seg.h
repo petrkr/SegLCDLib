@@ -28,6 +28,13 @@ class SegLCD_HT1622_10Dig16Seg : public SegDriver_HT1622 {
     private:
         uint8_t _buffer[45] = {0};
 
+        static constexpr uint8_t DIGITS = 10;
+
+        // Decimal configuration: RAM offset -1 (dot belongs to previous position)
+        static constexpr uint8_t DECIMAL_MIN_COL = 0;
+        static constexpr uint8_t DECIMAL_MAX_COL = 8;
+        static constexpr int8_t DECIMAL_RAM_OFFSET = -1;
+
         uint16_t _map16Segments(uint16_t val);
         int8_t _get16SegmentsAddress(uint8_t row, uint8_t col);
 
