@@ -164,13 +164,24 @@ size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
         } else if (_cursorRow == 1 && dotCol >= DECIMAL_BOTTOM_MIN_COL && dotCol <= DECIMAL_BOTTOM_MAX_COL) {
             setDecimal(_cursorRow, dotCol, true);
         }
+        _setFlag(FLAG_PENDING_DOT);
         return 1;  // Never move cursor for dot
     }
 
     // Regular character
     if (_cursorRow == 0 || _cursorRow == 1) {
+        if (_isFlagSet(FLAG_PENDING_DOT)) {
+            _clearFlag(FLAG_PENDING_DOT);
+        } else if (_cursorRow == 0 && _cursorCol >= DECIMAL_TOP_MIN_COL && _cursorCol <= DECIMAL_TOP_MAX_COL) {
+            setDecimal(_cursorRow, _cursorCol, false);
+        } else if (_cursorRow == 1 && _cursorCol >= DECIMAL_BOTTOM_MIN_COL && _cursorCol <= DECIMAL_BOTTOM_MAX_COL) {
+            setDecimal(_cursorRow, _cursorCol, false);
+        }
         writeDigit7seg(_cursorRow, _cursorCol, ch);
     } else if (_cursorRow == 2) {
+        if (_isFlagSet(FLAG_PENDING_DOT)) {
+            _clearFlag(FLAG_PENDING_DOT);
+        }
         writeDigit16seg(_cursorRow, _cursorCol, ch);
     }
     _cursorCol++;
