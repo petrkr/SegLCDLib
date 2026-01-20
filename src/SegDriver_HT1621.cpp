@@ -71,6 +71,9 @@ void SegDriver_HT1621::_setMode(ModeDrive drive, ModeBias bias) {
 void SegDriver_HT1621::flush(uint8_t startAddr, uint8_t length) {
     if (!_ramBuffer || startAddr >= _ramBufferSize) return;
 
+    bool prevAuto = _autoFlush;
+    _autoFlush = true;
+
     // Clamp length to buffer bounds
     if (startAddr + length > _ramBufferSize) {
         length = _ramBufferSize - startAddr;
@@ -82,4 +85,6 @@ void SegDriver_HT1621::flush(uint8_t startAddr, uint8_t length) {
         uint8_t addr = (startAddr + i) * 2;  // Convert byte index to nibble address
         _writeRam(_ramBuffer[startAddr + i], addr);
     }
+
+    _autoFlush = prevAuto;
 }

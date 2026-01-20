@@ -56,6 +56,7 @@ void SegLCDLib::_writeRamMasked(uint8_t data, uint8_t address, uint8_t mask) {
     }
 }
 
+
 void SegLCDLib::clear() {
     if (_ramBuffer) {
         memset(_ramBuffer, 0x00, _ramBufferSize);
@@ -317,6 +318,9 @@ void SegLCDLib::flush() {
 void SegLCDLib::flush(uint8_t startAddr, uint8_t length) {
     if (!_ramBuffer || startAddr >= _ramBufferSize) return;
 
+    bool prevAuto = _autoFlush;
+    _autoFlush = true;
+
     // Clamp length to buffer bounds
     if (startAddr + length > _ramBufferSize) {
         length = _ramBufferSize - startAddr;
@@ -328,6 +332,8 @@ void SegLCDLib::flush(uint8_t startAddr, uint8_t length) {
     for (uint8_t i = 0; i < length; i++) {
         _writeRam(_ramBuffer[startAddr + i], (startAddr + i) * 2);
     }
+
+    _autoFlush = prevAuto;
 }
 
 void SegLCDLib::_setFlag(uint8_t mask) {
@@ -345,4 +351,3 @@ bool SegLCDLib::_isFlagSet(uint8_t mask) const {
 void SegLCDLib::_clearAllFlags() {
     _displayFlags = 0;
 }
-

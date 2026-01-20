@@ -50,6 +50,9 @@ void SegDriver_3Wire::_writeRam(uint8_t data, uint8_t address) {
 }
 
 void SegDriver_3Wire::_writeRam(uint8_t *data, size_t length, uint8_t address) {
+    if (!_autoFlush) {
+        return;
+    }
     digitalWrite(_cs, LOW);
 
     _sendBits(OP_WRITE, 3);

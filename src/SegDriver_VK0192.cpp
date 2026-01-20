@@ -20,6 +20,9 @@ void SegDriver_VK0192::_writeRam(uint8_t data, uint8_t address) {
 }
 
 void SegDriver_VK0192::_writeRam(uint8_t *data, size_t length, uint8_t address) {
+    if (!_autoFlush) {
+        return;
+    }
     digitalWrite(_cs, LOW);
     delayMicroseconds(1);     // CS setup time (100ns required, 1μs safe)
 
@@ -51,6 +54,9 @@ void SegDriver_VK0192::_sendBits(uint16_t data, uint8_t bitCount) {
 void SegDriver_VK0192::flush(uint8_t startAddr, uint8_t length) {
     if (!_ramBuffer || startAddr >= _ramBufferSize) return;
 
+    bool prevAuto = _autoFlush;
+    _autoFlush = true;
+
     // Clamp length to buffer bounds
     if (startAddr + length > _ramBufferSize) {
         length = _ramBufferSize - startAddr;
@@ -62,4 +68,6 @@ void SegDriver_VK0192::flush(uint8_t startAddr, uint8_t length) {
         uint8_t addr = (startAddr + i) * 2;  // Convert byte index to nibble address
         _writeRam(_ramBuffer[startAddr + i], addr);
     }
+
+    _autoFlush = prevAuto;
 }
