@@ -68,9 +68,10 @@ void SegDriver_3Wire::_writeRam(uint8_t *data, size_t length, uint8_t address) {
 void SegDriver_3Wire::_sendBits(uint16_t data, uint8_t bitCount) {
     for (int8_t i = bitCount - 1; i >= 0; i--) {
         digitalWrite(_data, (data >> i) & 1);
+        delayMicroseconds(1);     // Data setup time (120ns required, 1μs safe)
         digitalWrite(_wr, LOW);
-        delayMicroseconds(1);
+        delayMicroseconds(4);     // Write pulse LOW: 3.34μs @ 3V (4μs safe)
         digitalWrite(_wr, HIGH);
-        delayMicroseconds(1);
+        delayMicroseconds(4);     // Write pulse HIGH: 3.34μs @ 3V (4μs safe)
     }
 }
