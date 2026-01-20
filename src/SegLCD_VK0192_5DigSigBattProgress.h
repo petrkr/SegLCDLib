@@ -44,7 +44,7 @@ class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
         void writeDigit16seg(uint8_t row, uint8_t col, char c);
 
     private:
-        static constexpr uint8_t RAM_SIZE = 48;
+        static constexpr uint8_t RAM_SIZE = 24;
 
         // Decimal configuration: VK0192 stores decimal in same digit RAM address
         static constexpr uint8_t DECIMAL_POINT_BIT = 0x10;
