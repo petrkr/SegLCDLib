@@ -53,6 +53,13 @@ class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
         static constexpr uint8_t DECIMAL_TOP_MAX_COL = 1;
         static constexpr uint8_t DECIMAL_BOTTOM_MIN_COL = 0;
         static constexpr uint8_t DECIMAL_BOTTOM_MAX_COL = 3;
+        static constexpr uint8_t DECIMAL_16SEG_BIT = 0x80;
+        static constexpr uint8_t DECIMAL_16SEG_MIN_COL = 0;
+        static constexpr uint8_t DECIMAL_16SEG_MAX_COL = 3;
+        static constexpr uint8_t DECIMAL_16SEG_ADDR_COL0 = 0x12; // nibble 0x24
+        static constexpr uint8_t DECIMAL_16SEG_ADDR_COL1 = 0x08; // nibble 0x10
+        static constexpr uint8_t DECIMAL_16SEG_ADDR_COL2 = 0x0F; // nibble 0x1E
+        static constexpr uint8_t DECIMAL_16SEG_ADDR_COL3 = 0x14; // nibble 0x28
 
         static constexpr uint8_t NUM_7SEG_DIGITS = 10;  // 3+2+5 7-seg digits
 

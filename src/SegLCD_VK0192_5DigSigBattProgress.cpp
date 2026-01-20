@@ -135,6 +135,30 @@ void SegLCD_VK0192_5DigSigBattProgress::setDecimal(uint8_t row, uint8_t col, boo
         return; // Invalid digit
     }
 
+    if (row == 2) {
+        if (col < DECIMAL_16SEG_MIN_COL || col > DECIMAL_16SEG_MAX_COL) {
+            return; // Invalid digit
+        }
+
+        uint8_t addr = 0;
+        switch (col) {
+            case 0: addr = DECIMAL_16SEG_ADDR_COL0; break;
+            case 1: addr = DECIMAL_16SEG_ADDR_COL1; break;
+            case 2: addr = DECIMAL_16SEG_ADDR_COL2; break;
+            case 3: addr = DECIMAL_16SEG_ADDR_COL3; break;
+            default: return;
+        }
+
+        if (state) {
+            _ramBuffer[addr] |= DECIMAL_16SEG_BIT;
+        } else {
+            _ramBuffer[addr] &= ~DECIMAL_16SEG_BIT;
+        }
+
+        _writeRam(_ramBuffer[addr], addr * 2);
+        return;
+    }
+
     int8_t addr = _get7SegmentsAddress(row, col + DECIMAL_RAM_OFFSET);
 
     // Invalid address
@@ -158,10 +182,12 @@ size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
         if (dotCol < 0) {
             return 1;
         }
-        // Row 0: decimals at col 0-1, Row 1: decimals at col 0-3
+        // Row 0: decimals at col 0-1, Row 1: decimals at col 0-3, Row 2: decimals at col 0-3
         if (_cursorRow == 0 && dotCol >= DECIMAL_TOP_MIN_COL && dotCol <= DECIMAL_TOP_MAX_COL) {
             setDecimal(_cursorRow, dotCol, true);
         } else if (_cursorRow == 1 && dotCol >= DECIMAL_BOTTOM_MIN_COL && dotCol <= DECIMAL_BOTTOM_MAX_COL) {
+            setDecimal(_cursorRow, dotCol, true);
+        } else if (_cursorRow == 2 && dotCol >= DECIMAL_16SEG_MIN_COL && dotCol <= DECIMAL_16SEG_MAX_COL) {
             setDecimal(_cursorRow, dotCol, true);
         }
         _setFlag(FLAG_PENDING_DOT);
@@ -181,6 +207,8 @@ size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
     } else if (_cursorRow == 2) {
         if (_isFlagSet(FLAG_PENDING_DOT)) {
             _clearFlag(FLAG_PENDING_DOT);
+        } else if (_cursorCol >= DECIMAL_16SEG_MIN_COL && _cursorCol <= DECIMAL_16SEG_MAX_COL) {
+            setDecimal(_cursorRow, _cursorCol, false);
         }
         writeDigit16seg(_cursorRow, _cursorCol, ch);
     }
