@@ -13,19 +13,19 @@ void SegDriver_HT1621::clear() {
 
     switch (_drive) {
         case MODE_DRIVE_STATIC:
-            return;
-        //TODO: Get riht size values here
+            break;
+        //TODO: Get right size values here
         case MODE_DRIVE_12:
         case MODE_DRIVE_13:
             break;
         case MODE_DRIVE_14:
             _writeRam(tmp, sizeof(tmp), 0);
-            return;
+            break;
         default:
             break;
     }
 
-    SegLCDLib::clear();
+    SegLCDLib::clear();  // Always clear _ramBuffer for all drive modes
 }
 
 
