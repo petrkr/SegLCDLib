@@ -127,16 +127,16 @@ void SegLCD_VK0192_5DigSigBattProgress::setDecimal(uint8_t row, uint8_t col, boo
         return; // invalid digit
     }
 
-    if (row == 0 && (col < 0 || col > 1)) {
+    if (row == 0 && (col < DECIMAL_TOP_MIN_COL || col > DECIMAL_TOP_MAX_COL)) {
         return; // Invalid digit
     }
 
-    if (row == 1 && (col < 0 || col > 3)) {
+    if (row == 1 && (col < DECIMAL_BOTTOM_MIN_COL || col > DECIMAL_BOTTOM_MAX_COL)) {
         return; // Invalid digit
     }
 
-    // decimal is on next digit address
-    int8_t addr = _get7SegmentsAddress(row, col + 1);
+    // decimal is in same digit address
+    int8_t addr = _get7SegmentsAddress(row, col);
 
     // Invalid address
     if (addr < 0) {
@@ -144,23 +144,21 @@ void SegLCD_VK0192_5DigSigBattProgress::setDecimal(uint8_t row, uint8_t col, boo
     }
 
     if (state) {
-        _ramBuffer[addr] |= DECIMAL_POINT_BIT; // Set the decimal point bit
+        _ramBuffer[addr] |= DECIMAL_POINT_BIT;
     } else {
-        _ramBuffer[addr] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
+        _ramBuffer[addr] &= ~DECIMAL_POINT_BIT;
     }
 
-    // Write to RAM
     _writeRam(_ramBuffer[addr], addr * 2);
 }
 
 size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
     // Decimal point - does NOT move cursor
-    // VK0192 has +1 RAM offset: decimal is in NEXT byte
     if (ch == '.') {
-        // Row 0: decimals at col 0-1, Row 1: decimals at col 0-3
-        if (_cursorRow == 0 && _cursorCol >= 0 && _cursorCol <= 1) {
+        // Row 0: decimals at col 0-2, Row 1: decimals at col 0-3
+        if (_cursorRow == 0 && _cursorCol >= DECIMAL_TOP_MIN_COL && _cursorCol <= DECIMAL_TOP_MAX_COL) {
             setDecimal(_cursorRow, _cursorCol, true);
-        } else if (_cursorRow == 1 && _cursorCol >= 0 && _cursorCol <= 3) {
+        } else if (_cursorRow == 1 && _cursorCol >= DECIMAL_BOTTOM_MIN_COL && _cursorCol <= DECIMAL_BOTTOM_MAX_COL) {
             setDecimal(_cursorRow, _cursorCol, true);
         }
         return 1;  // Never move cursor for dot
@@ -197,19 +195,13 @@ void SegLCD_VK0192_5DigSigBattProgress::writeDigit7seg(uint8_t row, uint8_t col,
         mapped = (mapped & 0xF0) | ((mapped & 0x0E) >> 1);
     }
 
-    // Preserve decimal point bit (0x10) from previous digit
-    uint8_t dp_preserve = _ramBuffer[addr] & DECIMAL_POINT_BIT;
-
-    // Clear only high bits (segment data), keep low nibble for other purposes
-    _ramBuffer[addr] &= ~0xF0;
+    // Clear only high bits (segment data), keep decimal bit (0x10) and low nibble
+    _ramBuffer[addr] &= ~0xE0;
     _ramBuffer[addr + 1] &= ~0xF0;
 
     // Set only high bits
     _ramBuffer[addr] |= (mapped & 0x0F) << 4;   // lower 4 bits
     _ramBuffer[addr + 1] |= (mapped >> 4) << 4; // upper 4 bits
-
-    // Restore decimal point
-    _ramBuffer[addr] |= dp_preserve;
 
     // Write to RAM
     _writeRam(_ramBuffer[addr], addr * 2);
