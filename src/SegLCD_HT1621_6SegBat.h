@@ -25,7 +25,7 @@ class SegLCD_HT1621_6SegBat : public SegDriver_HT1621 {
         size_t write(uint8_t ch) override;
 
     private:
-        uint8_t _buffer_default[6] = {0};
+        static constexpr uint8_t RAM_SIZE = 6;
 
         // Note: FLAG_PENDING_DOT (0x80) from SegLCDLib.h is used for decimal handling
 

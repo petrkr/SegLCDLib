@@ -1,7 +1,9 @@
 #include <SegLCD_HT1621_6SegBat.h>
 
 
-SegLCD_HT1621_6SegBat::SegLCD_HT1621_6SegBat(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read) : SegDriver_HT1621(chipselect, data, write, read) {}
+SegLCD_HT1621_6SegBat::SegLCD_HT1621_6SegBat(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read) : SegDriver_HT1621(chipselect, data, write, read) {
+    _allocateBuffer(RAM_SIZE);
+}
 
 void SegLCD_HT1621_6SegBat::init() {
     SegDriver_HT1621::init();
@@ -13,31 +15,33 @@ void SegLCD_HT1621_6SegBat::init() {
 }
 
 void SegLCD_HT1621_6SegBat::clear() {
-    memset(_buffer_default, 0x00, sizeof(_buffer_default));
+    memset(_ramBuffer, 0x00, RAM_SIZE);
     SegDriver_HT1621::clear();
 }
 
 void SegLCD_HT1621_6SegBat::setBatteryLevel(uint8_t level) {
+
     if (level > MAX_BATTERY_LEVEL)
         level = MAX_BATTERY_LEVEL;
 
-    _buffer_default[BATTERY_LEVEL_SEG[0]] &= ~(BATTERY_MASK);
-    _buffer_default[BATTERY_LEVEL_SEG[1]] &= ~(BATTERY_MASK);
-    _buffer_default[BATTERY_LEVEL_SEG[2]] &= ~(BATTERY_MASK);
+    _ramBuffer[BATTERY_LEVEL_SEG[0]] &= ~(BATTERY_MASK);
+    _ramBuffer[BATTERY_LEVEL_SEG[1]] &= ~(BATTERY_MASK);
+    _ramBuffer[BATTERY_LEVEL_SEG[2]] &= ~(BATTERY_MASK);
 
     if (level > 0)
-        _buffer_default[BATTERY_LEVEL_SEG[0]] |= BATTERY_MASK;
+        _ramBuffer[BATTERY_LEVEL_SEG[0]] |= BATTERY_MASK;
     if (level > 1)
-        _buffer_default[BATTERY_LEVEL_SEG[1]] |= BATTERY_MASK;
+        _ramBuffer[BATTERY_LEVEL_SEG[1]] |= BATTERY_MASK;
     if (level > 2)
-        _buffer_default[BATTERY_LEVEL_SEG[2]] |= BATTERY_MASK;
+        _ramBuffer[BATTERY_LEVEL_SEG[2]] |= BATTERY_MASK;
 
-    _writeRam(_buffer_default[BATTERY_LEVEL_SEG[0]], 6);
-    _writeRam(_buffer_default[BATTERY_LEVEL_SEG[1]], 8);
-    _writeRam(_buffer_default[BATTERY_LEVEL_SEG[2]], 10);
+    _writeRam(_ramBuffer[BATTERY_LEVEL_SEG[0]], 6);
+    _writeRam(_ramBuffer[BATTERY_LEVEL_SEG[1]], 8);
+    _writeRam(_ramBuffer[BATTERY_LEVEL_SEG[2]], 10);
 }
 
 void SegLCD_HT1621_6SegBat::setDecimal(uint8_t row, uint8_t col, bool state) {
+
     if (row != 0) {
         return; // invalid digit
     }
@@ -47,15 +51,16 @@ void SegLCD_HT1621_6SegBat::setDecimal(uint8_t row, uint8_t col, bool state) {
     }
 
     if (state) {
-        _buffer_default[col] |= DECIMAL_POINT_BIT; // Set the decimal point bit
+        _ramBuffer[col] |= DECIMAL_POINT_BIT; // Set the decimal point bit
     } else {
-        _buffer_default[col] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
+        _ramBuffer[col] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
     }
 
-    _writeRam(_buffer_default[col], ((DIGITS - col - 1) * 2));
+    _writeRam(_ramBuffer[col], ((DIGITS - col - 1) * 2));
 }
 
 size_t SegLCD_HT1621_6SegBat::write(uint8_t ch) {
+
     if (_cursorCol < 0 || _cursorCol >= DIGITS) {
         return 0;  // Invalid digit
     }
@@ -74,12 +79,12 @@ size_t SegLCD_HT1621_6SegBat::write(uint8_t ch) {
 
     // Preserve decimal point if FLAG_PENDING_DOT set (RAM offset 0 pattern)
     if (_isFlagSet(FLAG_PENDING_DOT)) {
-        segment_data |= _buffer_default[_cursorCol] & DECIMAL_POINT_BIT;
+        segment_data |= _ramBuffer[_cursorCol] & DECIMAL_POINT_BIT;
         _clearFlag(FLAG_PENDING_DOT);
     }
 
-    _buffer_default[_cursorCol] = segment_data;
-    _writeRam(_buffer_default[_cursorCol], (DIGITS - (_cursorCol + 1)) * 2);
+    _ramBuffer[_cursorCol] = segment_data;
+    _writeRam(_ramBuffer[_cursorCol], (DIGITS - (_cursorCol + 1)) * 2);
 
     _cursorCol++;
     return 1;
