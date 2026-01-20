@@ -100,7 +100,7 @@ void SegLCD_VK0192_5DigSigBattProgress::setProgress(uint8_t value) {
     if (value >= 140) {
         _ramBuffer[ADDR_PROGRESS_P4] |= PROGRESS_LEVEL_SEG[14];
     }
-    if (value == 150) {
+    if (value >= 150) {
         _ramBuffer[ADDR_PROGRESS_P4] |= PROGRESS_LEVEL_SEG[15];
     }
 
@@ -237,8 +237,15 @@ void SegLCD_VK0192_5DigSigBattProgress::writeDigit7seg(uint8_t row, uint8_t col,
         mapped = (mapped & 0xF0) | ((mapped & 0x0E) >> 1);
     }
 
-    // Clear only high bits (segment data), preserve low nibble and shared flags
-    uint8_t preserveMask = 0x1F;
+    // Clear segment bits, preserve low nibble and only the decimal bit that belongs here
+    uint8_t preserveMask = 0x0F;
+    if (DECIMAL_RAM_OFFSET != 0) {
+        int8_t prevCol = static_cast<int8_t>(col) - DECIMAL_RAM_OFFSET;
+        if ((row == 0 && prevCol >= DECIMAL_TOP_MIN_COL && prevCol <= DECIMAL_TOP_MAX_COL) ||
+            (row == 1 && prevCol >= DECIMAL_BOTTOM_MIN_COL && prevCol <= DECIMAL_BOTTOM_MAX_COL)) {
+            preserveMask |= DECIMAL_POINT_BIT;
+        }
+    }
     if (addr == DECIMAL_16SEG_ADDR_COL0 || addr == DECIMAL_16SEG_ADDR_COL1 ||
         addr == DECIMAL_16SEG_ADDR_COL2 || addr == DECIMAL_16SEG_ADDR_COL3) {
         preserveMask |= DECIMAL_16SEG_BIT;
