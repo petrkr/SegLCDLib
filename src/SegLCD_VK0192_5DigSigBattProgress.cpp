@@ -13,11 +13,6 @@ void SegLCD_VK0192_5DigSigBattProgress::init() {
     command(CMD_NORMAL);
 }
 
-void SegLCD_VK0192_5DigSigBattProgress::clear() {
-    memset(_ramBuffer, 0, RAM_SIZE);
-    _writeRam(_ramBuffer, RAM_SIZE, 0);
-}
-
 void SegLCD_VK0192_5DigSigBattProgress::setBatteryLevel(uint8_t level) {
     if (level > MAX_BATTERY_LEVEL)
         level = MAX_BATTERY_LEVEL;

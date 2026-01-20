@@ -11,11 +11,6 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::init() {
     _setMode(MODE_STATUS_ENABLED);
 }
 
-void SegLCD_PCF85176_6DigitSignalBatteryProgress::clear() {
-    memset(_ramBuffer, 0x00, RAM_SIZE);
-    SegDriver_PCF85176::clear();
-}
-
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setBatteryLevel(uint8_t level) {
 
     if (level > 4)

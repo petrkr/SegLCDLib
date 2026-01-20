@@ -14,11 +14,6 @@ void SegLCD_HT1621_4SegDegree::init() {
     command(CMD_NORMAL);
 }
 
-void SegLCD_HT1621_4SegDegree::clear() {
-    memset(_ramBuffer, 0x00, RAM_SIZE);
-    SegDriver_HT1621::clear();
-}
-
 void SegLCD_HT1621_4SegDegree::setDegree(bool state) {
     _writeSymbols(0, state); // Bit 0 is degree
 }

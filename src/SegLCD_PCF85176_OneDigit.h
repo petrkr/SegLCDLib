@@ -25,7 +25,6 @@ class SegLCD_PCF85176_OneDigit : public SegDriver_PCF85176 {
         void init() override;
         void init(bool reverse);
         void init(bool reverse, bool v1fix);
-        void clear() override;
         void setDecimal(uint8_t row, uint8_t col, bool state);
         size_t write(uint8_t ch) override;
     private:

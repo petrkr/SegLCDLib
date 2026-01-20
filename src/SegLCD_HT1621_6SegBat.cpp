@@ -14,11 +14,6 @@ void SegLCD_HT1621_6SegBat::init() {
     command(CMD_NORMAL);
 }
 
-void SegLCD_HT1621_6SegBat::clear() {
-    memset(_ramBuffer, 0x00, RAM_SIZE);
-    SegDriver_HT1621::clear();
-}
-
 void SegLCD_HT1621_6SegBat::setBatteryLevel(uint8_t level) {
 
     if (level > MAX_BATTERY_LEVEL)

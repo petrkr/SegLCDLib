@@ -12,7 +12,6 @@ void SegLCD_PCF85176_TempHumidity::init() {
 }
 
 void SegLCD_PCF85176_TempHumidity::clear() {
-    memset(_ramBuffer, 0x00, RAM_SIZE);
     _clearFlag(FLAG_MINUS_DISPLAYED);
     SegDriver_PCF85176::clear();
 }

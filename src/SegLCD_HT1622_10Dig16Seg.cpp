@@ -13,11 +13,6 @@ void SegLCD_HT1622_10Dig16Seg::init() {
     command(CMD_NORMAL);
 }
 
-void SegLCD_HT1622_10Dig16Seg::clear() {
-    memset(_ramBuffer, 0, RAM_SIZE);
-    _writeRam(_ramBuffer, RAM_SIZE, 0);
-}
-
 void SegLCD_HT1622_10Dig16Seg::setDecimal(uint8_t row, uint8_t col, bool state) {
 
     if (row != 0) {

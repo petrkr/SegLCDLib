@@ -11,11 +11,6 @@ void SegLCD_PCF85176_T1T2Lcd::init() {
     _setMode(MODE_STATUS_ENABLED);
 }
 
-void SegLCD_PCF85176_T1T2Lcd::clear() {
-    memset(_ramBuffer, 0x00, RAM_SIZE);
-    SegDriver_PCx85::clear();
-}
-
 void SegLCD_PCF85176_T1T2Lcd::setBatteryLevel(uint8_t level) {
 
     if (level > MAX_BATTERY_LEVEL)

@@ -10,11 +10,6 @@ void SegLCD_PCF85176_4DR821B::init() {
     _setMode(MODE_STATUS_ENABLED, MODE_DRIVE_STATIC);
 }
 
-void SegLCD_PCF85176_4DR821B::clear() {
-    memset(_ramBuffer, 0x00, RAM_SIZE);
-    SegDriver_PCF85176::clear();
-}
-
 void SegLCD_PCF85176_4DR821B::setSymbol(uint8_t symbol, bool state) {
     if (state)
         _ramBuffer[ADDR_SYMBOLS] |= symbol;

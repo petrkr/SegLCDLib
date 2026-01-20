@@ -20,11 +20,6 @@ void SegLCD_PCF85176_OneDigit::init(bool reverse, bool v1fix) {
     if (v1fix) _setFlag(FLAG_V1FIX);
 }
 
-void SegLCD_PCF85176_OneDigit::clear() {
-    memset(_ramBuffer, 0x00, RAM_SIZE);
-    SegDriver_PCF85176::clear();
-}
-
 void SegLCD_PCF85176_OneDigit::setDecimal(uint8_t row, uint8_t col, bool state) {
 
     if (row != 0) {
