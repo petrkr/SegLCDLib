@@ -348,6 +348,14 @@ class SegLCDLib : public Print {
         uint8_t _displayFlags = 0;
 
         /**
+         * @brief Common flag for decimal handling when RAM offset is 0.
+         *
+         * Used when decimal point shares the same RAM byte as the digit.
+         * Set when '.' is written, cleared after next character preserves it.
+         */
+        static constexpr uint8_t FLAG_PENDING_DOT = 0x80;
+
+        /**
          * @brief Set a specific flag bit.
          * @param mask Bitmask with bit(s) to set
          */

@@ -47,7 +47,14 @@ class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
     private:
         uint8_t _buffer[48] = {0};  // VK0192 RAM buffer
 
+        // Decimal configuration: VK0192 has +1 RAM offset (dot in NEXT byte)
         static constexpr uint8_t DECIMAL_POINT_BIT = 0x10;
+        static constexpr int8_t DECIMAL_RAM_OFFSET = 1;   // +1: dot in next byte
+        static constexpr uint8_t DECIMAL_TOP_MIN_COL = 0;
+        static constexpr uint8_t DECIMAL_TOP_MAX_COL = 1;
+        static constexpr uint8_t DECIMAL_BOTTOM_MIN_COL = 0;
+        static constexpr uint8_t DECIMAL_BOTTOM_MAX_COL = 3;
+
         static constexpr uint8_t NUM_7SEG_DIGITS = 10;  // 3+2+5 7-seg digits
 
         static constexpr uint8_t MAX_SIGNAL_LEVEL = 3;

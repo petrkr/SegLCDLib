@@ -32,6 +32,15 @@ class SegLCD_HT1621_4SegDegree : public SegDriver_HT1621 {
 
         static constexpr uint8_t DIGITS = 4;
 
+        // Decimal configuration: dots at positions 0-1, stored in symbols buffer
+        static constexpr uint8_t DECIMAL_MIN_COL = 0;
+        static constexpr uint8_t DECIMAL_MAX_COL = 1;
+        static constexpr int8_t DECIMAL_RAM_OFFSET = -1;  // -1: dot belongs to previous position
+        // Note: This LCD uses symbols buffer for dots/colon, not DECIMAL_POINT_BIT
+
+        // Colon configuration
+        static constexpr uint8_t COLON_COL = 1;  // Colon at position 1 (between digits 1-2)
+
         uint8_t _mapSegments(uint8_t val);
         void _writeSymbols(uint8_t bitnum, bool state);
 };

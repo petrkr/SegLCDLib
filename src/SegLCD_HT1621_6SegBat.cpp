@@ -56,21 +56,26 @@ void SegLCD_HT1621_6SegBat::setDecimal(uint8_t row, uint8_t col, bool state) {
 }
 
 size_t SegLCD_HT1621_6SegBat::write(uint8_t ch) {
-    if (_cursorCol < 0 || _cursorCol > DIGITS) {
-        return 0; //Invalid digit
+    if (_cursorCol < 0 || _cursorCol >= DIGITS) {
+        return 0;  // Invalid digit
     }
 
+    // Decimal point - does NOT move cursor (RAM offset 0: same byte)
     if (ch == '.') {
-        setDecimal(_cursorRow, _cursorCol, true);
-        _setFlag(FLAG_PREVIOUS_DOT);
-        return 1;
+        if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
+            setDecimal(_cursorRow, _cursorCol, true);
+            _setFlag(FLAG_PENDING_DOT);
+        }
+        return 1;  // Never move cursor for dot
     }
 
+    // Regular character
     uint8_t segment_data = _mapSegments(_get_char_value(ch));
 
-    if ((_cursorCol >= 0 && _cursorCol <= 2) || _isFlagSet(FLAG_PREVIOUS_DOT)) {
+    // Preserve decimal point if FLAG_PENDING_DOT set (RAM offset 0 pattern)
+    if (_isFlagSet(FLAG_PENDING_DOT)) {
         segment_data |= _buffer_default[_cursorCol] & DECIMAL_POINT_BIT;
-        _clearFlag(FLAG_PREVIOUS_DOT);
+        _clearFlag(FLAG_PENDING_DOT);
     }
 
     _buffer_default[_cursorCol] = segment_data;

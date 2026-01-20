@@ -211,73 +211,92 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setCursor(uint8_t row, uint8_t
 }
 
 size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
-    uint8_t segment_data = _mapSegments(_get_char_value(ch));
-
     switch (_cursorRow) {
-        case 0:
-            if (_cursorCol < 0 || _cursorCol > 3) {
-                return 0; // Invalid digit
+        case 0: {
+            // Top row (4 digits)
+            if (_cursorCol >= 4) {
+                return 0;  // Invalid digit
             }
 
-            if (_cursorCol == 2 && ch != ':' && !_isFlagSet(FLAG_COLON_TOP) && (_buffer_top[_cursorCol] & DECIMAL_POINT_BIT)) {
-                _buffer_top[_cursorCol] &= ~DECIMAL_POINT_BIT;
-                _writeRam(_buffer_top[_cursorCol], ADDR_SMALL_SEGS + ((_cursorCol) * 2));
-            }
-
+            // Decimal point - does NOT move cursor (RAM offset -1)
             if (ch == '.') {
-                setDecimal(_cursorRow, _cursorCol - 1, true);
-                return 1;
+                if (_cursorCol > DECIMAL_TOP_MIN_COL && _cursorCol <= DECIMAL_TOP_MAX_COL + 1) {
+                    setDecimal(_cursorRow, _cursorCol - 1, true);
+                }
+                return 1;  // Never move cursor for dot
             }
 
-            if (ch == ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_TOP)) {
+            // Colon - does NOT move cursor
+            if (ch == ':' && _cursorCol == COLON_TOP_COL && !_isFlagSet(FLAG_COLON_TOP)) {
                 setClockColon(_cursorRow, _cursorCol, true);
                 _setFlag(FLAG_COLON_TOP);
-                return 1;
+                return 1;  // Never move cursor for colon
             }
 
+            // Clear colon if writing non-colon at colon position
+            if (_cursorCol == COLON_TOP_COL && ch != ':' && !_isFlagSet(FLAG_COLON_TOP) &&
+                (_buffer_top[_cursorCol] & DECIMAL_POINT_BIT)) {
+                _buffer_top[_cursorCol] &= ~DECIMAL_POINT_BIT;
+                _writeRam(_buffer_top[_cursorCol], ADDR_SMALL_SEGS + (_cursorCol * 2));
+            }
+
+            // Regular character
+            uint8_t segment_data = _mapSegments(_get_char_value(ch));
+
+            // Preserve colon bit after colon position
             if (_cursorCol == 3 && _isFlagSet(FLAG_COLON_TOP)) {
-                _buffer_top[_cursorCol] &= DECIMAL_POINT_BIT;
-                _buffer_top[_cursorCol] |= (segment_data & ~DECIMAL_POINT_BIT);
-            } else {
-                _buffer_top[_cursorCol] = segment_data;
-            }
-            _writeRam(_buffer_top[_cursorCol], ADDR_SMALL_SEGS + ((_cursorCol) * 2));
-            break;
-        case 1:
-            if (_cursorCol < 0 || _cursorCol > 5) {
-                return 0; // Invalid digit
+                segment_data |= _buffer_top[_cursorCol] & DECIMAL_POINT_BIT;
             }
 
-            if (_cursorCol == 4 && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT) && (_buffer_default[_cursorCol] & DECIMAL_POINT_BIT)) {
+            _buffer_top[_cursorCol] = segment_data;
+            _writeRam(_buffer_top[_cursorCol], ADDR_SMALL_SEGS + (_cursorCol * 2));
+            _cursorCol++;
+            return 1;
+        }
+        case 1: {
+            // Bottom row (6 digits)
+            if (_cursorCol >= 6) {
+                return 0;  // Invalid digit
+            }
+
+            // Decimal point - does NOT move cursor (RAM offset -1)
+            if (ch == '.') {
+                if (_cursorCol > DECIMAL_BOTTOM_MIN_COL && _cursorCol <= DECIMAL_BOTTOM_MAX_COL + 1) {
+                    setDecimal(_cursorRow, _cursorCol - 1, true);
+                }
+                return 1;  // Never move cursor for dot
+            }
+
+            // Colon - does NOT move cursor
+            if (ch == ':' && _cursorCol == COLON_BOTTOM_COL && !_isFlagSet(FLAG_COLON_DEFAULT)) {
+                setClockColon(_cursorRow, _cursorCol, true);
+                _setFlag(FLAG_COLON_DEFAULT);
+                return 1;  // Never move cursor for colon
+            }
+
+            // Clear colon if writing non-colon at colon position
+            if (_cursorCol == COLON_BOTTOM_COL && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT) &&
+                (_buffer_default[_cursorCol] & DECIMAL_POINT_BIT)) {
                 _buffer_default[_cursorCol] &= ~DECIMAL_POINT_BIT;
                 _writeRam(_buffer_default[_cursorCol], ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
             }
 
-            if (ch == '.') {
-                setDecimal(_cursorRow, _cursorCol - 1, true);
-                return 1;
-            }
+            // Regular character
+            uint8_t segment_data = _mapSegments(_get_char_value(ch));
 
-            if (ch == ':' && _cursorCol == 4 && !_isFlagSet(FLAG_COLON_DEFAULT)) {
-                setClockColon(_cursorRow, _cursorCol, true);
-                _setFlag(FLAG_COLON_DEFAULT);
-                return 1;
-            }
-
+            // Preserve colon bit after colon position
             if (_cursorCol == 5 && _isFlagSet(FLAG_COLON_DEFAULT)) {
-                _buffer_default[_cursorCol] &= DECIMAL_POINT_BIT;
-                _buffer_default[_cursorCol] |= (segment_data & ~DECIMAL_POINT_BIT);
-            } else {
-                _buffer_default[_cursorCol] = segment_data;
+                segment_data |= _buffer_default[_cursorCol] & DECIMAL_POINT_BIT;
             }
-            _writeRam(_buffer_default[_cursorCol], ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
-            break;
-        default:
-            return 0; // invalid digit
-    }
 
-    _cursorCol++;
-    return 1;
+            _buffer_default[_cursorCol] = segment_data;
+            _writeRam(_buffer_default[_cursorCol], ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
+            _cursorCol++;
+            return 1;
+        }
+        default:
+            return 0;  // Invalid row
+    }
 }
 
 // ABCD_EFGH to ABCH FGED

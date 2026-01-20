@@ -54,9 +54,17 @@ class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
         static constexpr uint8_t HUM_DIGITS = 3;
         static constexpr uint8_t TEMP_ROW = 0;
         static constexpr uint8_t HUM_ROW = 1;
-        static constexpr uint8_t TEMP_DECIMAL_MIN_COL = 1;
-        static constexpr uint8_t TEMP_DECIMAL_MAX_COL = 3;
-        static constexpr uint8_t HUM_DECIMAL_COL = 2;
+
+        // Decimal configuration: RAM offset -1 (dot belongs to previous position)
+        static constexpr uint8_t DECIMAL_TOP_MIN_COL = 1;
+        static constexpr uint8_t DECIMAL_TOP_MAX_COL = 3;
+        static constexpr uint8_t DECIMAL_BOTTOM_MIN_COL = 2;
+        static constexpr uint8_t DECIMAL_BOTTOM_MAX_COL = 2;  // Only col 2 on bottom row
+        static constexpr int8_t DECIMAL_RAM_OFFSET = -1;  // -1: dot belongs to previous position
+        // Legacy aliases
+        static constexpr uint8_t TEMP_DECIMAL_MIN_COL = DECIMAL_TOP_MIN_COL;
+        static constexpr uint8_t TEMP_DECIMAL_MAX_COL = DECIMAL_TOP_MAX_COL;
+        static constexpr uint8_t HUM_DECIMAL_COL = DECIMAL_BOTTOM_MIN_COL;
 
         // TempHum specific bit positions
         static constexpr uint8_t DECIMAL_POINT_BIT = 0x08;

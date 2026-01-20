@@ -177,36 +177,44 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setCursor(uint8_t row, uint8_t col
 }
 
 size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow0(uint8_t ch) {
-    if (_cursorCol > 3) {
-        return 0;
+    if (_cursorCol >= 4) {
+        return 0;  // Invalid digit
     }
 
+    // Decimal point - does NOT move cursor (RAM offset -1)
     if (ch == '.') {
-        setDecimal(_cursorRow, _cursorCol - 1, true);
-        return 1;
+        if (_cursorCol > DECIMAL_TOP_MIN_COL && _cursorCol <= DECIMAL_TOP_MAX_COL + 1) {
+            setDecimal(_cursorRow, _cursorCol - 1, true);
+        }
+        return 1;  // Never move cursor for dot
     }
 
-    if (ch == ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_TOP)) {
+    // Colon - does NOT move cursor
+    if (ch == ':' && _cursorCol == COLON_TOP_COL && !_isFlagSet(FLAG_COLON_TOP)) {
         setClockColon(_cursorRow, _cursorCol, true);
-        return 1;
+        return 1;  // Never move cursor for colon
     }
 
-    if (_cursorCol == 2 && ch != ':' && !_isFlagSet(FLAG_COLON_TOP)) {
+    // Clear colon if writing non-colon at colon position
+    if (_cursorCol == COLON_TOP_COL && ch != ':' && !_isFlagSet(FLAG_COLON_TOP)) {
         setClockColon(_cursorRow, _cursorCol, false);
     }
 
+    // Regular character
     uint8_t segment_data = _mapSegmentsTop(_get_char_value(ch));
     uint8_t addr = ADDR_SMALL_SEGS + (_cursorCol * 2);
-    uint8_t dp_mask = 0x08;
 
-    if (_cursorCol == 2 && ch != ':' && !_isFlagSet(FLAG_COLON_TOP) && (_ramBuffer[addr >> 1] & dp_mask)) {
-        uint8_t cleared = _ramBuffer[addr >> 1] & ~dp_mask;
+    // Clear colon bit if needed
+    if (_cursorCol == COLON_TOP_COL && ch != ':' && !_isFlagSet(FLAG_COLON_TOP) &&
+        (_ramBuffer[addr >> 1] & DECIMAL_TOP_POINT_BIT)) {
+        uint8_t cleared = _ramBuffer[addr >> 1] & ~DECIMAL_TOP_POINT_BIT;
         _writeRamMasked(cleared, addr, addr == 0x06 ? 0xF7 : 0xFF);
     }
 
+    // Preserve colon bit after colon position
     if (_cursorCol == 3 && _isFlagSet(FLAG_COLON_TOP)) {
-        uint8_t current = _ramBuffer[addr >> 1] & dp_mask;
-        segment_data = current | (segment_data & ~dp_mask);
+        uint8_t current = _ramBuffer[addr >> 1] & DECIMAL_TOP_POINT_BIT;
+        segment_data = current | (segment_data & ~DECIMAL_TOP_POINT_BIT);
     }
 
     _writeRamMasked(segment_data, addr, addr == 0x06 ? 0xF7 : 0xFF);
@@ -215,46 +223,53 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow0(uint8_t ch) {
 }
 
 size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow1(uint8_t ch) {
-    if (_cursorCol > 5) {
-        return 0;
+    if (_cursorCol >= 6) {
+        return 0;  // Invalid digit
     }
 
+    // Decimal point - does NOT move cursor (RAM offset -1)
     if (ch == '.') {
-        setDecimal(_cursorRow, _cursorCol - 1, true);
-        return 1;
+        if (_cursorCol > DECIMAL_BOTTOM_MIN_COL && _cursorCol <= DECIMAL_BOTTOM_MAX_COL + 1) {
+            setDecimal(_cursorRow, _cursorCol - 1, true);
+        }
+        return 1;  // Never move cursor for dot
     }
 
-    if (ch == ':') {
-        if (_cursorCol == 2 && !_isFlagSet(FLAG_COLON_DEFAULT_LEFT)) {
-            setClockColon(_cursorRow, _cursorCol, true);
-            return 1;
-        }
-        if (_cursorCol == 4 && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
-            setClockColon(_cursorRow, _cursorCol, true);
-            return 1;
-        }
+    // Colon at col 2 - does NOT move cursor
+    if (ch == ':' && _cursorCol == COLON_BOTTOM_LEFT_COL && !_isFlagSet(FLAG_COLON_DEFAULT_LEFT)) {
+        setClockColon(_cursorRow, _cursorCol, true);
+        return 1;  // Never move cursor for colon
     }
 
-    if (_cursorCol == 2 && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT_LEFT)) {
+    // Colon at col 4 - does NOT move cursor
+    if (ch == ':' && _cursorCol == COLON_BOTTOM_RIGHT_COL && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
+        setClockColon(_cursorRow, _cursorCol, true);
+        return 1;  // Never move cursor for colon
+    }
+
+    // Clear colons if writing non-colon at colon positions
+    if (_cursorCol == COLON_BOTTOM_LEFT_COL && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT_LEFT)) {
         setClockColon(_cursorRow, _cursorCol, false);
     }
-    if (_cursorCol == 4 && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
+    if (_cursorCol == COLON_BOTTOM_RIGHT_COL && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
         setClockColon(_cursorRow, _cursorCol, false);
     }
 
-    uint8_t dp_mask = 0x10;
-    if (_cursorCol == 4 && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT) &&
-        (_buffer_default[_cursorCol] & dp_mask)) {
-        _buffer_default[_cursorCol] &= ~dp_mask;
+    // Clear colon bit if needed at right colon position
+    if (_cursorCol == COLON_BOTTOM_RIGHT_COL && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT) &&
+        (_buffer_default[_cursorCol] & DECIMAL_BOTTOM_POINT_BIT)) {
+        _buffer_default[_cursorCol] &= ~DECIMAL_BOTTOM_POINT_BIT;
         _writeRamMasked(_buffer_default[_cursorCol],
                        ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
     }
 
+    // Regular character
     uint8_t segment_data = _mapSegments(_get_char_value(ch));
 
+    // Preserve colon bit after right colon position
     if (_cursorCol == 5 && _isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
-        _buffer_default[_cursorCol] &= dp_mask;
-        _buffer_default[_cursorCol] |= (segment_data & ~dp_mask);
+        _buffer_default[_cursorCol] &= DECIMAL_BOTTOM_POINT_BIT;
+        _buffer_default[_cursorCol] |= (segment_data & ~DECIMAL_BOTTOM_POINT_BIT);
     } else {
         _buffer_default[_cursorCol] = segment_data;
     }

@@ -157,11 +157,22 @@ void SegLCD_VK0192_5DigSigBattProgress::setDecimal(uint8_t row, uint8_t col, boo
 }
 
 size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
-    if (_cursorRow == 0 || _cursorRow == 1) {
-        writeDigit7seg(_cursorRow, _cursorCol, ch);
+    // Decimal point - does NOT move cursor
+    // VK0192 has +1 RAM offset: decimal is in NEXT byte
+    if (ch == '.') {
+        // Row 0: decimals at col 0-1, Row 1: decimals at col 0-3
+        if (_cursorRow == 0 && _cursorCol >= 0 && _cursorCol <= 1) {
+            setDecimal(_cursorRow, _cursorCol, true);
+        } else if (_cursorRow == 1 && _cursorCol >= 0 && _cursorCol <= 3) {
+            setDecimal(_cursorRow, _cursorCol, true);
+        }
+        return 1;  // Never move cursor for dot
     }
 
-    if (_cursorRow == 2 ) {
+    // Regular character
+    if (_cursorRow == 0 || _cursorRow == 1) {
+        writeDigit7seg(_cursorRow, _cursorCol, ch);
+    } else if (_cursorRow == 2) {
         writeDigit16seg(_cursorRow, _cursorCol, ch);
     }
     _cursorCol++;

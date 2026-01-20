@@ -123,44 +123,71 @@ void SegLCD_PCF85176_TempHumidity::setCursor(uint8_t row, uint8_t col) {
 }
 
 size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
-    uint8_t c = _mapSegments(_get_char_value(ch));
+    if (_cursorRow == TEMP_ROW) {
+        // Temp segments (row 0)
+        if (_cursorCol >= TEMP_DIGITS) {
+            return 0;  // Invalid digit
+        }
 
-    if (_cursorRow == TEMP_ROW) { // Temp segments
+        // Clear minus if writing non-minus at col 0
         if (_cursorCol == 0 && ch != '-' && !_isFlagSet(FLAG_MINUS_DISPLAYED) && (_buffer_hum[0] & MINUS_SIGN_BIT)) {
             _buffer_hum[0] &= ~MINUS_SIGN_BIT;
             _writeRam(_buffer_hum[0], ADDR_HUM_SEGS);
         }
 
+        // Decimal point - does NOT move cursor (RAM offset -1)
         if (ch == '.') {
-            setDecimal(_cursorRow, _cursorCol, true);
-            return 1;
-        } else if (ch == '-' && _cursorCol == 0 && !_isFlagSet(FLAG_MINUS_DISPLAYED)) {
+            if (_cursorCol > DECIMAL_TOP_MIN_COL && _cursorCol <= DECIMAL_TOP_MAX_COL) {
+                setDecimal(_cursorRow, _cursorCol - 1, true);
+            }
+            return 1;  // Never move cursor for dot
+        }
+
+        // Minus sign at position 0 (special handling)
+        if (ch == '-' && _cursorCol == 0 && !_isFlagSet(FLAG_MINUS_DISPLAYED)) {
             _buffer_hum[0] |= MINUS_SIGN_BIT;
             _writeRam(_buffer_hum[0], ADDR_HUM_SEGS);
             _setFlag(FLAG_MINUS_DISPLAYED);
-            return 1;
-        } else if (_cursorCol >= 0 && _cursorCol < TEMP_DIGITS) {
-            _buffer_temp[_cursorCol] = c;
-            _writeRam(_buffer_temp[_cursorCol], ADDR_TEMP_SEGS + _cursorCol * 2);
-            _cursorCol++;
-            return 1;
+            return 1;  // Minus doesn't move cursor
         }
-    } else if (_cursorRow == HUM_ROW) { // Humidity segments
+
+        // Regular character
+        uint8_t c = _mapSegments(_get_char_value(ch));
+        // Preserve existing decimal point
+        c |= _buffer_temp[_cursorCol] & DECIMAL_POINT_BIT;
+        _buffer_temp[_cursorCol] = c;
+        _writeRam(_buffer_temp[_cursorCol], ADDR_TEMP_SEGS + _cursorCol * 2);
+        _cursorCol++;
+        return 1;
+
+    } else if (_cursorRow == HUM_ROW) {
+        // Humidity segments (row 1)
+        if (_cursorCol >= HUM_DIGITS) {
+            return 0;  // Invalid digit
+        }
+
+        // Decimal point - does NOT move cursor (RAM offset -1)
         if (ch == '.') {
-            setDecimal(_cursorRow, _cursorCol, true);
-            return 1;
-        } else if (_cursorRow == HUM_ROW && _cursorCol >= 0 && _cursorCol < HUM_DIGITS) {
-            if (_cursorCol == 0) {
-                _buffer_hum[_cursorCol] &= MINUS_SIGN_BIT;
-                _buffer_hum[_cursorCol] |= (c & ~MINUS_SIGN_BIT);
+            if (_cursorCol > DECIMAL_BOTTOM_MIN_COL && _cursorCol <= DECIMAL_BOTTOM_MAX_COL) {
+                setDecimal(_cursorRow, _cursorCol - 1, true);
             }
-            else {
-                _buffer_hum[_cursorCol] = c;
-            }
-            _writeRam(_buffer_hum[_cursorCol], ADDR_HUM_SEGS + _cursorCol * 2);
-            _cursorCol++;
-            return 1;
+            return 1;  // Never move cursor for dot
         }
+
+        // Regular character
+        uint8_t c = _mapSegments(_get_char_value(ch));
+        if (_cursorCol == 0) {
+            // Preserve minus sign bit at position 0
+            _buffer_hum[_cursorCol] &= MINUS_SIGN_BIT;
+            _buffer_hum[_cursorCol] |= (c & ~MINUS_SIGN_BIT);
+        } else {
+            // Preserve existing decimal point
+            c |= _buffer_hum[_cursorCol] & DECIMAL_POINT_BIT;
+            _buffer_hum[_cursorCol] = c;
+        }
+        _writeRam(_buffer_hum[_cursorCol], ADDR_HUM_SEGS + _cursorCol * 2);
+        _cursorCol++;
+        return 1;
     }
 
     return 0;

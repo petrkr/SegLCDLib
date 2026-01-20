@@ -63,6 +63,20 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
         static constexpr uint8_t FLAG_COLON_DEFAULT_LEFT = 0x02;
         static constexpr uint8_t FLAG_COLON_DEFAULT_RIGHT = 0x04;
 
+        // Decimal configuration: RAM offset -1 (dot belongs to previous position)
+        static constexpr int8_t DECIMAL_RAM_OFFSET = -1;  // -1: dot belongs to previous position
+        static constexpr uint8_t DECIMAL_TOP_MIN_COL = 0;
+        static constexpr uint8_t DECIMAL_TOP_MAX_COL = 2;
+        static constexpr uint8_t DECIMAL_TOP_POINT_BIT = 0x08;
+        static constexpr uint8_t DECIMAL_BOTTOM_MIN_COL = 0;
+        static constexpr uint8_t DECIMAL_BOTTOM_MAX_COL = 4;
+        static constexpr uint8_t DECIMAL_BOTTOM_POINT_BIT = 0x10;
+
+        // Colon configuration (separate positions from decimal)
+        static constexpr uint8_t COLON_TOP_COL = 2;
+        static constexpr uint8_t COLON_BOTTOM_LEFT_COL = 2;
+        static constexpr uint8_t COLON_BOTTOM_RIGHT_COL = 4;
+
         uint8_t _mapSegmentsTop(uint8_t val);
         uint8_t _mapSegments(uint8_t val);
         uint8_t _convertLabelFlags(uint8_t labels);

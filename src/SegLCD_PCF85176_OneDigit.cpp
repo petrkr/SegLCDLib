@@ -46,15 +46,19 @@ void SegLCD_PCF85176_OneDigit::setDecimal(uint8_t row, uint8_t col, bool state) 
 }
 
 size_t SegLCD_PCF85176_OneDigit::write(uint8_t ch) {
-    if (_cursorCol < 0 || _cursorCol > DIGITS) {
-        return 0; //Invalid digit
+    if (_cursorCol < 0 || _cursorCol >= DIGITS) {
+        return 0;  // Invalid digit
     }
 
+    // Decimal point - does NOT move cursor (RAM offset -1: previous byte)
     if (ch == '.') {
-        setDecimal(_cursorRow, _cursorCol - 1, true);
-        return 1;
+        if (_cursorCol > DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
+            setDecimal(_cursorRow, _cursorCol - 1, true);
+        }
+        return 1;  // Never move cursor for dot
     }
 
+    // Regular character
     uint8_t segment_data = _get_char_value(ch);
 
     // Board version v1 have swapped two segments
@@ -66,6 +70,9 @@ size_t SegLCD_PCF85176_OneDigit::write(uint8_t ch) {
             segment_data ^= (1 << 2) | (1 << 3);
         }
     }
+
+    // Preserve existing decimal point
+    segment_data |= _buffer[_cursorCol] & DECIMAL_POINT_BIT;
 
     _buffer[_cursorCol] = segment_data;
 

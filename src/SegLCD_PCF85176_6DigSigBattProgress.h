@@ -64,7 +64,17 @@ class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
         static constexpr uint8_t FLAG_COLON_TOP = 0x01;
         static constexpr uint8_t FLAG_COLON_DEFAULT = 0x02;
 
+        // Decimal configuration: RAM offset -1 (dot belongs to previous position)
         static constexpr uint8_t DECIMAL_POINT_BIT = 0x10;
+        static constexpr int8_t DECIMAL_RAM_OFFSET = -1;  // -1: dot belongs to previous position
+        static constexpr uint8_t DECIMAL_TOP_MIN_COL = 0;
+        static constexpr uint8_t DECIMAL_TOP_MAX_COL = 2;
+        static constexpr uint8_t DECIMAL_BOTTOM_MIN_COL = 0;
+        static constexpr uint8_t DECIMAL_BOTTOM_MAX_COL = 4;
+
+        // Colon configuration
+        static constexpr uint8_t COLON_TOP_COL = 2;
+        static constexpr uint8_t COLON_BOTTOM_COL = 4;
 
         uint8_t _mapSegments(uint8_t val);
 };

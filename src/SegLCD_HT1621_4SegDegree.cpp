@@ -60,22 +60,28 @@ size_t SegLCD_HT1621_4SegDegree::write(uint8_t ch) {
         return 0;
     }
 
-    if (_cursorCol < 0 || _cursorCol > DIGITS) {
-        return 0; //Invalid digit
+    if (_cursorCol < 0 || _cursorCol >= DIGITS) {
+        return 0;  // Invalid digit
+    }
+
+    // Decimal point - does NOT move cursor (RAM offset -1: previous position)
+    if (ch == '.') {
+        if (_cursorCol > DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL + 1) {
+            setDecimal(_cursorRow, _cursorCol - 1, true);
+        }
+        return 1;  // Never move cursor for dot
+    }
+
+    // Colon - does NOT move cursor
+    if (ch == ':') {
+        if (_cursorCol > COLON_COL) {
+            setClockColon(_cursorRow, _cursorCol - 1, true);
+        }
+        return 1;  // Never move cursor for colon
     }
 
     uint8_t segment_data = _mapSegments(_get_char_value(ch));
     uint8_t common = DIGITS - _cursorCol - 1;  // C3 for position 1, C2 for position 2, etc.
-
-    if (ch == '.') {
-        setDecimal(_cursorRow, _cursorCol - 1 , true);
-        return 1;
-    }
-
-    if (ch == ':') {
-        setClockColon(_cursorRow, _cursorCol - 1 , true);
-        return 1;
-    }
 
     // Clear the bits for segments 0-5
     for (int i = 0; i < DIGITS - 1; i++) {
