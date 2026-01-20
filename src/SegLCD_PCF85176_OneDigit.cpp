@@ -14,8 +14,8 @@ void SegLCD_PCF85176_OneDigit::init(bool reverse) {
 void SegLCD_PCF85176_OneDigit::init(bool reverse, bool v1fix) {
     SegDriver_PCF85176::init();
     _setMode(MODE_STATUS_ENABLED, MODE_DRIVE_STATIC);
-    _reverse = reverse;
-    _v1fix = v1fix;
+    if (reverse) _setFlag(FLAG_REVERSE);
+    if (v1fix) _setFlag(FLAG_V1FIX);
 }
 
 void SegLCD_PCF85176_OneDigit::clear() {
@@ -38,7 +38,7 @@ void SegLCD_PCF85176_OneDigit::setDecimal(uint8_t row, uint8_t col, bool state) 
         _buffer[col] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
     }
 
-    if (_reverse) {
+    if (_isFlagSet(FLAG_REVERSE)) {
         _writeRam(_buffer[col], (DIGITS - (col + 1)) * 8);
     } else {
         _writeRam(_buffer[col], col * 8);
@@ -58,7 +58,7 @@ size_t SegLCD_PCF85176_OneDigit::write(uint8_t ch) {
     uint8_t segment_data = _get_char_value(ch);
 
     // Board version v1 have swapped two segments
-    if (_v1fix) {
+    if (_isFlagSet(FLAG_V1FIX)) {
         bool bit_2 = (segment_data >> 2) & 1;
         bool bit_3 = (segment_data >> 3) & 1;
 
@@ -69,7 +69,7 @@ size_t SegLCD_PCF85176_OneDigit::write(uint8_t ch) {
 
     _buffer[_cursorCol] = segment_data;
 
-    if (_reverse) {
+    if (_isFlagSet(FLAG_REVERSE)) {
         _writeRam(_buffer[_cursorCol], (DIGITS - (_cursorCol + 1)) * 8);
     } else {
         _writeRam(_buffer[_cursorCol], _cursorCol * 8);

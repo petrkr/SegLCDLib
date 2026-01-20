@@ -31,9 +31,8 @@ class SegLCD_PCF85176_OneDigit : public SegDriver_PCF85176 {
     private:
         uint8_t _buffer[MAX_ADDRESS/8];
 
-        // Support for reverse arranged digits
-        bool _reverse;
-        bool _v1fix;
+        static constexpr uint8_t FLAG_REVERSE = 0x01;
+        static constexpr uint8_t FLAG_V1FIX = 0x02;
 
         static constexpr uint8_t DIGITS = 5; // TODO: Do it somehow dynamic as this can be dynamic and this is just maximum
         static constexpr uint8_t DECIMAL_POINT_BIT = 0x01;

@@ -5,7 +5,6 @@ SegDriver_3Wire::SegDriver_3Wire(uint8_t chipselect, uint8_t data, uint8_t write
     _data = data;
     _wr = write;
     _rd = read;
-    _irq = -1; // Not used, but reserved for future use
     _maxAddress = 0; // Will be set by derived classes
 }
 

@@ -36,7 +36,6 @@ class SegLCD_PCF85176_4DR821B : public SegDriver_PCF85176 {
         size_t write(uint8_t ch) override;
     private:
         uint8_t _buffer[5];
-        bool _previousDot = false;
 
         static constexpr uint8_t FLAG_COLON_DISPLAYED = 0x01;
         static constexpr uint8_t FLAG_COL0_OVERLAY = 0x02;

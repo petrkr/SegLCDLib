@@ -84,7 +84,6 @@ class SegDriver_3Wire : public SegLCDLib {
         uint8_t _rd;   ///< Read clock pin for the display
         uint8_t _data; ///< Data pin for the display
         uint8_t _cs;   ///< Chip select pin for the display
-        uint8_t _irq;  ///< Not used, but reserved for future use
 
         uint8_t _maxAddress; ///< Maximum address for this controller
 
