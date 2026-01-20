@@ -9,27 +9,65 @@
 SegLCD_PCF8576_4Seg6SegMaintSegBatUnits lcd(Wire);
 
 void setup() {
-  Wire.begin(1, 2);
-  lcd.initBacklight(10, SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::BACKLIGHT_PWM);
-  lcd.setBacklight(128);
+  Serial.begin(115200);
+  delay(500);
 
+  Serial.println("Initialize i2c");
+  Wire.begin(1, 2);
+
+  Serial.println("Initialize backlight");
+  lcd.initBacklight(10);
+  lcd.setBacklight(true);
+
+  Serial.println("Initialize LCD");
   lcd.init();
   lcd.clear();
 
+  Serial.println("Demo");
   lcd.setSignalLevel(3);
   lcd.setBatteryLevel(2);
   lcd.setMaintenance(true);
-  //lcd.setLabels(SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::LABEL_);
   lcd.setDegree(true);
 
   lcd.setCursor(0, 0);
   lcd.print("17:37");
 
+  delay(1000);
+
+  lcd.setCursor(0, 0);
+  lcd.print("18");
+
+  delay(1000);
+
+  lcd.setCursor(1, 2);
+  lcd.print("17.37");
+
+  delay(1000);
+
+  lcd.setCursor(1, 2);
+  lcd.print("18");
+
+  delay(1000);
+
   lcd.setCursor(1, 0);
   lcd.print("T1:-3.41");
+
+
+  //lcd.setAutoFlush(false);    // Disable autoflush
+
 }
 
+static unsigned long lastUpdate = 0;
+static float value = 123.4;
 
 void loop() {
-
+   if (millis() - lastUpdate >= 100) {
+       lastUpdate = millis();
+  
+       lcd.setCursor(0, 0);
+       lcd.print(value);
+  
+       value += 0.1;
+       if (value > 999.9) value = 0.0;
+   }
 }

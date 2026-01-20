@@ -13,7 +13,7 @@ void setup() {
   Serial.begin(115200);
   delay(1000);
   Serial.println("Initilalize I2C...");
-  Wire.begin(0, 1);
+  Wire.begin(1, 2);
 
   Serial.println("Initialize LCD...");
 
@@ -24,7 +24,11 @@ void setup() {
 void loop() {
   Serial.println("Testing clock colon");
   lcd.clear();
-  lcd.print("12:54");
+  lcd.print("12.54");
+  delay(1000);
+
+  lcd.setCursor(0, 2);
+  lcd.print("23");
   delay(1000);
 
   Serial.println("Testing decimals");
