@@ -36,7 +36,7 @@ void setup() {
   delay(1000);
 
   // Write few bytes at address 0
-  uint8_t data[2] = { 0b11111111, 0b11111111 };  
+  uint8_t data[2] = { 0b11111111, 0b11111111 };
   lcd.writeRam(data, sizeof(data), 0);
 }
 

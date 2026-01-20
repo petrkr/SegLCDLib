@@ -63,10 +63,10 @@ static float value = 123.4;
 void loop() {
    if (millis() - lastUpdate >= 100) {
        lastUpdate = millis();
-  
+
        lcd.setCursor(0, 0);
        lcd.print(value);
-  
+
        value += 0.1;
        if (value > 999.9) value = 0.0;
    }

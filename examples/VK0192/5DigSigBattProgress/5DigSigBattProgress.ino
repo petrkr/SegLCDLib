@@ -36,6 +36,10 @@ void setup() {
 
   lcd.setCursor(1, 0);
   lcd.print("12.3.4.5");
+  delay(1000);
+  lcd.setCursor(1, 2);
+  lcd.print("67");
+
   lcd.setLabels(SegLCD_VK0192_5DigSigBattProgress::LABEL_C);
 
   lcd.setCursor(2, 0);

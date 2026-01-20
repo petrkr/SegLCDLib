@@ -63,7 +63,7 @@ void setup() {
   delay(1000);
 
   lcd.clearT1T2Labels(SegLCD_PCF85176_T1T2Lcd::LABEL_T2);
-  
+
 }
 
 void loop() {

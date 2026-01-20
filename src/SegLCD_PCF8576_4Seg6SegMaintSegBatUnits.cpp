@@ -296,7 +296,7 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::write(uint8_t ch) {
     }
 }
 
-// ABCD EFGH to 
+// ABCD EFGH to
 uint8_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_mapSegmentsTop(uint8_t val) {
     uint8_t out = 0;
     out |= (val & 0b00011000) << 3;      // DE: bits 4-3 -> 7-6
