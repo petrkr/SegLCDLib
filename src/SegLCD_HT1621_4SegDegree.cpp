@@ -1,7 +1,9 @@
 #include <SegLCD_HT1621_4SegDegree.h>
 
 
-SegLCD_HT1621_4SegDegree::SegLCD_HT1621_4SegDegree(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read) : SegDriver_HT1621(chipselect, data, write, read) {}
+SegLCD_HT1621_4SegDegree::SegLCD_HT1621_4SegDegree(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read) : SegDriver_HT1621(chipselect, data, write, read) {
+    _allocateBuffer(RAM_SIZE);
+}
 
 void SegLCD_HT1621_4SegDegree::init() {
     SegDriver_HT1621::init();
@@ -13,7 +15,7 @@ void SegLCD_HT1621_4SegDegree::init() {
 }
 
 void SegLCD_HT1621_4SegDegree::clear() {
-    memset(_buffer, 0x00, sizeof(_buffer));
+    memset(_ramBuffer, 0x00, RAM_SIZE);
     SegDriver_HT1621::clear();
 }
 
@@ -56,6 +58,7 @@ void SegLCD_HT1621_4SegDegree::setDecimal(uint8_t row, uint8_t col, bool state) 
 }
 
 size_t SegLCD_HT1621_4SegDegree::write(uint8_t ch) {
+
     if (_cursorRow != 0) {
         return 0;
     }
@@ -85,27 +88,27 @@ size_t SegLCD_HT1621_4SegDegree::write(uint8_t ch) {
 
     // Clear the bits for segments 0-5
     for (int i = 0; i < DIGITS - 1; i++) {
-        _buffer[i] &= ~(1 << common);            // Clear bits in each byte for this position
-        _buffer[i] &= ~(1 << (common + 4));      // Clear bits for higher segment
+        _ramBuffer[i] &= ~(1 << common);            // Clear bits in each byte for this position
+        _ramBuffer[i] &= ~(1 << (common + 4));      // Clear bits for higher segment
     }
 
     // do not clear degree and middle dot at segment 6
     if (_cursorCol != 2 && _cursorCol != 3) {
-        _buffer[3] &= ~(1 << common);
+        _ramBuffer[3] &= ~(1 << common);
     }
     // Clear segment 7
-    _buffer[3] &= ~(1 << (common + 4));      // Clear bits for higher segment
+    _ramBuffer[3] &= ~(1 << (common + 4));      // Clear bits for higher segment
 
-    // Map each segment to the correct byte and bit within _buffer based on segmentPatterns
-    if (segment_data & 0b00000001) _buffer[0] |= (1 << (common + 4)); // A -> S1
-    if (segment_data & 0b00000010) _buffer[0] |= (1 << common);       // B -> S0
-    if (segment_data & 0b00000100) _buffer[1] |= (1 << (common + 4)); // C -> S3
-    if (segment_data & 0b00001000) _buffer[1] |= (1 << common);       // D -> S2
-    if (segment_data & 0b00010000) _buffer[2] |= (1 << (common + 4)); // E -> S5
-    if (segment_data & 0b00100000) _buffer[2] |= (1 << common);       // F -> S4
-    if (segment_data & 0b01000000) _buffer[3] |= (1 << (common + 4)); // G -> S7
+    // Map each segment to the correct byte and bit within _ramBuffer based on segmentPatterns
+    if (segment_data & 0b00000001) _ramBuffer[0] |= (1 << (common + 4)); // A -> S1
+    if (segment_data & 0b00000010) _ramBuffer[0] |= (1 << common);       // B -> S0
+    if (segment_data & 0b00000100) _ramBuffer[1] |= (1 << (common + 4)); // C -> S3
+    if (segment_data & 0b00001000) _ramBuffer[1] |= (1 << common);       // D -> S2
+    if (segment_data & 0b00010000) _ramBuffer[2] |= (1 << (common + 4)); // E -> S5
+    if (segment_data & 0b00100000) _ramBuffer[2] |= (1 << common);       // F -> S4
+    if (segment_data & 0b01000000) _ramBuffer[3] |= (1 << (common + 4)); // G -> S7
 
-    _writeRam(_buffer, sizeof(_buffer), 0);
+    _writeRam(_ramBuffer, RAM_SIZE, 0);
 
     _cursorCol++;
     return 1;
@@ -127,11 +130,12 @@ uint8_t SegLCD_HT1621_4SegDegree::_mapSegments(uint8_t val) {
 }
 
 void SegLCD_HT1621_4SegDegree::_writeSymbols(uint8_t bitnum, bool state) {
+
     if (state) {
-      _buffer[3] |= (1 << bitnum);
+      _ramBuffer[3] |= (1 << bitnum);
     } else {
-      _buffer[3] &= ~(1 << bitnum);
+      _ramBuffer[3] &= ~(1 << bitnum);
     }
 
-    _writeRam(_buffer[3], ADDR_SYMBOLS);
+    _writeRam(_ramBuffer[3], ADDR_SYMBOLS);
 }

@@ -28,8 +28,7 @@ class SegLCD_HT1621_4SegDegree : public SegDriver_HT1621 {
         size_t write(uint8_t ch) override;
 
     private:
-        uint8_t _buffer[4] = {0};
-
+        static constexpr uint8_t RAM_SIZE = 4;
         static constexpr uint8_t DIGITS = 4;
 
         // Decimal configuration: dots at positions 0-1, stored in symbols buffer
