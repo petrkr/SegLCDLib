@@ -176,6 +176,10 @@ void SegLCD_VK0192_5DigSigBattProgress::setDecimal(uint8_t row, uint8_t col, boo
 }
 
 size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
+    if (_cursorRow > 2) {
+        return 0;
+    }
+
     // Decimal point - does NOT move cursor
     if (ch == '.') {
         int8_t dotCol = static_cast<int8_t>(_cursorCol) - 1;
@@ -192,6 +196,15 @@ size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
         }
         _setFlag(FLAG_PENDING_DOT);
         return 1;  // Never move cursor for dot
+    }
+
+    if (_cursorCol > MAX_COL) {
+        if (_cursorRow < 2) {
+            _cursorRow++;
+            _cursorCol = 0;
+        } else {
+            return 0;
+        }
     }
 
     // Regular character
