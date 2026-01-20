@@ -14,25 +14,20 @@ void SegLCD_HT1621_6SegBat::init() {
     command(CMD_NORMAL);
 }
 
+
 void SegLCD_HT1621_6SegBat::setBatteryLevel(uint8_t level) {
 
     if (level > MAX_BATTERY_LEVEL)
         level = MAX_BATTERY_LEVEL;
 
-    _ramBuffer[BATTERY_LEVEL_SEG[0]] &= ~(BATTERY_MASK);
-    _ramBuffer[BATTERY_LEVEL_SEG[1]] &= ~(BATTERY_MASK);
-    _ramBuffer[BATTERY_LEVEL_SEG[2]] &= ~(BATTERY_MASK);
+    uint8_t data0 = (level > 0) ? BATTERY_MASK : 0x00;
+    uint8_t data1 = (level > 1) ? BATTERY_MASK : 0x00;
+    uint8_t data2 = (level > 2) ? BATTERY_MASK : 0x00;
 
-    if (level > 0)
-        _ramBuffer[BATTERY_LEVEL_SEG[0]] |= BATTERY_MASK;
-    if (level > 1)
-        _ramBuffer[BATTERY_LEVEL_SEG[1]] |= BATTERY_MASK;
-    if (level > 2)
-        _ramBuffer[BATTERY_LEVEL_SEG[2]] |= BATTERY_MASK;
-
-    _writeRam(_ramBuffer[BATTERY_LEVEL_SEG[0]], 6);
-    _writeRam(_ramBuffer[BATTERY_LEVEL_SEG[1]], 8);
-    _writeRam(_ramBuffer[BATTERY_LEVEL_SEG[2]], 10);
+    // Use masked write to preserve digit segments (only modify battery bit 0x80)
+    _writeRamMasked(data0, (DIGITS - BATTERY_LEVEL_SEG[0] - 1) * 2, BATTERY_MASK);
+    _writeRamMasked(data1, (DIGITS - BATTERY_LEVEL_SEG[1] - 1) * 2, BATTERY_MASK);
+    _writeRamMasked(data2, (DIGITS - BATTERY_LEVEL_SEG[2] - 1) * 2, BATTERY_MASK);
 }
 
 void SegLCD_HT1621_6SegBat::setDecimal(uint8_t row, uint8_t col, bool state) {
@@ -45,41 +40,40 @@ void SegLCD_HT1621_6SegBat::setDecimal(uint8_t row, uint8_t col, bool state) {
         return; // Invalid digit
     }
 
-    if (state) {
-        _ramBuffer[col] |= DECIMAL_POINT_BIT; // Set the decimal point bit
-    } else {
-        _ramBuffer[col] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
-    }
+    uint8_t data = state ? DECIMAL_POINT_BIT : 0x00;
 
-    _writeRam(_ramBuffer[col], ((DIGITS - col - 1) * 2));
+    // Decimal point is stored in RAM of the NEXT digit (col+1)
+    _writeRamMasked(data, (DIGITS - col - 2) * 2, DECIMAL_POINT_BIT);
 }
 
 size_t SegLCD_HT1621_6SegBat::write(uint8_t ch) {
-
     if (_cursorCol < 0 || _cursorCol >= DIGITS) {
-        return 0;  // Invalid digit
+        return 0;
     }
 
-    // Decimal point - does NOT move cursor (RAM offset 0: same byte)
+    // Decimal point - does NOT move cursor
     if (ch == '.') {
-        if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
-            setDecimal(_cursorRow, _cursorCol, true);
+        if (_cursorCol > 0 && (_cursorCol - 1) >= DECIMAL_MIN_COL && (_cursorCol - 1) <= DECIMAL_MAX_COL) {
+            setDecimal(_cursorRow, _cursorCol - 1, true);
             _setFlag(FLAG_PENDING_DOT);
         }
-        return 1;  // Never move cursor for dot
+        return 1;
     }
 
     // Regular character
     uint8_t segment_data = _mapSegments(_get_char_value(ch));
+    uint8_t hw_addr = (DIGITS - (_cursorCol + 1)) * 2;
 
-    // Preserve decimal point if FLAG_PENDING_DOT set (RAM offset 0 pattern)
-    if (_isFlagSet(FLAG_PENDING_DOT)) {
-        segment_data |= _ramBuffer[_cursorCol] & DECIMAL_POINT_BIT;
+    // Clear decimal at current position (stored in next col's RAM)
+    if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
+        if (!_isFlagSet(FLAG_PENDING_DOT)) {
+            setDecimal(_cursorRow, _cursorCol, false);
+        }
         _clearFlag(FLAG_PENDING_DOT);
     }
 
-    _ramBuffer[_cursorCol] = segment_data;
-    _writeRam(_ramBuffer[_cursorCol], (DIGITS - (_cursorCol + 1)) * 2);
+    // Bit 0x80 is always special (battery on col 0,1,2 or decimal of previous digit on col 3,4,5)
+    _writeRamMasked(segment_data, hw_addr, 0x7F);
 
     _cursorCol++;
     return 1;

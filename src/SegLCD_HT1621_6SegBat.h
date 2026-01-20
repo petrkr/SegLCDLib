@@ -25,14 +25,11 @@ class SegLCD_HT1621_6SegBat : public SegDriver_HT1621 {
 
     private:
         static constexpr uint8_t RAM_SIZE = 6;
-
-        // Note: FLAG_PENDING_DOT (0x80) from SegLCDLib.h is used for decimal handling
-
         static constexpr uint8_t DIGITS = 6;
 
-        // Decimal configuration: RAM offset 0 (dot in same byte, needs FLAG_PENDING_DOT)
-        static constexpr uint8_t DECIMAL_MIN_COL = 3;
-        static constexpr uint8_t DECIMAL_MAX_COL = 5;
+        // Decimal configuration (physical digits 2,3,4 have decimal points)
+        static constexpr uint8_t DECIMAL_MIN_COL = 2;
+        static constexpr uint8_t DECIMAL_MAX_COL = 4;
         static constexpr uint8_t DECIMAL_POINT_BIT = 0x80;
         static constexpr int8_t DECIMAL_RAM_OFFSET = 0;   // 0: dot in same byte
 
