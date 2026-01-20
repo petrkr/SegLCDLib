@@ -2,7 +2,9 @@
 #include <SegLCD_PCF85176_6DigSigBattProgress.h>
 
 
-SegLCD_PCF85176_6DigitSignalBatteryProgress::SegLCD_PCF85176_6DigitSignalBatteryProgress(TwoWire& i2c, uint8_t address, uint8_t subaddress) :  SegDriver_PCF85176(i2c, address, subaddress) {}
+SegLCD_PCF85176_6DigitSignalBatteryProgress::SegLCD_PCF85176_6DigitSignalBatteryProgress(TwoWire& i2c, uint8_t address, uint8_t subaddress) :  SegDriver_PCF85176(i2c, address, subaddress) {
+    _allocateBuffer(RAM_SIZE);
+}
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::init() {
     SegDriver_PCF85176::init();
@@ -10,47 +12,46 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::init() {
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::clear() {
-    _buffer_sigbatt = 0x00;
-    _buffer_labels = 0x00;
-    memset(_buffer_top, 0x00, sizeof(_buffer_top));
-    memset(_buffer_default, 0x00, sizeof(_buffer_default));
+    memset(_ramBuffer, 0x00, RAM_SIZE);
     SegDriver_PCF85176::clear();
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setBatteryLevel(uint8_t level) {
+
     if (level > 4)
         level = 4;
 
-    _buffer_sigbatt &= ~(0x0f);
+    _ramBuffer[OFFSET_SIGBATT] &= ~(0x0f);
 
     if (level > 0)
-        _buffer_sigbatt |= 8;
+        _ramBuffer[OFFSET_SIGBATT] |= 8;
     if (level > 1)
-        _buffer_sigbatt |= 1;
+        _ramBuffer[OFFSET_SIGBATT] |= 1;
     if (level > 2)
-        _buffer_sigbatt |= 2;
+        _ramBuffer[OFFSET_SIGBATT] |= 2;
     if (level > 3)
-        _buffer_sigbatt |= 4;
+        _ramBuffer[OFFSET_SIGBATT] |= 4;
 
-    _writeRam(_buffer_sigbatt, ADDR_SIGNAL_BATT);
+    _writeRam(_ramBuffer[OFFSET_SIGBATT], ADDR_SIGNAL_BATT);
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setSignalLevel(uint8_t level) {
+
     if (level > 4)
         level = 4;
 
-    _buffer_sigbatt &= ~(0xf0);
+    _ramBuffer[OFFSET_SIGBATT] &= ~(0xf0);
 
     if (level > 0)
-        _buffer_sigbatt |= 0x80;
+        _ramBuffer[OFFSET_SIGBATT] |= 0x80;
     if (level > 1)
-        _buffer_sigbatt |= 0x40;
+        _ramBuffer[OFFSET_SIGBATT] |= 0x40;
     if (level > 2)
-        _buffer_sigbatt |= 0x20;
+        _ramBuffer[OFFSET_SIGBATT] |= 0x20;
     if (level > 3)
-        _buffer_sigbatt |= 0x10;
+        _ramBuffer[OFFSET_SIGBATT] |= 0x10;
 
-    _writeRam(_buffer_sigbatt, ADDR_SIGNAL_BATT);
+    _writeRam(_ramBuffer[OFFSET_SIGBATT], ADDR_SIGNAL_BATT);
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setProgress(uint8_t value) {
@@ -119,21 +120,22 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setWheel(uint16_t value) {
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setLabels(LabelFlags labels) {
-    _buffer_labels |= labels;
+    _ramBuffer[OFFSET_LABELS] |= labels;
 
-    _writeRam(_buffer_labels, ADDR_PRES_LABELS);
+    _writeRam(_ramBuffer[OFFSET_LABELS], ADDR_PRES_LABELS);
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::clearLabels(LabelFlags labels) {
-    _buffer_labels &= ~labels;
+    _ramBuffer[OFFSET_LABELS] &= ~labels;
 
-    _writeRam(_buffer_labels, ADDR_PRES_LABELS);
+    _writeRam(_ramBuffer[OFFSET_LABELS], ADDR_PRES_LABELS);
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setClockColon(uint8_t row, uint8_t col, bool state) {
+
     uint8_t address = 0;
+    uint8_t offset = 0;
     uint8_t digit = 0;
-    uint8_t* _buffer = nullptr;
     switch (row) {
         case 0:
             if (col != 2) {
@@ -141,7 +143,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setClockColon(uint8_t row, uin
             }
             digit = 4;
             address = ADDR_SMALL_SEGS + 6; // Digit 4
-            _buffer = _buffer_top;
+            offset = OFFSET_TOP;
             break;
         case 1:
             if (col != 4) {
@@ -149,7 +151,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setClockColon(uint8_t row, uin
             }
 
             address = ADDR_BIG_SEGS; // Digit 6
-            _buffer = _buffer_default;
+            offset = OFFSET_DEFAULT;
             digit = 6;
             break;
         default:
@@ -157,17 +159,18 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setClockColon(uint8_t row, uin
     }
 
     if (state) {
-        _buffer[(digit-1)] |= 0x10; // Set the decimal point bit
+        _ramBuffer[offset + (digit-1)] |= 0x10; // Set the decimal point bit
     } else {
-        _buffer[(digit-1)] &= ~0x10; // Clear the decimal point bit
+        _ramBuffer[offset + (digit-1)] &= ~0x10; // Clear the decimal point bit
     }
 
-    _writeRam(_buffer[(digit-1)], address);
+    _writeRam(_ramBuffer[offset + (digit-1)], address);
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setDecimal(uint8_t row, uint8_t col, bool state) {
+
     uint8_t address = 0;
-    uint8_t* _buffer = nullptr;
+    uint8_t offset = 0;
     switch (row) {
         case 0:
             if (col < 0 || col > 2) {
@@ -175,7 +178,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setDecimal(uint8_t row, uint8_
             }
 
             address = ADDR_SMALL_SEGS + (col * 2);
-            _buffer = _buffer_top;
+            offset = OFFSET_TOP;
             break;
         case 1:
             if (col < 0 || col > 4) {
@@ -183,19 +186,19 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setDecimal(uint8_t row, uint8_
             }
 
             address = ADDR_BIG_SEGS + ((6 - col - 1) * 2);
-            _buffer = _buffer_default;
+            offset = OFFSET_DEFAULT;
             break;
         default:
             return; // Invalid section
     }
 
     if (state) {
-        _buffer[col] |= DECIMAL_POINT_BIT; // Set the decimal point bit
+        _ramBuffer[offset + col] |= DECIMAL_POINT_BIT; // Set the decimal point bit
     } else {
-        _buffer[col] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
+        _ramBuffer[offset + col] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
     }
 
-    _writeRam(_buffer[col], address);
+    _writeRam(_ramBuffer[offset + col], address);
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setCursor(uint8_t row, uint8_t col) {
@@ -211,6 +214,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setCursor(uint8_t row, uint8_t
 }
 
 size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
+
     switch (_cursorRow) {
         case 0: {
             // Top row (4 digits)
@@ -235,9 +239,9 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
 
             // Clear colon if writing non-colon at colon position
             if (_cursorCol == COLON_TOP_COL && ch != ':' && !_isFlagSet(FLAG_COLON_TOP) &&
-                (_buffer_top[_cursorCol] & DECIMAL_POINT_BIT)) {
-                _buffer_top[_cursorCol] &= ~DECIMAL_POINT_BIT;
-                _writeRam(_buffer_top[_cursorCol], ADDR_SMALL_SEGS + (_cursorCol * 2));
+                (_ramBuffer[OFFSET_TOP + _cursorCol] & DECIMAL_POINT_BIT)) {
+                _ramBuffer[OFFSET_TOP + _cursorCol] &= ~DECIMAL_POINT_BIT;
+                _writeRam(_ramBuffer[OFFSET_TOP + _cursorCol], ADDR_SMALL_SEGS + (_cursorCol * 2));
             }
 
             // Regular character
@@ -245,11 +249,11 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
 
             // Preserve colon bit after colon position
             if (_cursorCol == 3 && _isFlagSet(FLAG_COLON_TOP)) {
-                segment_data |= _buffer_top[_cursorCol] & DECIMAL_POINT_BIT;
+                segment_data |= _ramBuffer[OFFSET_TOP + _cursorCol] & DECIMAL_POINT_BIT;
             }
 
-            _buffer_top[_cursorCol] = segment_data;
-            _writeRam(_buffer_top[_cursorCol], ADDR_SMALL_SEGS + (_cursorCol * 2));
+            _ramBuffer[OFFSET_TOP + _cursorCol] = segment_data;
+            _writeRam(_ramBuffer[OFFSET_TOP + _cursorCol], ADDR_SMALL_SEGS + (_cursorCol * 2));
             _cursorCol++;
             return 1;
         }
@@ -276,9 +280,9 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
 
             // Clear colon if writing non-colon at colon position
             if (_cursorCol == COLON_BOTTOM_COL && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT) &&
-                (_buffer_default[_cursorCol] & DECIMAL_POINT_BIT)) {
-                _buffer_default[_cursorCol] &= ~DECIMAL_POINT_BIT;
-                _writeRam(_buffer_default[_cursorCol], ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
+                (_ramBuffer[OFFSET_DEFAULT + _cursorCol] & DECIMAL_POINT_BIT)) {
+                _ramBuffer[OFFSET_DEFAULT + _cursorCol] &= ~DECIMAL_POINT_BIT;
+                _writeRam(_ramBuffer[OFFSET_DEFAULT + _cursorCol], ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
             }
 
             // Regular character
@@ -286,11 +290,11 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
 
             // Preserve colon bit after colon position
             if (_cursorCol == 5 && _isFlagSet(FLAG_COLON_DEFAULT)) {
-                segment_data |= _buffer_default[_cursorCol] & DECIMAL_POINT_BIT;
+                segment_data |= _ramBuffer[OFFSET_DEFAULT + _cursorCol] & DECIMAL_POINT_BIT;
             }
 
-            _buffer_default[_cursorCol] = segment_data;
-            _writeRam(_buffer_default[_cursorCol], ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
+            _ramBuffer[OFFSET_DEFAULT + _cursorCol] = segment_data;
+            _writeRam(_ramBuffer[OFFSET_DEFAULT + _cursorCol], ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
             _cursorCol++;
             return 1;
         }

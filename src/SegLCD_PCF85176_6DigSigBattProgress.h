@@ -55,11 +55,11 @@ class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
         size_t write(uint8_t ch) override;
 
     private:
-        uint8_t _buffer_sigbatt = 0;
-        uint8_t _buffer_labels = 0;
-
-        uint8_t _buffer_top[4] = {0};
-        uint8_t _buffer_default[6] = {0};
+        static constexpr uint8_t RAM_SIZE = 12;
+        static constexpr uint8_t OFFSET_SIGBATT = 0;
+        static constexpr uint8_t OFFSET_LABELS = 1;
+        static constexpr uint8_t OFFSET_TOP = 2;
+        static constexpr uint8_t OFFSET_DEFAULT = 6;
 
         static constexpr uint8_t FLAG_COLON_TOP = 0x01;
         static constexpr uint8_t FLAG_COLON_DEFAULT = 0x02;
