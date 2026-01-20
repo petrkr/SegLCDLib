@@ -61,8 +61,8 @@ class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
         uint8_t _buffer_top[4] = {0};
         uint8_t _buffer_default[6] = {0};
 
-        bool _colon_top = false;
-        bool _colon_default = false;
+        static constexpr uint8_t FLAG_COLON_TOP = 0x01;
+        static constexpr uint8_t FLAG_COLON_DEFAULT = 0x02;
 
         static constexpr uint8_t DECIMAL_POINT_BIT = 0x10;
 

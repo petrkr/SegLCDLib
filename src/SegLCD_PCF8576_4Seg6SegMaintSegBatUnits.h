@@ -59,9 +59,9 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
 
         uint8_t _buffer_default[6] = {0};
 
-        bool _colon_top = false;
-        bool _colon_default_left = false;
-        bool _colon_default_right = false;
+        static constexpr uint8_t FLAG_COLON_TOP = 0x01;
+        static constexpr uint8_t FLAG_COLON_DEFAULT_LEFT = 0x02;
+        static constexpr uint8_t FLAG_COLON_DEFAULT_RIGHT = 0x04;
 
         uint8_t _mapSegmentsTop(uint8_t val);
         uint8_t _mapSegments(uint8_t val);

@@ -330,3 +330,19 @@ void SegLCDLib::flush(uint8_t startAddr, uint8_t length) {
     }
 }
 
+void SegLCDLib::_setFlag(uint8_t mask) {
+    _displayFlags |= mask;
+}
+
+void SegLCDLib::_clearFlag(uint8_t mask) {
+    _displayFlags &= ~mask;
+}
+
+bool SegLCDLib::_isFlagSet(uint8_t mask) const {
+    return (_displayFlags & mask) == mask;
+}
+
+void SegLCDLib::_clearAllFlags() {
+    _displayFlags = 0;
+}
+

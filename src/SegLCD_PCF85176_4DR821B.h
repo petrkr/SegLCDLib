@@ -37,8 +37,9 @@ class SegLCD_PCF85176_4DR821B : public SegDriver_PCF85176 {
     private:
         uint8_t _buffer[5];
         bool _previousDot = false;
-        bool _colonDisplayed = false;
-        bool _col0OverlayActive = false;
+
+        static constexpr uint8_t FLAG_COLON_DISPLAYED = 0x01;
+        static constexpr uint8_t FLAG_COL0_OVERLAY = 0x02;
 
         static constexpr uint8_t ADDR_SYMBOLS = 0x00;
         static constexpr uint8_t ADDR_SEGS = 0x01;

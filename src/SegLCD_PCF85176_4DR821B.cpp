@@ -56,11 +56,11 @@ void SegLCD_PCF85176_4DR821B::setDecimal(uint8_t row, uint8_t col, bool state) {
 
 void SegLCD_PCF85176_4DR821B::setCursor(uint8_t row, uint8_t col) {
     if (row == 0 && col <= 2) {
-        _colonDisplayed = false;
+        _clearFlag(FLAG_COLON_DISPLAYED);
     }
 
     if (row == 0 && col == 0) {
-        _col0OverlayActive = false;
+        _clearFlag(FLAG_COL0_OVERLAY);
     }
 
     SegDriver_PCF85176::setCursor(row, col);
@@ -77,14 +77,14 @@ size_t SegLCD_PCF85176_4DR821B::write(uint8_t ch) {
     }
 
     // Handle clock/middle colon
-    if (ch != ':' && _cursorCol == 2 && !_colonDisplayed) {
+    if (ch != ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_DISPLAYED)) {
         setClockColon(_cursorRow, _cursorCol - 1, false);
-        _colonDisplayed = false;
+        _clearFlag(FLAG_COLON_DISPLAYED);
     }
 
-    if (ch == ':' && _cursorCol == 2 && !_colonDisplayed) {
+    if (ch == ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_DISPLAYED)) {
         setClockColon(_cursorRow, _cursorCol - 1, true);
-        _colonDisplayed = true;
+        _setFlag(FLAG_COLON_DISPLAYED);
         return true;
     }
 
@@ -115,19 +115,19 @@ bool SegLCD_PCF85176_4DR821B::_handleCol0Overlay(uint8_t ch) {
         case '-':
             setSymbol(MINUS_BIT, true);
             setSymbol(LEFT_COLON_BIT, false);
-            _col0OverlayActive = true;
+            _setFlag(FLAG_COL0_OVERLAY);
             return false;
 
         case ':':
             setSymbol(MINUS_BIT, false);
             setSymbol(LEFT_COLON_BIT, true);
-            _col0OverlayActive = true;
+            _setFlag(FLAG_COL0_OVERLAY);
             return false;
 
         case '+':
             setSymbol(MINUS_BIT, true);
             setSymbol(LEFT_COLON_BIT, true);
-            _col0OverlayActive = true;
+            _setFlag(FLAG_COL0_OVERLAY);
             return false;
 
         default:
@@ -135,8 +135,8 @@ bool SegLCD_PCF85176_4DR821B::_handleCol0Overlay(uint8_t ch) {
     }
 
     // non-overlay char in column 0
-    if (_col0OverlayActive) {
-        _col0OverlayActive = false;
+    if (_isFlagSet(FLAG_COL0_OVERLAY)) {
+        _clearFlag(FLAG_COL0_OVERLAY);
     } else {
         setSymbol(MINUS_BIT, false);
         setSymbol(LEFT_COLON_BIT, false);

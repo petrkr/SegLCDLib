@@ -200,11 +200,11 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setDecimal(uint8_t row, uint8_
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setCursor(uint8_t row, uint8_t col) {
     if (row == 0 && col < 2) {
-        _colon_top = false;
+        _clearFlag(FLAG_COLON_TOP);
     }
 
     if (row == 1 && col < 5) {
-        _colon_default = false;
+        _clearFlag(FLAG_COLON_DEFAULT);
     }
 
     SegDriver_PCF85176::setCursor(row, col);
@@ -219,7 +219,7 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
                 return 0; // Invalid digit
             }
 
-            if (_cursorCol == 2 && ch != ':' && !_colon_top && (_buffer_top[_cursorCol] & DECIMAL_POINT_BIT)) {
+            if (_cursorCol == 2 && ch != ':' && !_isFlagSet(FLAG_COLON_TOP) && (_buffer_top[_cursorCol] & DECIMAL_POINT_BIT)) {
                 _buffer_top[_cursorCol] &= ~DECIMAL_POINT_BIT;
                 _writeRam(_buffer_top[_cursorCol], ADDR_SMALL_SEGS + ((_cursorCol) * 2));
             }
@@ -229,13 +229,13 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
                 return 1;
             }
 
-            if (ch == ':' && _cursorCol == 2 && !_colon_top) {
+            if (ch == ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_TOP)) {
                 setClockColon(_cursorRow, _cursorCol, true);
-                _colon_top = true;
+                _setFlag(FLAG_COLON_TOP);
                 return 1;
             }
 
-            if (_cursorCol == 3 && _colon_top) {
+            if (_cursorCol == 3 && _isFlagSet(FLAG_COLON_TOP)) {
                 _buffer_top[_cursorCol] &= DECIMAL_POINT_BIT;
                 _buffer_top[_cursorCol] |= (segment_data & ~DECIMAL_POINT_BIT);
             } else {
@@ -248,7 +248,7 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
                 return 0; // Invalid digit
             }
 
-            if (_cursorCol == 4 && ch != ':' && !_colon_default && (_buffer_default[_cursorCol] & DECIMAL_POINT_BIT)) {
+            if (_cursorCol == 4 && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT) && (_buffer_default[_cursorCol] & DECIMAL_POINT_BIT)) {
                 _buffer_default[_cursorCol] &= ~DECIMAL_POINT_BIT;
                 _writeRam(_buffer_default[_cursorCol], ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
             }
@@ -258,13 +258,13 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
                 return 1;
             }
 
-            if (ch == ':' && _cursorCol == 4 && !_colon_default) {
+            if (ch == ':' && _cursorCol == 4 && !_isFlagSet(FLAG_COLON_DEFAULT)) {
                 setClockColon(_cursorRow, _cursorCol, true);
-                _colon_default = true;
+                _setFlag(FLAG_COLON_DEFAULT);
                 return 1;
             }
 
-            if (_cursorCol == 5 && _colon_default) {
+            if (_cursorCol == 5 && _isFlagSet(FLAG_COLON_DEFAULT)) {
                 _buffer_default[_cursorCol] &= DECIMAL_POINT_BIT;
                 _buffer_default[_cursorCol] |= (segment_data & ~DECIMAL_POINT_BIT);
             } else {

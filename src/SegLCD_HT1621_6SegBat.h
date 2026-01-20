@@ -26,7 +26,8 @@ class SegLCD_HT1621_6SegBat : public SegDriver_HT1621 {
 
     private:
         uint8_t _buffer_default[6] = {0};
-        bool _previousDot = false;
+
+        static constexpr uint8_t FLAG_PREVIOUS_DOT = 0x01;
 
         static constexpr uint8_t DIGITS = 6;
         static constexpr uint8_t DECIMAL_MIN_COL = 3;

@@ -62,15 +62,15 @@ size_t SegLCD_HT1621_6SegBat::write(uint8_t ch) {
 
     if (ch == '.') {
         setDecimal(_cursorRow, _cursorCol, true);
-        _previousDot = true;
+        _setFlag(FLAG_PREVIOUS_DOT);
         return 1;
     }
 
     uint8_t segment_data = _mapSegments(_get_char_value(ch));
 
-    if ((_cursorCol >= 0 && _cursorCol <= 2) || _previousDot) {
+    if ((_cursorCol >= 0 && _cursorCol <= 2) || _isFlagSet(FLAG_PREVIOUS_DOT)) {
         segment_data |= _buffer_default[_cursorCol] & DECIMAL_POINT_BIT;
-        _previousDot = false;
+        _clearFlag(FLAG_PREVIOUS_DOT);
     }
 
     _buffer_default[_cursorCol] = segment_data;

@@ -90,7 +90,7 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setClockColon(uint8_t row, uint8_t
                 return; // Invalid digit
             }
             _writeRamMasked(state ? 0x80 : 0x00, 0x07, 0x80);
-            _colon_top = state;
+            if (state) _setFlag(FLAG_COLON_TOP); else _clearFlag(FLAG_COLON_TOP);
             break;
         case 1:
             if (col != 2 && col != 4) {
@@ -99,10 +99,10 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setClockColon(uint8_t row, uint8_t
 
             if (col == 2) {
                 _writeRamMasked(state ? 0x80 : 0x00, 0x08, 0x80);
-                _colon_default_left = state;
+                if (state) _setFlag(FLAG_COLON_DEFAULT_LEFT); else _clearFlag(FLAG_COLON_DEFAULT_LEFT);
             } else {
                 _writeRamMasked(state ? 0x40 : 0x00, 0x08, 0x40);
-                _colon_default_right = state;
+                if (state) _setFlag(FLAG_COLON_DEFAULT_RIGHT); else _clearFlag(FLAG_COLON_DEFAULT_RIGHT);
             }
             break;
         default:
@@ -161,15 +161,15 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setDecimal(uint8_t row, uint8_t co
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setCursor(uint8_t row, uint8_t col) {
     if (row == 0 && col <= 2) {
-        _colon_top = false;
+        _clearFlag(FLAG_COLON_TOP);
     }
 
     if (row == 1) {
         if (col <= 2) {
-            _colon_default_left = false;
+            _clearFlag(FLAG_COLON_DEFAULT_LEFT);
         }
         if (col <= 4) {
-            _colon_default_right = false;
+            _clearFlag(FLAG_COLON_DEFAULT_RIGHT);
         }
     }
 
@@ -186,12 +186,12 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow0(uint8_t ch) {
         return 1;
     }
 
-    if (ch == ':' && _cursorCol == 2 && !_colon_top) {
+    if (ch == ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_TOP)) {
         setClockColon(_cursorRow, _cursorCol, true);
         return 1;
     }
 
-    if (_cursorCol == 2 && ch != ':' && !_colon_top) {
+    if (_cursorCol == 2 && ch != ':' && !_isFlagSet(FLAG_COLON_TOP)) {
         setClockColon(_cursorRow, _cursorCol, false);
     }
 
@@ -199,12 +199,12 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow0(uint8_t ch) {
     uint8_t addr = ADDR_SMALL_SEGS + (_cursorCol * 2);
     uint8_t dp_mask = 0x08;
 
-    if (_cursorCol == 2 && ch != ':' && !_colon_top && (_ramBuffer[addr >> 1] & dp_mask)) {
+    if (_cursorCol == 2 && ch != ':' && !_isFlagSet(FLAG_COLON_TOP) && (_ramBuffer[addr >> 1] & dp_mask)) {
         uint8_t cleared = _ramBuffer[addr >> 1] & ~dp_mask;
         _writeRamMasked(cleared, addr, addr == 0x06 ? 0xF7 : 0xFF);
     }
 
-    if (_cursorCol == 3 && _colon_top) {
+    if (_cursorCol == 3 && _isFlagSet(FLAG_COLON_TOP)) {
         uint8_t current = _ramBuffer[addr >> 1] & dp_mask;
         segment_data = current | (segment_data & ~dp_mask);
     }
@@ -225,25 +225,25 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow1(uint8_t ch) {
     }
 
     if (ch == ':') {
-        if (_cursorCol == 2 && !_colon_default_left) {
+        if (_cursorCol == 2 && !_isFlagSet(FLAG_COLON_DEFAULT_LEFT)) {
             setClockColon(_cursorRow, _cursorCol, true);
             return 1;
         }
-        if (_cursorCol == 4 && !_colon_default_right) {
+        if (_cursorCol == 4 && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
             setClockColon(_cursorRow, _cursorCol, true);
             return 1;
         }
     }
 
-    if (_cursorCol == 2 && ch != ':' && !_colon_default_left) {
+    if (_cursorCol == 2 && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT_LEFT)) {
         setClockColon(_cursorRow, _cursorCol, false);
     }
-    if (_cursorCol == 4 && ch != ':' && !_colon_default_right) {
+    if (_cursorCol == 4 && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
         setClockColon(_cursorRow, _cursorCol, false);
     }
 
     uint8_t dp_mask = 0x10;
-    if (_cursorCol == 4 && ch != ':' && !_colon_default_right &&
+    if (_cursorCol == 4 && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT) &&
         (_buffer_default[_cursorCol] & dp_mask)) {
         _buffer_default[_cursorCol] &= ~dp_mask;
         _writeRamMasked(_buffer_default[_cursorCol],
@@ -252,7 +252,7 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow1(uint8_t ch) {
 
     uint8_t segment_data = _mapSegments(_get_char_value(ch));
 
-    if (_cursorCol == 5 && _colon_default_right) {
+    if (_cursorCol == 5 && _isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
         _buffer_default[_cursorCol] &= dp_mask;
         _buffer_default[_cursorCol] |= (segment_data & ~dp_mask);
     } else {

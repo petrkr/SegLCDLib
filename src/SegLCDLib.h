@@ -336,6 +336,42 @@ class SegLCDLib : public Print {
         uint8_t _backlightBrightness = 0;
 
         /**
+         * @brief Generic flag storage for display-specific state tracking.
+         *
+         * Individual LCD implementations can use these bits to track state like:
+         * - Colon positions active
+         * - Previous dot written
+         * - Special characters displayed
+         *
+         * Usage: Define bit constants in derived class, use helper methods to set/clear/check.
+         */
+        uint8_t _displayFlags = 0;
+
+        /**
+         * @brief Set a specific flag bit.
+         * @param mask Bitmask with bit(s) to set
+         */
+        void _setFlag(uint8_t mask);
+
+        /**
+         * @brief Clear a specific flag bit.
+         * @param mask Bitmask with bit(s) to clear
+         */
+        void _clearFlag(uint8_t mask);
+
+        /**
+         * @brief Check if a specific flag bit is set.
+         * @param mask Bitmask with bit(s) to check
+         * @return true if all bits in mask are set
+         */
+        bool _isFlagSet(uint8_t mask) const;
+
+        /**
+         * @brief Clear all flags.
+         */
+        void _clearAllFlags();
+
+        /**
          * @brief Dynamic RAM buffer for display data (allocated by derived classes).
          */
         uint8_t* _ramBuffer = nullptr;

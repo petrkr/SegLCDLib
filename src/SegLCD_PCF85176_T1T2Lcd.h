@@ -70,7 +70,7 @@ class SegLCD_PCF85176_T1T2Lcd : public SegDriver_PCF85176 {
         uint8_t _bufferT1[4] = {0};
         uint8_t _bufferT2[4] = {0};
 
-        bool _colon_clock = false;
+        static constexpr uint8_t FLAG_COLON_CLOCK = 0x01;
 
         static constexpr uint8_t ROW_CLOCK = 0;
         static constexpr uint8_t ROW_T1 = 1;

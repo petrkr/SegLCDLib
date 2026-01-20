@@ -13,7 +13,7 @@ void SegLCD_PCF85176_TempHumidity::clear() {
     _buffer_sigbatt = 0x00;
     memset(_buffer_temp, 0x00, sizeof(_buffer_temp));
     memset(_buffer_hum, 0x00, sizeof(_buffer_hum));
-    _specialMinusDisplayed = false;
+    _clearFlag(FLAG_MINUS_DISPLAYED);
     SegDriver_PCF85176::clear();
 }
 
@@ -116,7 +116,7 @@ void SegLCD_PCF85176_TempHumidity::setDecimal(uint8_t row, uint8_t col, bool sta
 
 void SegLCD_PCF85176_TempHumidity::setCursor(uint8_t row, uint8_t col) {
     if (row == TEMP_ROW && col == 0) {
-        _specialMinusDisplayed = false;
+        _clearFlag(FLAG_MINUS_DISPLAYED);
     }
 
     SegDriver_PCF85176::setCursor(row, col);
@@ -126,7 +126,7 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
     uint8_t c = _mapSegments(_get_char_value(ch));
 
     if (_cursorRow == TEMP_ROW) { // Temp segments
-        if (_cursorCol == 0 && ch != '-' && !_specialMinusDisplayed && (_buffer_hum[0] & MINUS_SIGN_BIT)) {
+        if (_cursorCol == 0 && ch != '-' && !_isFlagSet(FLAG_MINUS_DISPLAYED) && (_buffer_hum[0] & MINUS_SIGN_BIT)) {
             _buffer_hum[0] &= ~MINUS_SIGN_BIT;
             _writeRam(_buffer_hum[0], ADDR_HUM_SEGS);
         }
@@ -134,10 +134,10 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
         if (ch == '.') {
             setDecimal(_cursorRow, _cursorCol, true);
             return 1;
-        } else if (ch == '-' && _cursorCol == 0 && !_specialMinusDisplayed) {
+        } else if (ch == '-' && _cursorCol == 0 && !_isFlagSet(FLAG_MINUS_DISPLAYED)) {
             _buffer_hum[0] |= MINUS_SIGN_BIT;
             _writeRam(_buffer_hum[0], ADDR_HUM_SEGS);
-            _specialMinusDisplayed = true;
+            _setFlag(FLAG_MINUS_DISPLAYED);
             return 1;
         } else if (_cursorCol >= 0 && _cursorCol < TEMP_DIGITS) {
             _buffer_temp[_cursorCol] = c;
