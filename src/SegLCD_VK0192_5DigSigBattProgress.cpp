@@ -135,8 +135,7 @@ void SegLCD_VK0192_5DigSigBattProgress::setDecimal(uint8_t row, uint8_t col, boo
         return; // Invalid digit
     }
 
-    // decimal is in same digit address
-    int8_t addr = _get7SegmentsAddress(row, col);
+    int8_t addr = _get7SegmentsAddress(row, col + DECIMAL_RAM_OFFSET);
 
     // Invalid address
     if (addr < 0) {
@@ -155,11 +154,15 @@ void SegLCD_VK0192_5DigSigBattProgress::setDecimal(uint8_t row, uint8_t col, boo
 size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
     // Decimal point - does NOT move cursor
     if (ch == '.') {
-        // Row 0: decimals at col 0-2, Row 1: decimals at col 0-3
-        if (_cursorRow == 0 && _cursorCol >= DECIMAL_TOP_MIN_COL && _cursorCol <= DECIMAL_TOP_MAX_COL) {
-            setDecimal(_cursorRow, _cursorCol, true);
-        } else if (_cursorRow == 1 && _cursorCol >= DECIMAL_BOTTOM_MIN_COL && _cursorCol <= DECIMAL_BOTTOM_MAX_COL) {
-            setDecimal(_cursorRow, _cursorCol, true);
+        int8_t dotCol = static_cast<int8_t>(_cursorCol) - 1;
+        if (dotCol < 0) {
+            return 1;
+        }
+        // Row 0: decimals at col 0-1, Row 1: decimals at col 0-3
+        if (_cursorRow == 0 && dotCol >= DECIMAL_TOP_MIN_COL && dotCol <= DECIMAL_TOP_MAX_COL) {
+            setDecimal(_cursorRow, dotCol, true);
+        } else if (_cursorRow == 1 && dotCol >= DECIMAL_BOTTOM_MIN_COL && dotCol <= DECIMAL_BOTTOM_MAX_COL) {
+            setDecimal(_cursorRow, dotCol, true);
         }
         return 1;  // Never move cursor for dot
     }

@@ -48,11 +48,11 @@ class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
 
         // Decimal configuration: VK0192 stores decimal in same digit RAM address
         static constexpr uint8_t DECIMAL_POINT_BIT = 0x10;
-        static constexpr int8_t DECIMAL_RAM_OFFSET = 0;   // Decimal in same byte as segment
-        static constexpr uint8_t DECIMAL_TOP_MIN_COL = 1;
-        static constexpr uint8_t DECIMAL_TOP_MAX_COL = 2;
-        static constexpr uint8_t DECIMAL_BOTTOM_MIN_COL = 1;
-        static constexpr uint8_t DECIMAL_BOTTOM_MAX_COL = 4;
+        static constexpr int8_t DECIMAL_RAM_OFFSET = 1;   // Decimal stored in next digit RAM
+        static constexpr uint8_t DECIMAL_TOP_MIN_COL = 0;
+        static constexpr uint8_t DECIMAL_TOP_MAX_COL = 1;
+        static constexpr uint8_t DECIMAL_BOTTOM_MIN_COL = 0;
+        static constexpr uint8_t DECIMAL_BOTTOM_MAX_COL = 3;
 
         static constexpr uint8_t NUM_7SEG_DIGITS = 10;  // 3+2+5 7-seg digits
 
