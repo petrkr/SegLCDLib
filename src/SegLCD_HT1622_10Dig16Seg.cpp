@@ -87,6 +87,9 @@ void SegLCD_HT1622_10Dig16Seg::writeDigit16seg(uint8_t row, uint8_t col, char c)
     // Write to RAM
     _writeRam(_ramBuffer[addr], addr * 2);
     _writeRam(_ramBuffer[addr+1], addr * 2 + 2);
+
+    // Clear decimal point at this position (consistent with PCF85176 behavior)
+    setDecimal(row, col, false);
 }
 
 int8_t SegLCD_HT1622_10Dig16Seg::_get16SegmentsAddress(uint8_t row, uint8_t col) {
