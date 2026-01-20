@@ -14,7 +14,6 @@ void SegLCD_VK0192_5DigSigBattProgress::init() {
 }
 
 void SegLCD_VK0192_5DigSigBattProgress::clear() {
-    if (!_ramBuffer) return;
     memset(_ramBuffer, 0, RAM_SIZE);
     _writeRam(_ramBuffer, RAM_SIZE, 0);
 }
