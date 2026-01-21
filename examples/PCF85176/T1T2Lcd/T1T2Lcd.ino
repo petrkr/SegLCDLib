@@ -13,11 +13,10 @@ void setup() {
   Serial.begin(115200);
   delay(1000);
   Serial.println("Initilalize I2C...");
-  Wire.begin(0, 1);
+  Wire.begin(1, 2);
 
   Serial.println("Initialize LCD...");
 
-  // Demo for duty 1/4, bias 1/3 LCD display
   lcd.init();
 
   // Clear LCD
