@@ -48,7 +48,7 @@ class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
         void setWheel(uint16_t value);
         void setLabels(LabelFlags labels);
         void clearLabels(LabelFlags labels);
-        void setClockColon(uint8_t row, uint8_t col, bool state);
+        void setColon(uint8_t row, uint8_t col, bool state);
         void setDecimal(uint8_t row, uint8_t col, bool state);
         void setCursor(uint8_t row, uint8_t col);
         size_t write(uint8_t ch) override;

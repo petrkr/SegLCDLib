@@ -22,7 +22,7 @@ void SegLCD_HT1621_4SegDegree::setMiddleDot(bool state) {
     _writeSymbols(1, state); // Bit 1 is middle dot
 }
 
-void SegLCD_HT1621_4SegDegree::setClockColon(uint8_t row, uint8_t col, bool state) {
+void SegLCD_HT1621_4SegDegree::setColon(uint8_t row, uint8_t col, bool state) {
     setMiddleDot(state);
     setDecimal(0, 1, state); // Decimal at 2nd digit is used as part of clock colon
 }
@@ -73,7 +73,7 @@ size_t SegLCD_HT1621_4SegDegree::write(uint8_t ch) {
     // Colon - does NOT move cursor
     if (ch == ':') {
         if (_cursorCol > COLON_COL) {
-            setClockColon(_cursorRow, _cursorCol - 1, true);
+            setColon(_cursorRow, _cursorCol - 1, true);
         }
         return 1;  // Never move cursor for colon
     }

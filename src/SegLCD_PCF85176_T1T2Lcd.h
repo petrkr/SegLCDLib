@@ -51,7 +51,7 @@ class SegLCD_PCF85176_T1T2Lcd : public SegDriver_PCF85176 {
         void setT1T2Labels(uint8_t t1t2);
         void clearLabels(uint8_t labels);
         void clearT1T2Labels(uint8_t t1t2);
-        void setClockColon(uint8_t row, uint8_t col, bool state);
+        void setColon(uint8_t row, uint8_t col, bool state);
         void setDecimal(uint8_t row, uint8_t col, bool state);
         void setCursor(uint8_t row, uint8_t col) override;
         size_t write(uint8_t ch) override;

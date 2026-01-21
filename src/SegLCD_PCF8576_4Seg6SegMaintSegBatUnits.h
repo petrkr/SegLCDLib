@@ -48,7 +48,7 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
         void clearLabels(uint8_t labels);
         void setDegree(bool state);
         void setMaintenance(bool state);
-        void setClockColon(uint8_t row, uint8_t col, bool state);
+        void setColon(uint8_t row, uint8_t col, bool state);
         void setDecimal(uint8_t row, uint8_t col, bool state);
         void setCursor(uint8_t row, uint8_t col);
         size_t write(uint8_t ch) override;

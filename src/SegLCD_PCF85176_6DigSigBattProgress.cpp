@@ -126,7 +126,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::clearLabels(LabelFlags labels)
     _writeRam(_ramBuffer[OFFSET_LABELS], ADDR_PRES_LABELS);
 }
 
-void SegLCD_PCF85176_6DigitSignalBatteryProgress::setClockColon(uint8_t row, uint8_t col, bool state) {
+void SegLCD_PCF85176_6DigitSignalBatteryProgress::setColon(uint8_t row, uint8_t col, bool state) {
 
     uint8_t address = 0;
     uint8_t offset = 0;
@@ -227,7 +227,7 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
 
             // Colon - does NOT move cursor
             if (ch == ':' && _cursorCol == COLON_TOP_COL && !_isFlagSet(FLAG_COLON_TOP)) {
-                setClockColon(_cursorRow, _cursorCol, true);
+                setColon(_cursorRow, _cursorCol, true);
                 _setFlag(FLAG_COLON_TOP);
                 return 1;  // Never move cursor for colon
             }
@@ -268,7 +268,7 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
 
             // Colon - does NOT move cursor
             if (ch == ':' && _cursorCol == COLON_BOTTOM_COL && !_isFlagSet(FLAG_COLON_DEFAULT)) {
-                setClockColon(_cursorRow, _cursorCol, true);
+                setColon(_cursorRow, _cursorCol, true);
                 _setFlag(FLAG_COLON_DEFAULT);
                 return 1;  // Never move cursor for colon
             }

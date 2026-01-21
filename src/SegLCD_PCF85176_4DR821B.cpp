@@ -19,7 +19,7 @@ void SegLCD_PCF85176_4DR821B::setSymbol(uint8_t symbol, bool state) {
     _writeRam(_ramBuffer[ADDR_SYMBOLS], ADDR_SYMBOLS);
 }
 
-void SegLCD_PCF85176_4DR821B::setClockColon(uint8_t row, uint8_t col, bool state) {
+void SegLCD_PCF85176_4DR821B::setColon(uint8_t row, uint8_t col, bool state) {
     if (col == 0) {
         if (state) {
             setSymbol(MINUS_BIT, false);
@@ -77,12 +77,12 @@ size_t SegLCD_PCF85176_4DR821B::write(uint8_t ch) {
 
     // Handle clock/middle colon
     if (ch != ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_DISPLAYED)) {
-        setClockColon(_cursorRow, _cursorCol - 1, false);
+        setColon(_cursorRow, _cursorCol - 1, false);
         _clearFlag(FLAG_COLON_DISPLAYED);
     }
 
     if (ch == ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_DISPLAYED)) {
-        setClockColon(_cursorRow, _cursorCol - 1, true);
+        setColon(_cursorRow, _cursorCol - 1, true);
         _setFlag(FLAG_COLON_DISPLAYED);
         return true;
     }

@@ -83,7 +83,7 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setMaintenance(bool state) {
     _writeRamMasked(state ? 0x20 : 0x00, 0x08, 0x20);
 }
 
-void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setClockColon(uint8_t row, uint8_t col, bool state) {
+void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setColon(uint8_t row, uint8_t col, bool state) {
     switch (row) {
         case 0:
             if (col != 2) {
@@ -191,13 +191,13 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow0(uint8_t ch) {
 
     // Colon - does NOT move cursor
     if (ch == ':' && _cursorCol == COLON_TOP_COL && !_isFlagSet(FLAG_COLON_TOP)) {
-        setClockColon(_cursorRow, _cursorCol, true);
+        setColon(_cursorRow, _cursorCol, true);
         return 1;  // Never move cursor for colon
     }
 
     // Clear colon if writing non-colon at colon position
     if (_cursorCol == COLON_TOP_COL && ch != ':' && !_isFlagSet(FLAG_COLON_TOP)) {
-        setClockColon(_cursorRow, _cursorCol, false);
+        setColon(_cursorRow, _cursorCol, false);
     }
 
     // Regular character
@@ -237,22 +237,22 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow1(uint8_t ch) {
 
     // Colon at col 2 - does NOT move cursor
     if (ch == ':' && _cursorCol == COLON_BOTTOM_LEFT_COL && !_isFlagSet(FLAG_COLON_DEFAULT_LEFT)) {
-        setClockColon(_cursorRow, _cursorCol, true);
+        setColon(_cursorRow, _cursorCol, true);
         return 1;  // Never move cursor for colon
     }
 
     // Colon at col 4 - does NOT move cursor
     if (ch == ':' && _cursorCol == COLON_BOTTOM_RIGHT_COL && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
-        setClockColon(_cursorRow, _cursorCol, true);
+        setColon(_cursorRow, _cursorCol, true);
         return 1;  // Never move cursor for colon
     }
 
     // Clear colons if writing non-colon at colon positions
     if (_cursorCol == COLON_BOTTOM_LEFT_COL && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT_LEFT)) {
-        setClockColon(_cursorRow, _cursorCol, false);
+        setColon(_cursorRow, _cursorCol, false);
     }
     if (_cursorCol == COLON_BOTTOM_RIGHT_COL && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
-        setClockColon(_cursorRow, _cursorCol, false);
+        setColon(_cursorRow, _cursorCol, false);
     }
 
     // Clear colon bit if needed at right colon position

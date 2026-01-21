@@ -29,7 +29,7 @@ class SegLCD_PCF85176_4DR821B : public SegDriver_PCF85176 {
         SegLCD_PCF85176_4DR821B(TwoWire& i2c, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
         void init() override;
         void setSymbol(uint8_t symbol, bool state);
-        void setClockColon(uint8_t row, uint8_t col, bool state);
+        void setColon(uint8_t row, uint8_t col, bool state);
         void setDecimal(uint8_t row, uint8_t col, bool state);
         void setCursor(uint8_t row, uint8_t col) override;
         size_t write(uint8_t ch) override;

@@ -93,7 +93,10 @@ void SegLCD_PCF85176_T1T2Lcd::clearT1T2Labels(uint8_t t1t2) {
     _writeRam(&_ramBuffer[OFFSET_CLOCK], 2, ADDR_CLOCK_T1T2_LABELS_SEGS);
 }
 
-void SegLCD_PCF85176_T1T2Lcd::setClockColon(uint8_t row, uint8_t col, bool state) {
+void SegLCD_PCF85176_T1T2Lcd::setColon(uint8_t row, uint8_t col, bool state) {
+    if (row != ROW_CLOCK || col != 2) {
+        return;
+    }
 
     if (state)
         _ramBuffer[OFFSET_SIGCLK] |= 0x02;
@@ -166,14 +169,14 @@ size_t SegLCD_PCF85176_T1T2Lcd::write(uint8_t ch) {
         case ROW_CLOCK:
             // Set colon if next char is colon and flag, we want it keep
             if (ch == ':' && _cursorCol == 2) {
-                setClockColon(_cursorRow, _cursorCol, true);
+                setColon(_cursorRow, _cursorCol, true);
                 _setFlag(FLAG_COLON_CLOCK);
                 return 1;
             }
 
             // Clear Clock colon if we do not want it and colon column is not colon
             if (ch != ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_CLOCK)) {
-                setClockColon(_cursorRow, _cursorCol, false);
+                setColon(_cursorRow, _cursorCol, false);
             }
 
             if (_cursorCol >=0 && _cursorCol < 4) {
