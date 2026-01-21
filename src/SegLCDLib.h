@@ -305,6 +305,20 @@ class SegLCDLib : public Print {
          */
         virtual void flush(uint8_t startAddr, uint8_t length);
 
+        /**
+         * @brief Get pointer to internal RAM buffer (read-only).
+         *
+         * @return Pointer to RAM buffer or nullptr if not allocated.
+         */
+        const uint8_t* getRamBuffer() const;
+
+        /**
+         * @brief Get size of internal RAM buffer in bytes.
+         *
+         * @return Buffer size in bytes (0 if not allocated).
+         */
+        size_t getRamBufferSize() const;
+
         // ----------------------
         // SegLCDLib specific part
         // ----------------------

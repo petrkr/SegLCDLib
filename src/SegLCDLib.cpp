@@ -311,6 +311,14 @@ bool SegLCDLib::getAutoFlush() const {
     return _autoFlush;
 }
 
+const uint8_t* SegLCDLib::getRamBuffer() const {
+    return _ramBuffer;
+}
+
+size_t SegLCDLib::getRamBufferSize() const {
+    return _ramBufferSize;
+}
+
 void SegLCDLib::flush() {
     flush(0, _ramBufferSize);
 }
