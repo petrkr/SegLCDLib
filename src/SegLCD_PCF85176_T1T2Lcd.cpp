@@ -186,6 +186,7 @@ size_t SegLCD_PCF85176_T1T2Lcd::write(uint8_t ch) {
             }
 
             if (_cursorCol == 4) {
+                _ramBuffer[OFFSET_DAY] = segment_data;
                 _writeRam(segment_data, ADDR_DAY_SEG);
             }
             break;
