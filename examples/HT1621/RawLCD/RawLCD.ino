@@ -21,7 +21,7 @@ void setup() {
   lcd.init(MODE_DRIVE_14, MODE_BIAS_13);
 
   // Send RAW command
-  lcd.sendCommand(CMD_SYS_EN);
+  lcd.command(CMD_SYS_EN);
 
   // Send LCD ON implemented command
   lcd.on();
@@ -32,13 +32,13 @@ void setup() {
   delay(1000);
 
   // Write at address 0 one byte
-  lcd.write((uint8_t)0xFF, 0);
+  lcd.writeRam((uint8_t)0xFF, 0);
 }
 
 uint8_t i=0;
 void loop() {
 
-  lcd.write((uint8_t)0xff, i);
+  lcd.writeRam((uint8_t)0xff, i);
 
   i+=2;
 
