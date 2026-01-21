@@ -16,7 +16,7 @@ void SegLCD_PCF85176_T1T2Lcd::setBatteryLevel(uint8_t level) {
     if (level > MAX_BATTERY_LEVEL)
         level = MAX_BATTERY_LEVEL;
 
-        _ramBuffer[OFFSET_BATT] &= ~(BATTERY_MASK);
+    _ramBuffer[OFFSET_BATT] &= ~(BATTERY_MASK);
 
     if (level > 0)
         _ramBuffer[OFFSET_BATT] |= BATTERY_LEVEL_SEG[0];
@@ -35,7 +35,7 @@ void SegLCD_PCF85176_T1T2Lcd::setSignalLevel(uint8_t level) {
     if (level > MAX_SIGNAL_LEVEL)
         level = MAX_SIGNAL_LEVEL;
 
-        _ramBuffer[OFFSET_SIGCLK] &= ~(SIGNAL_MASK);
+    _ramBuffer[OFFSET_SIGCLK] &= ~(SIGNAL_MASK);
 
     if (level > 0)
         _ramBuffer[OFFSET_SIGCLK] |= SIGNAL_LEVEL_BITS[0];
