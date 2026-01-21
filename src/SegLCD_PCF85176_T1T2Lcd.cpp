@@ -146,6 +146,19 @@ void SegLCD_PCF85176_T1T2Lcd::setCursor(uint8_t row, uint8_t col) {
 }
 
 size_t SegLCD_PCF85176_T1T2Lcd::write(uint8_t ch) {
+    if (_cursorRow > ROW_T2) {
+        return 0;
+    }
+
+    if (_cursorRow == ROW_CLOCK && _cursorCol > 4) {
+        _cursorRow = ROW_T1;
+        _cursorCol = 0;
+    } else if (_cursorRow == ROW_T1 && _cursorCol > 3) {
+        _cursorRow = ROW_T2;
+        _cursorCol = 0;
+    } else if (_cursorRow == ROW_T2 && _cursorCol > 3) {
+        return 0;
+    }
 
     uint8_t segment_data = _mapSegments(_get_char_value(ch));
 
