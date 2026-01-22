@@ -100,6 +100,28 @@ static void printStatusBottom(size_t content_width) {
     Serial.println("┘");
 }
 
+static bool termAnsi = false;
+
+static const char *ansi(const char *code) {
+    return termAnsi ? code : "";
+}
+
+static bool detectAnsiTerminal() {
+    while (Serial.available()) Serial.read();
+    Serial.print("\x1b[6n");
+
+    unsigned long start = millis();
+    String resp;
+    while (millis() - start < 200) {
+        if (Serial.available()) {
+            char c = Serial.read();
+            resp += c;
+            if (c == 'R') break;
+        }
+    }
+    return resp.length() >= 4 && resp[0] == 0x1B && resp[1] == '[' && resp.endsWith("R");
+}
+
 static void printStatus() {
     char buf[64];
     char buf2[64];
@@ -586,11 +608,22 @@ void mcSetup() {
     Serial.begin(115200);
     delay(2000);
 
+    Serial.print("terminal detect: ");
+    termAnsi = detectAnsiTerminal();
+    if (termAnsi) {
+        Serial.print(ansi("\x1b[1;32m"));
+        Serial.println("ANSI");
+        Serial.print(ansi("\x1b[0m"));
+    } else {
+        Serial.println("PLAIN");
+    }
     // Banner
     Serial.println();
+    Serial.print(ansi("\x1b[1;36m"));
     Serial.println("╔══════════════════════════════════════╗");
     Serial.println("║      SegLCDLib MenuControl v0.0      ║");
     Serial.println("╚══════════════════════════════════════╝");
+    Serial.print(ansi("\x1b[0m"));
     Serial.println();
 
     // Try to load saved config
@@ -622,7 +655,9 @@ void mcSetup() {
     } else {
         Serial.println("Type 'help' for active commands");
     }
+    Serial.print(ansi("\x1b[1;32m"));
     Serial.print("> ");
+    Serial.print(ansi("\x1b[0m"));
 }
 
 void mcLoop() {
@@ -635,7 +670,9 @@ void mcLoop() {
         Serial.println();  // Echo newline
         processLine(line);
         line = "";
+        Serial.print(ansi("\x1b[1;32m"));
         Serial.print("> ");
+        Serial.print(ansi("\x1b[0m"));
     } else if (c == '\b' || c == 0x7F) {
         // Backspace
         if (line.length() > 0) {
