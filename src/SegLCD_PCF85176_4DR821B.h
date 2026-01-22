@@ -17,9 +17,6 @@
  * @example examples/PCF85176/4DR821B/4DR821B.ino
  */
 class SegLCD_PCF85176_4DR821B : public SegDriver_PCF85176 {
-
-    #define MAX_ADDRESS 38
-
     public:
         typedef enum {
             SYMBOL_ARROW = 0x10,

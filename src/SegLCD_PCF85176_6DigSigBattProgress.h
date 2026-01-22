@@ -17,16 +17,6 @@
  * @example examples/PCF85176/6DigSigBattProgress/6DigSigBattProgress.ino
  */
 class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
-
-    #define MAX_ADDRESS 31
-
-    #define ADDR_SIGNAL_BATT 0
-    #define ADDR_WHEEL 2
-    #define ADDR_SMALL_SEGS 6
-    #define ADDR_PRES_LABELS 14
-    #define ADDR_PROGRESS 16
-    #define ADDR_BIG_SEGS 20
-
     public:
         typedef enum {
             LABEL_MPA = 0x01,
@@ -54,6 +44,13 @@ class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
         size_t write(uint8_t ch) override;
 
     private:
+        static constexpr uint8_t ADDR_SIGNAL_BATT = 0;
+        static constexpr uint8_t ADDR_WHEEL = 2;
+        static constexpr uint8_t ADDR_SMALL_SEGS = 6;
+        static constexpr uint8_t ADDR_PRES_LABELS = 14;
+        static constexpr uint8_t ADDR_PROGRESS = 16;
+        static constexpr uint8_t ADDR_BIG_SEGS = 20;
+
         static constexpr uint8_t RAM_SIZE = 12;
         static constexpr uint8_t OFFSET_SIGBATT = 0;
         static constexpr uint8_t OFFSET_LABELS = 1;

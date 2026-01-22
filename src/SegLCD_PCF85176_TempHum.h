@@ -1,5 +1,5 @@
-#ifndef SEGLCD_PCx85_RAW_H
-#define SEGLCD_PCx85_RAW_H
+#ifndef SEGLCD_PCF85176_TEMPHUM_H
+#define SEGLCD_PCF85176_TEMPHUM_H
 
 #include <Wire.h>
 #include <SegDriver_PCx85.h>
@@ -19,12 +19,6 @@
  * @example examples/PCF85176/TempHumidity/TempHumidity.ino
  */
 class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
-    #define MAX_ADDRESS 31
-
-    #define ADDR_SIGNAL_BATT 14
-    #define ADDR_TEMP_SEGS 0
-    #define ADDR_HUM_SEGS 8
-
     public:
         typedef enum {
             LABEL_C = 0x01,
@@ -42,6 +36,10 @@ class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
         void setCursor(uint8_t row, uint8_t col) override;
         size_t write(uint8_t ch) override;
     private:
+        static constexpr uint8_t ADDR_SIGNAL_BATT = 14;
+        static constexpr uint8_t ADDR_TEMP_SEGS = 0;
+        static constexpr uint8_t ADDR_HUM_SEGS = 8;
+
         static constexpr uint8_t RAM_SIZE = 8;
         static constexpr uint8_t OFFSET_SIGBATT = 0;
         static constexpr uint8_t OFFSET_TEMP = 1;

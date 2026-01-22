@@ -18,17 +18,6 @@
  * @example examples/PCF85176/T1T2Lcd/T1T2Lcd.ino
  */
 class SegLCD_PCF85176_T1T2Lcd : public SegDriver_PCF85176 {
-    #define MAX_ADDRESS 30
-
-    #define ADDR_SIGNAL_CLOCK 0
-    #define ADDR_BATT 2
-    #define ADDR_LABELS 4
-
-    #define ADDR_CLOCK_T1T2_LABELS_SEGS 6
-    #define ADDR_DAY_SEG 14
-    #define ADDR_T1_SEGS 16
-    #define ADDR_T2_SEGS 24
-
     public:
         typedef enum {
             LABEL_T1_C_UP = 0x80,
@@ -57,6 +46,14 @@ class SegLCD_PCF85176_T1T2Lcd : public SegDriver_PCF85176 {
         size_t write(uint8_t ch) override;
 
     private:
+        static constexpr uint8_t ADDR_SIGNAL_CLOCK = 0;
+        static constexpr uint8_t ADDR_BATT = 2;
+        static constexpr uint8_t ADDR_LABELS = 4;
+        static constexpr uint8_t ADDR_CLOCK_T1T2_LABELS_SEGS = 6;
+        static constexpr uint8_t ADDR_DAY_SEG = 14;
+        static constexpr uint8_t ADDR_T1_SEGS = 16;
+        static constexpr uint8_t ADDR_T2_SEGS = 24;
+
         static constexpr uint8_t RAM_SIZE = 16;
 
         // RAM layout (matches _ramBuffer allocation):

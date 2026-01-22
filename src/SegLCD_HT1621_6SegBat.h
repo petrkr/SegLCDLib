@@ -15,7 +15,6 @@
  * @example examples/HT1621/6DigBat/6DigBat.ino
  */
 class SegLCD_HT1621_6SegBat : public SegDriver_HT1621 {
-    #define ADDR_BATT 6
     public:
         SegLCD_HT1621_6SegBat(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read = -1);
         void init() override;
@@ -24,6 +23,7 @@ class SegLCD_HT1621_6SegBat : public SegDriver_HT1621 {
         size_t write(uint8_t ch) override;
 
     private:
+        static constexpr uint8_t ADDR_BATT = 6;
         static constexpr uint8_t RAM_SIZE = 6;
         static constexpr uint8_t DIGITS = 6;
 

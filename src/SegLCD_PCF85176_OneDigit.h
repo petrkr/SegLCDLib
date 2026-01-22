@@ -17,9 +17,6 @@
  * @example examples/PCF85176/OneDigit/OneDigit.ino
  */
 class SegLCD_PCF85176_OneDigit : public SegDriver_PCF85176 {
-
-    #define MAX_ADDRESS 39
-
     public:
         SegLCD_PCF85176_OneDigit(TwoWire& i2c, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
         void init() override;

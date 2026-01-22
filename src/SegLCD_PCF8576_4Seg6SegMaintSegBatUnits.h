@@ -17,15 +17,6 @@
  * @example examples/PCF8576/4Seg6SegMaintSegBatUnits/4Seg6SegMaintSegBatUnits.ino
  */
 class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
-
-    #define MAX_ADDRESS 24
-
-    #define ADDR_SIGNAL 0x0A
-    #define ADDR_BATT 0x08
-    #define ADDR_SMALL_SEGS 0x00
-    #define ADDR_LABELS 0x11
-    #define ADDR_BIG_SEGS 0x0B
-
     public:
         typedef enum {
             LABEL_MPA = 0x01,
@@ -54,6 +45,12 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
         size_t write(uint8_t ch) override;
 
     private:
+        static constexpr uint8_t ADDR_SIGNAL = 0x0A;
+        static constexpr uint8_t ADDR_BATT = 0x08;
+        static constexpr uint8_t ADDR_SMALL_SEGS = 0x00;
+        static constexpr uint8_t ADDR_LABELS = 0x11;
+        static constexpr uint8_t ADDR_BIG_SEGS = 0x0B;
+
         static constexpr uint8_t RAM_ADDR_LAST = 0x18;
         static constexpr uint8_t RAM_BYTE_COUNT = (RAM_ADDR_LAST + 2) / 2;
 
