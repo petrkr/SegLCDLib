@@ -194,21 +194,24 @@ static void dumpBuffer(const SegLCDLib &lcd, Stream &out) {
     // COM bits
     out.println("\nCOM:");
     const uint8_t perRow = 16;
-    for (size_t base = 0; base < ramSize; base += perRow) {
+    const size_t addrSize = ramSize * 2;
+    for (size_t base = 0; base < addrSize; base += perRow) {
         out.print("addr:");
-        for (size_t i = base; i < base + perRow && i < ramSize; i++) {
-            uint8_t addr = (uint8_t)(i * 2);
+        for (size_t addr = base; addr < base + perRow && addr < addrSize; addr++) {
             out.print(' ');
             if (addr < 0x10) out.print('0');
-            out.print(addr, HEX);
-            if (((i - base + 1) % 4) == 0) out.print(' ');
+            out.print((uint16_t)addr, HEX);
+            if (((addr - base + 1) % 4) == 0) out.print(' ');
         }
         out.println();
-        for (int8_t b = 0; b <= 7; b++) {
+        for (int8_t b = 0; b <= 3; b++) {
             out.print('C'); out.print((char)('0' + b)); out.print("  :");
-            for (size_t i = base; i < base + perRow && i < ramSize; i++) {
-                out.print(' '); out.print((ram[i] >> b) & 0x01); out.print(' ');
-                if (((i - base + 1) % 4) == 0) out.print(' ');
+            for (size_t addr = base; addr < base + perRow && addr < addrSize; addr++) {
+                size_t i = addr / 2;
+                uint8_t bitBase = (addr & 0x01) ? 0 : 4;
+                uint8_t bit = bitBase + (3 - b);
+                out.print(' '); out.print((ram[i] >> bit) & 0x01); out.print(' ');
+                if (((addr - base + 1) % 4) == 0) out.print(' ');
             }
             out.println();
         }
