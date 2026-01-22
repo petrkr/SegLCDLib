@@ -230,6 +230,18 @@ static void handleActiveCommand(char *cmd, char *args) {
     if (strcmp(cmd, "f") == 0) { activeLCD->flush(); return; }
     if (strcmp(cmd, "dump") == 0) { dumpBuffer(*activeLCD, Serial); return; }
     if (strcmp(cmd, "af") == 0) { activeLCD->setAutoFlush(parseBool(nextToken(&args))); return; }
+    if (strcmp(cmd, "bl") == 0) {
+        if (config.backlightMode == SegLCDLib::BACKLIGHT_PWM) {
+            const char *valStr = nextToken(&args);
+            int val = valStr ? (int)parseNumber(valStr) : 0;
+            if (val < 0) val = 0;
+            if (val > 254) val = 254;
+            activeLCD->setBacklight(val);
+        } else {
+            activeLCD->setBacklight(parseBool(nextToken(&args)));
+        }
+        return;
+    }
     if (strcmp(cmd, "cur") == 0) {
         activeLCD->setCursor((uint8_t)parseNumber(nextToken(&args)),
                             (uint8_t)parseNumber(nextToken(&args)));
@@ -294,6 +306,7 @@ static void handleActiveCommand(char *cmd, char *args) {
         printMenuLine(Serial, "  c             - clear display");
         printMenuLine(Serial, "  p <text>      - print text");
         printMenuLine(Serial, "  w <r> <c> <t> - write at row,col");
+        printMenuLine(Serial, "  bl <0|1|0-254> - backlight");
         printMenuLine(Serial, "");
         printMenuLine(Serial, "Cursor & Flush:");
         printMenuLine(Serial, "  cur <r> <c>   - set cursor");
@@ -334,6 +347,15 @@ static void printPluginList(Stream &out) {
     }
 }
 
+static const char *backlightModeName(SegLCDLib::BacklightMode mode) {
+    return mode == SegLCDLib::BACKLIGHT_PWM ? "pwm" : "digital";
+}
+
+static void initBacklightIfConfigured() {
+    if (!activeLCD || config.backlight < 0) return;
+    activeLCD->initBacklight(config.backlight, config.backlightMode);
+}
+
 static void printConfigSummary(Stream &out) {
     out.print("Display ID: ");
     out.print(config.displayId);
@@ -365,10 +387,8 @@ static void printConfigSummary(Stream &out) {
         if (config.backlight >= 0) {
             out.print("Backlight pin: ");
             out.println(config.backlight);
-        }
-        if (config.pwr >= 0) {
-            out.print("Power pin: ");
-            out.println(config.pwr);
+            out.print("Backlight mode: ");
+            out.println(backlightModeName(config.backlightMode));
         }
     }
 }
@@ -463,12 +483,15 @@ static void configurePins() {
     String backlightStr = readLine();
     config.backlight = backlightStr.length() ? (int8_t)parseNumber(backlightStr.c_str()) : -1;
     Serial.println(config.backlight);
-
-    if (config.busType == BUS_3WIRE) {
-        Serial.print("Power pin (-1=none): ");
-        config.pwr = (int8_t)parseNumber(readLine().c_str());
-        Serial.println(config.pwr);
+    if (config.backlight >= 0) {
+        Serial.print("Backlight mode (digital/pwm) [digital]: ");
+        String modeStr = readLine();
+        modeStr.toLowerCase();
+        config.backlightMode = (modeStr == "pwm") ? SegLCDLib::BACKLIGHT_PWM
+                                                  : SegLCDLib::BACKLIGHT_DIGITAL;
+        Serial.println(backlightModeName(config.backlightMode));
     }
+
 }
 
 static void handleSettingsCommand(char *cmd, char *args) {
@@ -513,7 +536,7 @@ static void handleSettingsCommand(char *cmd, char *args) {
         char *value = nextToken(&args);
         if (!param || !value) {
             Serial.println("Usage: set <param> <value>");
-            Serial.println("Params: sda, scl, addr, cs, wr, data, backlight, pwr");
+            Serial.println("Params: sda, scl, addr, cs, wr, data, backlight, blmode");
             return;
         }
 
@@ -538,9 +561,16 @@ static void handleSettingsCommand(char *cmd, char *args) {
         } else if (strcmp(param, "backlight") == 0) {
             config.backlight = (int8_t)parseNumber(value);
             Serial.println("OK");
-        } else if (strcmp(param, "pwr") == 0) {
-            config.pwr = (int8_t)parseNumber(value);
-            Serial.println("OK");
+        } else if (strcmp(param, "blmode") == 0) {
+            if (strcmp(value, "pwm") == 0) {
+                config.backlightMode = SegLCDLib::BACKLIGHT_PWM;
+                Serial.println("OK");
+            } else if (strcmp(value, "digital") == 0) {
+                config.backlightMode = SegLCDLib::BACKLIGHT_DIGITAL;
+                Serial.println("OK");
+            } else {
+                Serial.println("Invalid backlight mode (digital/pwm)");
+            }
         } else {
             Serial.println("Unknown parameter");
         }
@@ -569,8 +599,8 @@ static void handleSettingsCommand(char *cmd, char *args) {
             Serial.println(config.data);
         } else if (strcmp(param, "backlight") == 0) {
             Serial.println(config.backlight);
-        } else if (strcmp(param, "pwr") == 0) {
-            Serial.println(config.pwr);
+        } else if (strcmp(param, "blmode") == 0) {
+            Serial.println(backlightModeName(config.backlightMode));
         } else {
             Serial.println("Unknown parameter");
         }
@@ -603,6 +633,7 @@ static void handleSettingsCommand(char *cmd, char *args) {
         activePlugin = plugins[config.displayId];
         activeLCD = activePlugin->create(config);
         if (activeLCD) {
+            initBacklightIfConfigured();
             Serial.println("LCD initialized");
             inSettings = false;
         } else {
@@ -687,6 +718,7 @@ void mcSetup() {
             activePlugin = plugins[config.displayId];
             activeLCD = activePlugin->create(config);
             if (activeLCD) {
+                initBacklightIfConfigured();
                 Serial.println("LCD initialized from saved config");
                 inSettings = false;
             } else {

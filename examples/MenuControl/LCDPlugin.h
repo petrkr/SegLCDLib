@@ -14,7 +14,8 @@ struct DisplayConfig {
     uint8_t busType = BUS_I2C;
     int8_t sda = -1, scl = -1;
     int8_t cs = -1, wr = -1, data = -1;
-    int8_t pwr = -1, backlight = -1;
+    int8_t backlight = -1;
+    SegLCDLib::BacklightMode backlightMode = SegLCDLib::BACKLIGHT_DIGITAL;
     uint8_t i2cAddr = 0x38, subAddr = 0x00;
 };
 

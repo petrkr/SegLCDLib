@@ -15,10 +15,6 @@ public:
         }
 
         auto *lcd = new SegLCD_HT1621_4SegDegree(cfg.cs, cfg.data, cfg.wr);
-        if (cfg.pwr >= 0) {
-            lcd->initBacklight(cfg.pwr);
-            lcd->setBacklight(true);
-        }
         lcd->init();
         lcd->setAutoFlush(true);
         lcd->clear();
@@ -51,11 +47,6 @@ public:
                            parseBool(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "bl") == 0) {
-            lcd->setBacklight(parseBool(nextToken(&args)));
-            return true;
-        }
-
         return false;
     }
 
@@ -65,7 +56,6 @@ public:
         printMenuLine(out, "  mdot <0|1>      - middle dot");
         printMenuLine(out, "  colon <0|1>     - colon");
         printMenuLine(out, "  d <r> <c> <0|1> - decimal (c=0-1)");
-        printMenuLine(out, "  bl <0|1>        - backlight");
     }
 
     bool hasDecimal() const override { return true; }

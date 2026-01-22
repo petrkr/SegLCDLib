@@ -109,7 +109,7 @@ struct DisplayConfig {
     uint8_t busType = BUS_I2C; // I2C or 3-WIRE
     int8_t sda = -1, scl = -1; // I2C pins
     int8_t cs = -1, wr = -1, data = -1; // 3-WIRE pins
-    int8_t pwr = -1, backlight = -1;
+    int8_t backlight = -1;
     uint8_t i2cAddr = 0x38, subAddr = 0x00;
 };
 ```

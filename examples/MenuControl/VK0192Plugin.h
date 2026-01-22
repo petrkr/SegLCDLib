@@ -21,10 +21,6 @@ public:
         }
 
         auto *lcd = new SegLCD_VK0192_5DigSigBattProgress(cfg.cs, cfg.data, cfg.wr);
-        if (cfg.pwr >= 0) {
-            lcd->initBacklight(cfg.pwr);
-            lcd->setBacklight(true);
-        }
         lcd->init();
         lcd->setAutoFlush(true);
         lcd->clear();
@@ -58,10 +54,6 @@ public:
             lcd->clearLabels((uint16_t)parseNumber(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "bl") == 0) {
-            lcd->setBacklight(parseBool(nextToken(&args)));
-            return true;
-        }
         if (strcmp(cmd, "d") == 0) {
             lcd->setDecimal((uint8_t)parseNumber(nextToken(&args)),
                            (uint8_t)parseNumber(nextToken(&args)),
@@ -78,7 +70,6 @@ public:
         printMenuLine(out, "  g <0-3>         - signal level");
         printMenuLine(out, "  prog <0-150>    - progress bar");
         printMenuLine(out, "  ls/lc <mask>    - set/clear labels");
-        printMenuLine(out, "  bl <0|1>        - backlight");
         printMenuLine(out, "  d <r> <c> <0|1> - decimal point");
     }
 

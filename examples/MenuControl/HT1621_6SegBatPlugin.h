@@ -15,10 +15,6 @@ public:
         }
 
         auto *lcd = new SegLCD_HT1621_6SegBat(cfg.cs, cfg.data, cfg.wr);
-        if (cfg.pwr >= 0) {
-            lcd->initBacklight(cfg.pwr);
-            lcd->setBacklight(true);
-        }
         lcd->init();
         lcd->setAutoFlush(true);
         lcd->clear();
@@ -43,11 +39,6 @@ public:
                            parseBool(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "bl") == 0) {
-            lcd->setBacklight(parseBool(nextToken(&args)));
-            return true;
-        }
-
         return false;
     }
 
@@ -55,7 +46,6 @@ public:
         printMenuLine(out, "6bat commands:");
         printMenuLine(out, "  b <0-3>         - battery level");
         printMenuLine(out, "  d <r> <c> <0|1> - decimal (c=2-4)");
-        printMenuLine(out, "  bl <0|1>        - backlight");
     }
 
     bool hasDecimal() const override { return true; }

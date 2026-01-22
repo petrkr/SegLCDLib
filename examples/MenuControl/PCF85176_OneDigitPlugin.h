@@ -26,10 +26,6 @@ public:
         lcd->init(_reverse, _v1fix);
         lcd->setAutoFlush(true);
         lcd->clear();
-        if (cfg.backlight >= 0) {
-            lcd->initBacklight(cfg.backlight);
-            lcd->setBacklight(true);
-        }
         return lcd;
     }
 

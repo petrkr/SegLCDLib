@@ -22,10 +22,6 @@ public:
         lcd->init();
         lcd->setAutoFlush(true);
         lcd->clear();
-        if (cfg.backlight >= 0) {
-            lcd->initBacklight(cfg.backlight);
-            lcd->setBacklight(true);
-        }
         return lcd;
     }
 
