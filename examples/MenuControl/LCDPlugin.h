@@ -164,12 +164,17 @@ static void dumpBuffer(const SegLCDLib &lcd, Stream &out) {
         return;
     }
 
+    const char *c_reset = mcAnsi("\x1b[0m");
+    const char *c_hdr = mcAnsi("\x1b[1;36m");
+    const char *c_one = mcAnsi("\x1b[1;32m");
+    const char *c_zero = mcAnsi("\x1b[2;37m");
+
     // Hexdump
     out.println("HEX:");
     for (size_t i = 0; i < ramSize; i += 16) {
         char off[5];
         snprintf(off, sizeof(off), "%04X", (unsigned)i);
-        out.print(off); out.print(": ");
+        out.print(c_hdr); out.print(off); out.print(c_reset); out.print(": ");
         for (size_t j = 0; j < 16; j++) {
             if (i + j < ramSize) {
                 uint8_t v = ram[i + j];
@@ -196,21 +201,32 @@ static void dumpBuffer(const SegLCDLib &lcd, Stream &out) {
     const uint8_t perRow = 16;
     const size_t addrSize = ramSize * 2;
     for (size_t base = 0; base < addrSize; base += perRow) {
+        out.print(c_hdr);
         out.print("addr:");
+        out.print(c_reset);
         for (size_t addr = base; addr < base + perRow && addr < addrSize; addr++) {
             out.print(' ');
+            out.print(c_hdr);
             if (addr < 0x10) out.print('0');
             out.print((uint16_t)addr, HEX);
+            out.print(c_reset);
             if (((addr - base + 1) % 4) == 0) out.print(' ');
         }
         out.println();
         for (int8_t b = 0; b <= 3; b++) {
+            out.print(c_hdr);
             out.print('C'); out.print((char)('0' + b)); out.print("  :");
+            out.print(c_reset);
             for (size_t addr = base; addr < base + perRow && addr < addrSize; addr++) {
                 size_t i = addr / 2;
                 uint8_t bitBase = (addr & 0x01) ? 0 : 4;
                 uint8_t bit = bitBase + (3 - b);
-                out.print(' '); out.print((ram[i] >> bit) & 0x01); out.print(' ');
+                uint8_t v = (ram[i] >> bit) & 0x01;
+                out.print(' ');
+                out.print(v ? c_one : c_zero);
+                out.print(v);
+                out.print(c_reset);
+                out.print(' ');
                 if (((addr - base + 1) % 4) == 0) out.print(' ');
             }
             out.println();
