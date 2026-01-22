@@ -87,21 +87,21 @@ void SegLCD_PCF85176_TempHumidity::setDecimal(uint8_t row, uint8_t col, bool sta
 
     switch (row) {
     case TEMP_ROW: // Temp segments
-        if (col < TEMP_DECIMAL_MIN_COL || col > TEMP_DECIMAL_MAX_COL) {
+        if (col >= TEMP_DIGITS) {
             return; // Invalid digit
         }
 
-        address = ADDR_TEMP_SEGS + ((col - 1) * 2);
+        address = ADDR_TEMP_SEGS + (col * 2);
         offset = OFFSET_TEMP;
         break;
 
 
     case HUM_ROW: // Hum segments
-        if (col != HUM_DECIMAL_COL) {
+        if (col >= HUM_DIGITS) {
             return; // Invalid digit
         }
 
-        address = ADDR_HUM_SEGS + ((col - 1) * 2);
+        address = ADDR_HUM_SEGS + (col * 2);
         offset = OFFSET_HUM;
         break;
 
@@ -110,12 +110,12 @@ void SegLCD_PCF85176_TempHumidity::setDecimal(uint8_t row, uint8_t col, bool sta
     }
 
     if (state) {
-        _ramBuffer[offset + (col-1)] |= DECIMAL_POINT_BIT; // Set the decimal point bit
+        _ramBuffer[offset + col] |= DECIMAL_POINT_BIT; // Set the decimal point bit
     } else {
-        _ramBuffer[offset + (col-1)] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
+        _ramBuffer[offset + col] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
     }
 
-    _writeRam(_ramBuffer[offset + (col-1)], address);
+    _writeRam(_ramBuffer[offset + col], address);
 }
 
 void SegLCD_PCF85176_TempHumidity::setCursor(uint8_t row, uint8_t col) {
@@ -142,9 +142,11 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
 
         // Decimal point - does NOT move cursor (RAM offset -1)
         if (ch == '.') {
-            if (_cursorCol > DECIMAL_TOP_MIN_COL && _cursorCol <= DECIMAL_TOP_MAX_COL) {
-                setDecimal(_cursorRow, _cursorCol - 1, true);
+            int8_t dotCol = static_cast<int8_t>(_cursorCol) - 1;
+            if (dotCol >= 0 && dotCol < TEMP_DIGITS) {
+                setDecimal(_cursorRow, dotCol, true);
             }
+            _setFlag(FLAG_PENDING_DOT);
             return 1;  // Never move cursor for dot
         }
 
@@ -154,6 +156,18 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
             _writeRam(_ramBuffer[OFFSET_HUM], ADDR_HUM_SEGS);
             _setFlag(FLAG_MINUS_DISPLAYED);
             return 1;  // Minus doesn't move cursor
+        }
+
+        // Regular character - clear previous decimal if no dot pending
+        if (_isFlagSet(FLAG_PENDING_DOT)) {
+            _clearFlag(FLAG_PENDING_DOT);
+        } else if (_cursorCol > 0 && _cursorCol <= TEMP_DIGITS) {
+            setDecimal(_cursorRow, _cursorCol - 1, false);
+        }
+
+        // Clear decimal on current position (overwriting previous decimal)
+        if (_cursorCol < TEMP_DIGITS) {
+            setDecimal(_cursorRow, _cursorCol, false);
         }
 
         // Regular character
@@ -173,10 +187,26 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
 
         // Decimal point - does NOT move cursor (RAM offset -1)
         if (ch == '.') {
-            if (_cursorCol > DECIMAL_BOTTOM_MIN_COL && _cursorCol <= DECIMAL_BOTTOM_MAX_COL) {
-                setDecimal(_cursorRow, _cursorCol - 1, true);
+            int8_t dotCol = static_cast<int8_t>(_cursorCol) - 1;
+            if (dotCol >= 0 && dotCol < HUM_DIGITS) {
+                setDecimal(_cursorRow, dotCol, true);
             }
+            _setFlag(FLAG_PENDING_DOT);
             return 1;  // Never move cursor for dot
+        }
+
+        // Regular character - clear previous decimal if no dot pending
+        if (_isFlagSet(FLAG_PENDING_DOT)) {
+            _clearFlag(FLAG_PENDING_DOT);
+        } else if (_cursorCol > 1 && _cursorCol <= HUM_DIGITS) {
+            // Note: skip clearing decimal at position 0 (uses MINUS_SIGN_BIT)
+            setDecimal(_cursorRow, _cursorCol - 1, false);
+        }
+
+        // Clear decimal on current position (overwriting previous decimal)
+        // Note: skip position 0 because it uses MINUS_SIGN_BIT, not DECIMAL_POINT_BIT
+        if (_cursorCol > 0 && _cursorCol < HUM_DIGITS) {
+            setDecimal(_cursorRow, _cursorCol, false);
         }
 
         // Regular character

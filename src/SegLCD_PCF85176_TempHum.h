@@ -46,6 +46,7 @@ class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
         static constexpr uint8_t OFFSET_HUM = 5;
 
         static constexpr uint8_t FLAG_MINUS_DISPLAYED = 0x01;
+        static constexpr uint8_t FLAG_PENDING_DOT = 0x02;
 
         // Display-specific constants
         static constexpr uint8_t TEMP_DIGITS = 4;
