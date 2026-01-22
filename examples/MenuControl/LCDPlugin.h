@@ -2,6 +2,7 @@
 #define LCD_PLUGIN_H
 
 #include <Arduino.h>
+#include <ctype.h>
 #include "SegLCDLib.h"
 
 // Configuration structure - same as UniversalMenuControl
@@ -17,6 +18,10 @@ struct DisplayConfig {
     uint8_t i2cAddr = 0x38, subAddr = 0x00;
 };
 
+// Terminal ANSI helpers (implemented in MenuControl.cpp)
+bool mcTermAnsiEnabled();
+const char *mcAnsi(const char *code);
+
 // Helper functions
 static long parseNumber(const char *s) {
     if (!s) return 0;
@@ -28,38 +33,106 @@ static const size_t MENU_INNER_WIDTH = 38;
 static inline void printMenuLine(Stream &out, const char *text) {
     size_t len = strlen(text);
     if (len > MENU_INNER_WIDTH) len = MENU_INNER_WIDTH;
+    const char *c_reset = mcAnsi("\x1b[0m");
+    const char *c_border = mcAnsi("\x1b[1;36m");
+    const char *c_heading = mcAnsi("\x1b[1;36m");
+    const char *c_cmd = mcAnsi("\x1b[1;33m");
+    const char *c_param = mcAnsi("\x1b[35m");
+    const char *c_value = mcAnsi("\x1b[32m");
+
+    out.print(c_border);
     out.print("│ ");
-    for (size_t i = 0; i < len; ++i) out.print(text[i]);
+    out.print(c_reset);
+
+    bool header = (len > 0 && text[len - 1] == ':' && (len < 2 || text[0] != ' '));
+    if (header) out.print(c_heading);
+
+    size_t cmd_start = SIZE_MAX;
+    size_t cmd_end = SIZE_MAX;
+    if (len >= 2 && text[0] == ' ' && text[1] == ' ') {
+        size_t s = 2;
+        while (s < len && text[s] == ' ') s++;
+        size_t e = s;
+        while (e < len && text[e] != ' ') e++;
+        if (s < len) { cmd_start = s; cmd_end = e; }
+    }
+
+    bool in_param = false;
+    for (size_t i = 0; i < len; ++i) {
+        char ch = text[i];
+        bool in_cmd = (cmd_start != SIZE_MAX && i >= cmd_start && i < cmd_end);
+
+        if (!header) {
+            if (ch == '<') { out.print(c_param); in_param = true; }
+            if (!in_param && !in_cmd && isdigit((unsigned char)ch)) {
+                out.print(c_value);
+                out.print(ch);
+                out.print(c_reset);
+                continue;
+            }
+            if (!in_param && cmd_start != SIZE_MAX && i == cmd_start) {
+                out.print(c_cmd);
+            }
+        }
+
+        out.print(ch);
+
+        if (!header) {
+            if (!in_param && cmd_end != SIZE_MAX && i + 1 == cmd_end) out.print(c_reset);
+            if (ch == '>') { in_param = false; out.print(c_reset); }
+        }
+    }
+    if (header) out.print(c_reset);
     for (size_t i = len; i < MENU_INNER_WIDTH; ++i) out.print(' ');
+    out.print(c_border);
     out.println(" │");
+    out.print(c_reset);
 }
 
 static inline void printMenuTop(Stream &out, const char *title) {
+    const char *c_border = mcAnsi("\x1b[1;36m");
+    const char *c_reset = mcAnsi("\x1b[0m");
+    const char *c_heading = mcAnsi("\x1b[1;36m");
     size_t title_len = strlen(title);
     size_t fixed = title_len + 3; // "─ " + title + " "
     size_t dashes = (MENU_INNER_WIDTH + 2 > fixed) ? (MENU_INNER_WIDTH + 2 - fixed) : 0;
+    out.print(c_border);
     out.print("┌─ ");
+    out.print(c_heading);
     out.print(title);
+    out.print(c_border);
     out.print(' ');
     for (size_t i = 0; i < dashes; ++i) out.print("─");
-    out.println("┐");
+    out.print("┐");
+    out.println(c_reset);
 }
 
 static inline void printMenuSeparator(Stream &out, const char *title) {
+    const char *c_border = mcAnsi("\x1b[1;36m");
+    const char *c_reset = mcAnsi("\x1b[0m");
+    const char *c_heading = mcAnsi("\x1b[1;36m");
     size_t title_len = strlen(title);
     size_t fixed = title_len + 3; // "─ " + title + " "
     size_t dashes = (MENU_INNER_WIDTH + 2 > fixed) ? (MENU_INNER_WIDTH + 2 - fixed) : 0;
+    out.print(c_border);
     out.print("├─ ");
+    out.print(c_heading);
     out.print(title);
+    out.print(c_border);
     out.print(' ');
     for (size_t i = 0; i < dashes; ++i) out.print("─");
-    out.println("┤");
+    out.print("┤");
+    out.println(c_reset);
 }
 
 static inline void printMenuBottom(Stream &out) {
+    const char *c_border = mcAnsi("\x1b[1;36m");
+    const char *c_reset = mcAnsi("\x1b[0m");
+    out.print(c_border);
     out.print("└");
     for (size_t i = 0; i < MENU_INNER_WIDTH + 2; ++i) out.print("─");
-    out.println("┘");
+    out.print("┘");
+    out.println(c_reset);
 }
 
 static bool parseBool(const char *s) {

@@ -102,8 +102,20 @@ static void printStatusBottom(size_t content_width) {
 
 static bool termAnsi = false;
 
-static const char *ansi(const char *code) {
+bool mcTermAnsiEnabled() {
+    return termAnsi;
+}
+
+const char *mcAnsi(const char *code) {
     return termAnsi ? code : "";
+}
+
+static void printPrompt() {
+    Serial.print(mcAnsi("\x1b[1;32m"));
+    Serial.print('[');
+    Serial.print(inSettings ? "settings" : "main");
+    Serial.print("] > ");
+    Serial.print(mcAnsi("\x1b[0m"));
 }
 
 static bool detectAnsiTerminal() {
@@ -159,27 +171,28 @@ static void printStatus() {
 
 // Settings help display
 static void printSettingsHelp() {
-    Serial.println("\n┌─ Settings Commands ──────────────────┐");
-    Serial.println("│ Display Selection:");
-    Serial.println("│   list          - show available LCDs");
-    Serial.println("│   select <id>   - choose LCD");
-    Serial.println("│   bus <type>    - set bus (i2c/3wire)");
-    Serial.println("│");
-    Serial.println("│ Configuration:");
-    Serial.println("│   set <p> <v>   - set parameter");
-    Serial.println("│   get <p>       - get parameter");
-    Serial.println("│   show          - show full config");
-    Serial.println("│");
-    Serial.println("│ Storage & Init:");
-    Serial.println("│   init          - initialize LCD");
-    Serial.println("│   save          - save config");
-    Serial.println("│   clear         - clear saved config");
-    Serial.println("│   pins          - interactive pin setup");
-    Serial.println("│");
-    Serial.println("│ System:");
-    Serial.println("│   exit          - return to active mode");
-    Serial.println("│   help (?, h)   - this menu");
-    Serial.println("└──────────────────────────────────────┘");
+    Serial.println();
+    printMenuTop(Serial, "Settings Commands");
+    printMenuLine(Serial, "Display Selection:");
+    printMenuLine(Serial, "  list          - show available LCDs");
+    printMenuLine(Serial, "  select <id>   - choose LCD");
+    printMenuLine(Serial, "  bus <type>    - set bus (i2c/3wire)");
+    printMenuLine(Serial, "");
+    printMenuLine(Serial, "Configuration:");
+    printMenuLine(Serial, "  set <p> <v>   - set parameter");
+    printMenuLine(Serial, "  get <p>       - get parameter");
+    printMenuLine(Serial, "  show          - show full config");
+    printMenuLine(Serial, "");
+    printMenuLine(Serial, "Storage & Init:");
+    printMenuLine(Serial, "  init          - initialize LCD");
+    printMenuLine(Serial, "  save          - save config");
+    printMenuLine(Serial, "  clear         - clear saved config");
+    printMenuLine(Serial, "  pins          - interactive pin setup");
+    printMenuLine(Serial, "");
+    printMenuLine(Serial, "System:");
+    printMenuLine(Serial, "  exit          - return to active mode");
+    printMenuLine(Serial, "  help (?, h)   - this menu");
+    printMenuBottom(Serial);
 }
 
 // Active mode commands
@@ -356,10 +369,27 @@ static void selectDisplay() {
 }
 
 static String readLine() {
-    while (!Serial.available()) delay(10);
-    String line = Serial.readStringUntil('\n');
-    if (line.length() && line[line.length() - 1] == '\r') {
-        line.remove(line.length() - 1);
+    String line;
+    while (true) {
+        while (!Serial.available()) delay(10);
+        char c = Serial.read();
+        if (c == 0x04) break; // Ctrl+D
+        if (c == '\r' || c == '\n') break;
+        if (c == '\b' || c == 0x7F) {
+            if (line.length() > 0) {
+                Serial.print("\b \b");
+                line.remove(line.length() - 1);
+            }
+            continue;
+        }
+        if (c >= 32 && c <= 126) Serial.print(c);
+        line += c;
+    }
+    Serial.println();
+    while (Serial.available()) {
+        char c = Serial.peek();
+        if (c != '\r' && c != '\n') break;
+        Serial.read();
     }
     return line;
 }
@@ -611,19 +641,19 @@ void mcSetup() {
     Serial.print("terminal detect: ");
     termAnsi = detectAnsiTerminal();
     if (termAnsi) {
-        Serial.print(ansi("\x1b[1;32m"));
+        Serial.print(mcAnsi("\x1b[1;32m"));
         Serial.println("ANSI");
-        Serial.print(ansi("\x1b[0m"));
+        Serial.print(mcAnsi("\x1b[0m"));
     } else {
         Serial.println("PLAIN");
     }
     // Banner
     Serial.println();
-    Serial.print(ansi("\x1b[1;36m"));
+    Serial.print(mcAnsi("\x1b[1;36m"));
     Serial.println("╔══════════════════════════════════════╗");
     Serial.println("║      SegLCDLib MenuControl v0.0      ║");
     Serial.println("╚══════════════════════════════════════╝");
-    Serial.print(ansi("\x1b[0m"));
+    Serial.print(mcAnsi("\x1b[0m"));
     Serial.println();
 
     // Try to load saved config
@@ -655,9 +685,7 @@ void mcSetup() {
     } else {
         Serial.println("Type 'help' for active commands");
     }
-    Serial.print(ansi("\x1b[1;32m"));
-    Serial.print("> ");
-    Serial.print(ansi("\x1b[0m"));
+    printPrompt();
 }
 
 void mcLoop() {
@@ -670,9 +698,12 @@ void mcLoop() {
         Serial.println();  // Echo newline
         processLine(line);
         line = "";
-        Serial.print(ansi("\x1b[1;32m"));
-        Serial.print("> ");
-        Serial.print(ansi("\x1b[0m"));
+        printPrompt();
+    } else if (c == 0x04) {
+        if (inSettings) inSettings = false;
+        line = "";
+        Serial.println();
+        printPrompt();
     } else if (c == '\b' || c == 0x7F) {
         // Backspace
         if (line.length() > 0) {
