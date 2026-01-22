@@ -82,9 +82,15 @@ void SegLCDLib::initBacklight(int8_t backlightPin, BacklightMode backlightMode, 
 
     if (_backlightMode == BACKLIGHT_PWM) {
         #ifdef ESP32
-            // ESP32 PWM setup
-            ledcSetup(0, 5000, 8);  // channel 0, 5kHz, 8-bit
-            ledcAttachPin(_backlightPin, 0);
+            #if ESP_IDF_VERSION_MAJOR >= 5
+                // ESP32 PWM setup - modern API (3.3+, IDF 5.x)
+                ledcAttach(_backlightPin, 5000, 8);  // pin, frequency, resolution
+            #else
+                // Old API (2.0.x, IDF 4.x)
+                _backlightChannel = 0;
+                ledcSetup(_backlightChannel, 5000, 8);
+                ledcAttachPin(_backlightPin, _backlightChannel);
+            #endif
         #else
             pinMode(_backlightPin, OUTPUT);
         #endif
@@ -115,7 +121,11 @@ void SegLCDLib::setBacklight(int brightness) {
 
     if (_backlightMode == BACKLIGHT_PWM) {
         #ifdef ESP32
-            ledcWrite(0, pwmValue);
+            #if ESP_IDF_VERSION_MAJOR >= 5
+                ledcWrite(_backlightPin, pwmValue);
+            #else
+                ledcWrite(_backlightChannel, pwmValue);
+            #endif
         #else
             analogWrite(_backlightPin, pwmValue);
         #endif

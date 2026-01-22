@@ -350,6 +350,13 @@ class SegLCDLib : public Print {
         uint8_t _backlightBrightness = 0;
 
         /**
+         * @brief LEDC channel for old ESP32 Arduino Core (2.0.x)
+         */
+        #if defined(ESP32) && ESP_IDF_VERSION_MAJOR < 5
+        uint8_t _backlightChannel = 0;
+        #endif
+
+        /**
          * @brief Generic flag storage for display-specific state tracking.
          *
          * Individual LCD implementations can use these bits to track state like:
