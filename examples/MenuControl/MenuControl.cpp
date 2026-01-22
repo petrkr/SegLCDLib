@@ -1,6 +1,14 @@
 #include "MenuControl.h"
 #include "T1T2Plugin.h"
 #include "VK0192Plugin.h"
+#include "HT1621_4SegDegreePlugin.h"
+#include "HT1621_6SegBatPlugin.h"
+#include "HT1622_10Dig16SegPlugin.h"
+#include "PCF85176_4DR821BPlugin.h"
+#include "PCF85176_6DigSigBattProgressPlugin.h"
+#include "PCF85176_OneDigitPlugin.h"
+#include "PCF85176_TempHumPlugin.h"
+#include "PCF8576_4Seg6SegMaintSegBatUnitsPlugin.h"
 
 #if defined(ARDUINO_ARCH_ESP32)
 #include <Preferences.h>
@@ -9,8 +17,21 @@
 // Plugin registry
 static T1T2Plugin pluginT1T2;
 static VK0192Plugin pluginVK0192;
+static HT1621_4SegDegreePlugin plugin4deg;
+static HT1621_6SegBatPlugin plugin6bat;
+static HT1622_10Dig16SegPlugin plugin16seg;
+static PCF85176_4DR821BPlugin plugin4dr821;
+static PCF85176_6DigSigBattProgressPlugin plugin6prog;
+static PCF85176_OneDigitPlugin plugin1dig;
+static PCF85176_TempHumPlugin pluginTempHum;
+static PCF8576_4Seg6SegMaintSegBatUnitsPlugin plugin4s6s;
 
-static LCDPlugin *plugins[] = { &pluginT1T2, &pluginVK0192 };
+static LCDPlugin *plugins[] = {
+    &pluginT1T2, &pluginVK0192,
+    &plugin4deg, &plugin6bat, &plugin16seg,
+    &plugin4dr821, &plugin6prog, &plugin1dig,
+    &pluginTempHum, &plugin4s6s
+};
 static const uint8_t pluginCount = sizeof(plugins) / sizeof(plugins[0]);
 
 // Global state
