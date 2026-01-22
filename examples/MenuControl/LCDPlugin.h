@@ -39,7 +39,6 @@ static inline void printMenuLine(Stream &out, const char *text) {
     const char *c_heading = mcAnsi("\x1b[1;36m");
     const char *c_cmd = mcAnsi("\x1b[1;33m");
     const char *c_param = mcAnsi("\x1b[35m");
-    const char *c_value = mcAnsi("\x1b[32m");
 
     out.print(c_border);
     out.print("│ ");
@@ -65,12 +64,6 @@ static inline void printMenuLine(Stream &out, const char *text) {
 
         if (!header) {
             if (ch == '<') { out.print(c_param); in_param = true; }
-            if (!in_param && !in_cmd && isdigit((unsigned char)ch)) {
-                out.print(c_value);
-                out.print(ch);
-                out.print(c_reset);
-                continue;
-            }
             if (!in_param && cmd_start != SIZE_MAX && i == cmd_start) {
                 out.print(c_cmd);
             }
