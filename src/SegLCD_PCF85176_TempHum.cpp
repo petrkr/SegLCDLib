@@ -128,6 +128,14 @@ void SegLCD_PCF85176_TempHumidity::setCursor(uint8_t row, uint8_t col) {
 
 size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
 
+    // Wrap to next row if cursor exceeds current row capacity
+    if (_cursorRow == TEMP_ROW && _cursorCol >= TEMP_DIGITS) {
+        _cursorRow = HUM_ROW;
+        _cursorCol = 0;
+    } else if (_cursorRow == HUM_ROW && _cursorCol >= HUM_DIGITS) {
+        return 0;  // End of display
+    }
+
     if (_cursorRow == TEMP_ROW) {
         // Temp segments (row 0)
         if (_cursorCol >= TEMP_DIGITS) {
