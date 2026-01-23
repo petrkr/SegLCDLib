@@ -51,11 +51,13 @@ class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
         static constexpr uint8_t ADDR_PROGRESS = 16;
         static constexpr uint8_t ADDR_BIG_SEGS = 20;
 
-        static constexpr uint8_t RAM_SIZE = 12;
-        static constexpr uint8_t OFFSET_SIGBATT = 0;
-        static constexpr uint8_t OFFSET_LABELS = 1;
-        static constexpr uint8_t OFFSET_TOP = 2;
-        static constexpr uint8_t OFFSET_DEFAULT = 6;
+        static constexpr uint8_t RAM_SIZE = 16;
+        static constexpr uint8_t OFFSET_SIGBATT = 0;     // HW 0
+        static constexpr uint8_t OFFSET_WHEEL = 1;       // HW 2
+        static constexpr uint8_t OFFSET_TOP = 3;         // HW 6
+        static constexpr uint8_t OFFSET_LABELS = 7;      // HW 14
+        static constexpr uint8_t OFFSET_PROGRESS = 8;    // HW 16
+        static constexpr uint8_t OFFSET_DEFAULT = 10;    // HW 20
 
         static constexpr uint8_t FLAG_COLON_TOP = 0x01;
         static constexpr uint8_t FLAG_COLON_DEFAULT = 0x02;

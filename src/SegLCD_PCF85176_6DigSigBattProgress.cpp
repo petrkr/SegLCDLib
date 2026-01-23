@@ -50,68 +50,67 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setSignalLevel(uint8_t level) 
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setProgress(uint8_t value) {
-    uint8_t buffer[2] = { 0, 0 };
+    _ramBuffer[OFFSET_PROGRESS] = 0;
+    _ramBuffer[OFFSET_PROGRESS + 1] = 0;
 
     if (value > 0) {
-        buffer[0] |= 0x80;
+        _ramBuffer[OFFSET_PROGRESS] |= 0x80;
     }
     if (value >= 10) {
-        buffer[0] |= 0x40;
+        _ramBuffer[OFFSET_PROGRESS] |= 0x40;
     }
     if (value >= 20) {
-        buffer[0] |= 0x20;
+        _ramBuffer[OFFSET_PROGRESS] |= 0x20;
     }
     if (value >= 30) {
-        buffer[0] |= 0x10;
+        _ramBuffer[OFFSET_PROGRESS] |= 0x10;
     }
     if (value >= 40) {
-        buffer[0] |= 0x08;
+        _ramBuffer[OFFSET_PROGRESS] |= 0x08;
     }
     if (value >= 50) {
-        buffer[0] |= 0x04;
+        _ramBuffer[OFFSET_PROGRESS] |= 0x04;
     }
     if (value >= 60) {
-        buffer[0] |= 0x02;
+        _ramBuffer[OFFSET_PROGRESS] |= 0x02;
     }
     if (value >= 70) {
-        buffer[0] |= 0x01;
+        _ramBuffer[OFFSET_PROGRESS] |= 0x01;
     }
 
     if (value >= 80) {
-        buffer[1] |= 0x80;
+        _ramBuffer[OFFSET_PROGRESS + 1] |= 0x80;
     }
     if (value >= 90) {
-        buffer[1] |= 0x40;
+        _ramBuffer[OFFSET_PROGRESS + 1] |= 0x40;
     }
     if (value >= 100) {
-        buffer[1] |= 0x20;
+        _ramBuffer[OFFSET_PROGRESS + 1] |= 0x20;
     }
     if (value >= 110) {
-        buffer[1] |= 0x10;
+        _ramBuffer[OFFSET_PROGRESS + 1] |= 0x10;
     }
     if (value >= 120) {
-        buffer[1] |= 0x08;
+        _ramBuffer[OFFSET_PROGRESS + 1] |= 0x08;
     }
     if (value >= 130) {
-        buffer[1] |= 0x04;
+        _ramBuffer[OFFSET_PROGRESS + 1] |= 0x04;
     }
     if (value >= 140) {
-        buffer[1] |= 0x02;
+        _ramBuffer[OFFSET_PROGRESS + 1] |= 0x02;
     }
     if (value == 150) {
-        buffer[1] |= 0x01;
+        _ramBuffer[OFFSET_PROGRESS + 1] |= 0x01;
     }
 
-    _writeRam(buffer, sizeof(buffer), ADDR_PROGRESS);
+    _writeRam(&_ramBuffer[OFFSET_PROGRESS], 2, ADDR_PROGRESS);
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setWheel(uint16_t value) {
-    uint8_t buffer[2] = { 0, 0 };
+    _ramBuffer[OFFSET_WHEEL] = value & 0xFF;
+    _ramBuffer[OFFSET_WHEEL + 1] = (((value >> 8) & 0x0F) << 4);
 
-    buffer[0] = value & 0xFF;
-    buffer[1] = (((value >> 8) & 0x0F) << 4);
-
-    _writeRam(buffer, sizeof(buffer), ADDR_WHEEL);
+    _writeRam(&_ramBuffer[OFFSET_WHEEL], 2, ADDR_WHEEL);
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setLabels(LabelFlags labels) {
@@ -147,7 +146,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setColon(uint8_t row, uint8_t 
 
             address = ADDR_BIG_SEGS; // Digit 6
             offset = OFFSET_DEFAULT;
-            digit = 6;
+            digit = 1;  // Use digit=1 so offset+(digit-1)=offset
             break;
         default:
             return; // Invalid section
@@ -181,7 +180,8 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setDecimal(uint8_t row, uint8_
             }
 
             address = ADDR_BIG_SEGS + ((6 - col - 1) * 2);
-            offset = OFFSET_DEFAULT;
+            offset = OFFSET_DEFAULT + (5 - col);  // Reverse order in buffer
+            col = 0;  // Use offset directly, ignore col
             break;
         default:
             return; // Invalid section
@@ -274,22 +274,27 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
             }
 
             // Clear colon if writing non-colon at colon position
-            if (_cursorCol == COLON_BOTTOM_COL && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT) &&
-                (_ramBuffer[OFFSET_DEFAULT + _cursorCol] & DECIMAL_POINT_BIT)) {
-                _ramBuffer[OFFSET_DEFAULT + _cursorCol] &= ~DECIMAL_POINT_BIT;
-                _writeRam(_ramBuffer[OFFSET_DEFAULT + _cursorCol], ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
+            if (_cursorCol == COLON_BOTTOM_COL && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT)) {
+                uint8_t bufIdx = OFFSET_DEFAULT + (5 - _cursorCol);
+                if (_ramBuffer[bufIdx] & DECIMAL_POINT_BIT) {
+                    _ramBuffer[bufIdx] &= ~DECIMAL_POINT_BIT;
+                    _writeRam(_ramBuffer[bufIdx], ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
+                }
             }
 
             // Regular character
             uint8_t segment_data = _mapSegments(_get_char_value(ch));
 
+            // Store in reverse order in buffer for flush compatibility
+            uint8_t bufIdx = OFFSET_DEFAULT + (5 - _cursorCol);
+
             // Preserve colon bit after colon position
             if (_cursorCol == 5 && _isFlagSet(FLAG_COLON_DEFAULT)) {
-                segment_data |= _ramBuffer[OFFSET_DEFAULT + _cursorCol] & DECIMAL_POINT_BIT;
+                segment_data |= _ramBuffer[bufIdx] & DECIMAL_POINT_BIT;
             }
 
-            _ramBuffer[OFFSET_DEFAULT + _cursorCol] = segment_data;
-            _writeRam(_ramBuffer[OFFSET_DEFAULT + _cursorCol], ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
+            _ramBuffer[bufIdx] = segment_data;
+            _writeRam(segment_data, ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
             _cursorCol++;
             return 1;
         }
