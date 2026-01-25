@@ -53,10 +53,7 @@ size_t SegLCD_HT1622_10Dig16Seg::write(uint8_t ch) {
     }
 
     // Decimal point - does NOT move cursor (RAM offset -1)
-    if (ch == '.') {
-        if (_cursorCol > 0 && _cursorCol <= 9) {
-            setDecimal(_cursorRow, _cursorCol - 1, true);
-        }
+    if (_dotWrite(ch, 1, 9, -1)) {
         return 1;
     }
 

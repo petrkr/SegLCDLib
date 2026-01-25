@@ -181,35 +181,18 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow0(uint8_t ch) {
         return 0;  // Invalid digit
     }
 
-    // Decimal point - does NOT move cursor (RAM offset -1)
-    if (ch == '.') {
-        if (_cursorCol > DECIMAL_TOP_MIN_COL && _cursorCol <= DECIMAL_TOP_MAX_COL + 1) {
-            setDecimal(_cursorRow, _cursorCol - 1, true);
-        }
-        return 1;  // Never move cursor for dot
+    // Handle decimal point and colon
+    if (_handleSpecialChars(ch, DECIMAL_TOP_MIN_COL, DECIMAL_TOP_MAX_COL, -1,
+                            true, COLON_TOP_COL, FLAG_COLON_TOP)) {
+        return 1;
     }
 
-    // Colon - does NOT move cursor
-    if (ch == ':' && _cursorCol == COLON_TOP_COL && !_isFlagSet(FLAG_COLON_TOP)) {
-        setColon(_cursorRow, _cursorCol, true);
-        return 1;  // Never move cursor for colon
-    }
-
-    // Clear colon if writing non-colon at colon position
-    if (_cursorCol == COLON_TOP_COL && ch != ':' && !_isFlagSet(FLAG_COLON_TOP)) {
-        setColon(_cursorRow, _cursorCol, false);
-    }
+    // Clear colon if not flagged (additional handling needed because of colon)
+    _colonClearIfNotFlagged(ch, COLON_TOP_COL, FLAG_COLON_TOP);
 
     // Regular character
     uint8_t segment_data = _mapSegmentsTop(_get_char_value(ch));
     uint8_t addr = ADDR_SMALL_SEGS + (_cursorCol * 2);
-
-    // Clear colon bit if needed
-    if (_cursorCol == COLON_TOP_COL && ch != ':' && !_isFlagSet(FLAG_COLON_TOP) &&
-        (_ramBuffer[addr >> 1] & DECIMAL_TOP_POINT_BIT)) {
-        uint8_t cleared = _ramBuffer[addr >> 1] & ~DECIMAL_TOP_POINT_BIT;
-        _writeRamMasked(cleared, addr, addr == 0x06 ? 0xF7 : 0xFF);
-    }
 
     // Preserve colon bit after colon position
     if (_cursorCol == 3 && _isFlagSet(FLAG_COLON_TOP)) {
@@ -227,41 +210,24 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow1(uint8_t ch) {
         return 0;  // Invalid digit
     }
 
-    // Decimal point - does NOT move cursor (RAM offset -1)
-    if (ch == '.') {
-        if (_cursorCol > DECIMAL_BOTTOM_MIN_COL && _cursorCol <= DECIMAL_BOTTOM_MAX_COL + 1) {
-            setDecimal(_cursorRow, _cursorCol - 1, true);
-        }
-        return 1;  // Never move cursor for dot
+    // Handle decimal point
+    if (_handleSpecialChars(ch, DECIMAL_BOTTOM_MIN_COL, DECIMAL_BOTTOM_MAX_COL, -1)) {
+        return 1;
     }
 
-    // Colon at col 2 - does NOT move cursor
-    if (ch == ':' && _cursorCol == COLON_BOTTOM_LEFT_COL && !_isFlagSet(FLAG_COLON_DEFAULT_LEFT)) {
-        setColon(_cursorRow, _cursorCol, true);
-        return 1;  // Never move cursor for colon
+    // Handle colon at col 2
+    if (_colonWrite(ch, COLON_BOTTOM_LEFT_COL, FLAG_COLON_DEFAULT_LEFT)) {
+        return 1;
     }
 
-    // Colon at col 4 - does NOT move cursor
-    if (ch == ':' && _cursorCol == COLON_BOTTOM_RIGHT_COL && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
-        setColon(_cursorRow, _cursorCol, true);
-        return 1;  // Never move cursor for colon
+    // Handle colon at col 4
+    if (_colonWrite(ch, COLON_BOTTOM_RIGHT_COL, FLAG_COLON_DEFAULT_RIGHT)) {
+        return 1;
     }
 
-    // Clear colons if writing non-colon at colon positions
-    if (_cursorCol == COLON_BOTTOM_LEFT_COL && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT_LEFT)) {
-        setColon(_cursorRow, _cursorCol, false);
-    }
-    if (_cursorCol == COLON_BOTTOM_RIGHT_COL && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
-        setColon(_cursorRow, _cursorCol, false);
-    }
-
-    // Clear colon bit if needed at right colon position
-    if (_cursorCol == COLON_BOTTOM_RIGHT_COL && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT) &&
-        (_buffer_default[_cursorCol] & DECIMAL_BOTTOM_POINT_BIT)) {
-        _buffer_default[_cursorCol] &= ~DECIMAL_BOTTOM_POINT_BIT;
-        _writeRamMasked(_buffer_default[_cursorCol],
-                       ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
-    }
+    // Clear colons if not flagged
+    _colonClearIfNotFlagged(ch, COLON_BOTTOM_LEFT_COL, FLAG_COLON_DEFAULT_LEFT);
+    _colonClearIfNotFlagged(ch, COLON_BOTTOM_RIGHT_COL, FLAG_COLON_DEFAULT_RIGHT);
 
     // Regular character
     uint8_t segment_data = _mapSegments(_get_char_value(ch));

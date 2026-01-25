@@ -51,26 +51,14 @@ size_t SegLCD_HT1621_6SegBat::write(uint8_t ch) {
         return 0;
     }
 
-    // Decimal point - does NOT move cursor
-    if (ch == '.') {
-        if (_cursorCol > 0 && (_cursorCol - 1) >= DECIMAL_MIN_COL && (_cursorCol - 1) <= DECIMAL_MAX_COL) {
-            setDecimal(_cursorRow, _cursorCol - 1, true);
-            _setFlag(FLAG_PENDING_DOT);
-        }
+    // Handle decimal point (RAM offset 0: stored in same position)
+    if (_handleSpecialChars(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, 0)) {
         return 1;
     }
 
     // Regular character
     uint8_t segment_data = _mapSegments(_get_char_value(ch));
     uint8_t hw_addr = (DIGITS - (_cursorCol + 1)) * 2;
-
-    // Clear decimal at current position (stored in next col's RAM)
-    if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
-        if (!_isFlagSet(FLAG_PENDING_DOT)) {
-            setDecimal(_cursorRow, _cursorCol, false);
-        }
-        _clearFlag(FLAG_PENDING_DOT);
-    }
 
     // Bit 0x80 is always special (battery on col 0,1,2 or decimal of previous digit on col 3,4,5)
     _writeRamMasked(segment_data, hw_addr, 0x7F);

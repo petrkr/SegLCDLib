@@ -38,6 +38,9 @@ class SegLCD_HT1621_4SegDegree : public SegDriver_HT1621 {
         // Colon configuration
         static constexpr uint8_t COLON_COL = 1;  // Colon at position 1 (between digits 1-2)
 
+        // Flag for colon state
+        static constexpr uint8_t FLAG_COLON_DISPLAYED = 0x01;
+
         uint8_t _mapSegments(uint8_t val);
         void _writeSymbols(uint8_t bitnum, bool state);
 };

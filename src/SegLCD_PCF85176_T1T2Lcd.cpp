@@ -167,17 +167,13 @@ size_t SegLCD_PCF85176_T1T2Lcd::write(uint8_t ch) {
 
     switch (_cursorRow) {
         case ROW_CLOCK:
-            // Set colon if next char is colon and flag, we want it keep
-            if (ch == ':' && _cursorCol == 2) {
-                setColon(_cursorRow, _cursorCol, true);
-                _setFlag(FLAG_COLON_CLOCK);
+            // Handle colon
+            if (_colonWrite(ch, 2, FLAG_COLON_CLOCK)) {
                 return 1;
             }
 
-            // Clear Clock colon if we do not want it and colon column is not colon
-            if (ch != ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_CLOCK)) {
-                setColon(_cursorRow, _cursorCol, false);
-            }
+            // Clear colon if not flagged
+            _colonClearIfNotFlagged(ch, 2, FLAG_COLON_CLOCK);
 
             if (_cursorCol >=0 && _cursorCol < 4) {
                 _ramBuffer[OFFSET_CLOCK + _cursorCol] &= ~0b11111110;
@@ -191,18 +187,20 @@ size_t SegLCD_PCF85176_T1T2Lcd::write(uint8_t ch) {
             }
             break;
         case ROW_T1:
-            if (ch == '.') {
-                setDecimal(_cursorRow, _cursorCol - 1, true);
+            // Handle decimal point
+            if (_handleSpecialChars(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, -1)) {
                 return 1;
             }
+
             _ramBuffer[OFFSET_T1 + _cursorCol] = segment_data;
             _writeRam(_ramBuffer[OFFSET_T1 + _cursorCol], ADDR_T1_SEGS + (_cursorCol * 2));
             break;
         case ROW_T2:
-            if (ch == '.') {
-                setDecimal(_cursorRow, _cursorCol - 1, true);
+            // Handle decimal point
+            if (_handleSpecialChars(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, -1)) {
                 return 1;
             }
+
             _ramBuffer[OFFSET_T2 + _cursorCol] = segment_data;
             _writeRam(_ramBuffer[OFFSET_T2 + _cursorCol], ADDR_T2_SEGS + (_cursorCol * 2));
             break;

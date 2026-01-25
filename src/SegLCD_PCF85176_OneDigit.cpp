@@ -50,10 +50,7 @@ size_t SegLCD_PCF85176_OneDigit::write(uint8_t ch) {
     }
 
     // Decimal point - does NOT move cursor (RAM offset -1: previous byte)
-    if (ch == '.') {
-        if (_cursorCol > DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
-            setDecimal(_cursorRow, _cursorCol - 1, true);
-        }
+    if (_dotWrite(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, -1)) {
         return 1;  // Never move cursor for dot
     }
 

@@ -148,14 +148,9 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
             _writeRam(_ramBuffer[OFFSET_HUM], ADDR_HUM_SEGS);
         }
 
-        // Decimal point - does NOT move cursor (RAM offset -1)
-        if (ch == '.') {
-            int8_t dotCol = static_cast<int8_t>(_cursorCol) - 1;
-            if (dotCol >= 0 && dotCol < TEMP_DIGITS) {
-                setDecimal(_cursorRow, dotCol, true);
-            }
-            _setFlag(FLAG_PENDING_DOT);
-            return 1;  // Never move cursor for dot
+        // Handle decimal point
+        if (_handleSpecialChars(ch, 0, TEMP_DIGITS - 1, -1)) {
+            return 1;
         }
 
         // Minus sign at position 0 (special handling)
@@ -164,18 +159,6 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
             _writeRam(_ramBuffer[OFFSET_HUM], ADDR_HUM_SEGS);
             _setFlag(FLAG_MINUS_DISPLAYED);
             return 1;  // Minus doesn't move cursor
-        }
-
-        // Regular character - clear previous decimal if no dot pending
-        if (_isFlagSet(FLAG_PENDING_DOT)) {
-            _clearFlag(FLAG_PENDING_DOT);
-        } else if (_cursorCol > 0 && _cursorCol <= TEMP_DIGITS) {
-            setDecimal(_cursorRow, _cursorCol - 1, false);
-        }
-
-        // Clear decimal on current position (overwriting previous decimal)
-        if (_cursorCol < TEMP_DIGITS) {
-            setDecimal(_cursorRow, _cursorCol, false);
         }
 
         // Regular character
@@ -193,28 +176,9 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
             return 0;  // Invalid digit
         }
 
-        // Decimal point - does NOT move cursor (RAM offset -1)
-        if (ch == '.') {
-            int8_t dotCol = static_cast<int8_t>(_cursorCol) - 1;
-            if (dotCol >= 0 && dotCol < HUM_DIGITS) {
-                setDecimal(_cursorRow, dotCol, true);
-            }
-            _setFlag(FLAG_PENDING_DOT);
-            return 1;  // Never move cursor for dot
-        }
-
-        // Regular character - clear previous decimal if no dot pending
-        if (_isFlagSet(FLAG_PENDING_DOT)) {
-            _clearFlag(FLAG_PENDING_DOT);
-        } else if (_cursorCol > 1 && _cursorCol <= HUM_DIGITS) {
-            // Note: skip clearing decimal at position 0 (uses MINUS_SIGN_BIT)
-            setDecimal(_cursorRow, _cursorCol - 1, false);
-        }
-
-        // Clear decimal on current position (overwriting previous decimal)
-        // Note: skip position 0 because it uses MINUS_SIGN_BIT, not DECIMAL_POINT_BIT
-        if (_cursorCol > 0 && _cursorCol < HUM_DIGITS) {
-            setDecimal(_cursorRow, _cursorCol, false);
+        // Handle decimal point
+        if (_handleSpecialChars(ch, 1, HUM_DIGITS - 1, -1)) {
+            return 1;
         }
 
         // Regular character

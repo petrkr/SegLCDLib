@@ -70,8 +70,8 @@ size_t SegLCD_PCF85176_4DR821B::write(uint8_t ch) {
         return 0; //Invalid digit
     }
 
-    if (ch == '.') {
-        setDecimal(_cursorRow, _cursorCol - 1, true);
+    // Handle decimal point
+    if (_handleSpecialChars(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, -1)) {
         return 1;
     }
 
@@ -93,6 +93,9 @@ size_t SegLCD_PCF85176_4DR821B::write(uint8_t ch) {
     }
 
     uint8_t segment_data = _get_char_value(ch);
+
+    // Preserve decimal bit when writing
+    segment_data |= _ramBuffer[ADDR_SEGS + _cursorCol] & DECIMAL_POINT_BIT;
 
     _ramBuffer[ADDR_SEGS + _cursorCol] = segment_data;
 

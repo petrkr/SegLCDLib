@@ -180,22 +180,16 @@ size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
         return 0;
     }
 
-    // Decimal point - does NOT move cursor
-    if (ch == '.') {
-        int8_t dotCol = static_cast<int8_t>(_cursorCol) - 1;
-        if (dotCol < 0) {
-            return 1;
-        }
-        // Row 0: decimals at col 0-1, Row 1: decimals at col 0-3, Row 2: decimals at col 0-3
-        if (_cursorRow == 0 && dotCol >= DECIMAL_TOP_MIN_COL && dotCol <= DECIMAL_TOP_MAX_COL) {
-            setDecimal(_cursorRow, dotCol, true);
-        } else if (_cursorRow == 1 && dotCol >= DECIMAL_BOTTOM_MIN_COL && dotCol <= DECIMAL_BOTTOM_MAX_COL) {
-            setDecimal(_cursorRow, dotCol, true);
-        } else if (_cursorRow == 2 && dotCol >= DECIMAL_16SEG_MIN_COL && dotCol <= DECIMAL_16SEG_MAX_COL) {
-            setDecimal(_cursorRow, dotCol, true);
-        }
-        _setFlag(FLAG_PENDING_DOT);
-        return 1;  // Never move cursor for dot
+    // Handle decimal point (RAM offset +1: VK0192 specific mapping)
+    // Per-row decimal handling
+    if (_cursorRow == 0 && _handleSpecialChars(ch, DECIMAL_TOP_MIN_COL, DECIMAL_TOP_MAX_COL, +1)) {
+        return 1;
+    }
+    if (_cursorRow == 1 && _handleSpecialChars(ch, DECIMAL_BOTTOM_MIN_COL, DECIMAL_BOTTOM_MAX_COL, +1)) {
+        return 1;
+    }
+    if (_cursorRow == 2 && _handleSpecialChars(ch, DECIMAL_16SEG_MIN_COL, DECIMAL_16SEG_MAX_COL, +1)) {
+        return 1;
     }
 
     if (_cursorCol > MAX_COL) {
@@ -207,22 +201,10 @@ size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
         }
     }
 
-    // Regular character
+    // Regular character (NO MORE clear calls needed - _handleSpecialChars does them all!)
     if (_cursorRow == 0 || _cursorRow == 1) {
-        if (_isFlagSet(FLAG_PENDING_DOT)) {
-            _clearFlag(FLAG_PENDING_DOT);
-        } else if (_cursorRow == 0 && _cursorCol >= DECIMAL_TOP_MIN_COL && _cursorCol <= DECIMAL_TOP_MAX_COL) {
-            setDecimal(_cursorRow, _cursorCol, false);
-        } else if (_cursorRow == 1 && _cursorCol >= DECIMAL_BOTTOM_MIN_COL && _cursorCol <= DECIMAL_BOTTOM_MAX_COL) {
-            setDecimal(_cursorRow, _cursorCol, false);
-        }
         writeDigit7seg(_cursorRow, _cursorCol, ch);
     } else if (_cursorRow == 2) {
-        if (_isFlagSet(FLAG_PENDING_DOT)) {
-            _clearFlag(FLAG_PENDING_DOT);
-        } else if (_cursorCol >= DECIMAL_16SEG_MIN_COL && _cursorCol <= DECIMAL_16SEG_MAX_COL) {
-            setDecimal(_cursorRow, _cursorCol, false);
-        }
         writeDigit16seg(_cursorRow, _cursorCol, ch);
     }
     _cursorCol++;

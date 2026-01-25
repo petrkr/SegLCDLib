@@ -217,27 +217,14 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
                 return 0;  // Invalid digit
             }
 
-            // Decimal point - does NOT move cursor (RAM offset -1)
-            if (ch == '.') {
-                if (_cursorCol > DECIMAL_TOP_MIN_COL && _cursorCol <= DECIMAL_TOP_MAX_COL + 1) {
-                    setDecimal(_cursorRow, _cursorCol - 1, true);
-                }
-                return 1;  // Never move cursor for dot
+            // Handle decimal point and colon
+            if (_handleSpecialChars(ch, DECIMAL_TOP_MIN_COL, DECIMAL_TOP_MAX_COL, -1,
+                                    true, COLON_TOP_COL, FLAG_COLON_TOP)) {
+                return 1;
             }
 
-            // Colon - does NOT move cursor
-            if (ch == ':' && _cursorCol == COLON_TOP_COL && !_isFlagSet(FLAG_COLON_TOP)) {
-                setColon(_cursorRow, _cursorCol, true);
-                _setFlag(FLAG_COLON_TOP);
-                return 1;  // Never move cursor for colon
-            }
-
-            // Clear colon if writing non-colon at colon position
-            if (_cursorCol == COLON_TOP_COL && ch != ':' && !_isFlagSet(FLAG_COLON_TOP) &&
-                (_ramBuffer[OFFSET_TOP + _cursorCol] & DECIMAL_POINT_BIT)) {
-                _ramBuffer[OFFSET_TOP + _cursorCol] &= ~DECIMAL_POINT_BIT;
-                _writeRam(_ramBuffer[OFFSET_TOP + _cursorCol], ADDR_SMALL_SEGS + (_cursorCol * 2));
-            }
+            // Clear colon if not flagged (additional handling needed because of colon)
+            _colonClearIfNotFlagged(ch, COLON_TOP_COL, FLAG_COLON_TOP);
 
             // Regular character
             uint8_t segment_data = _mapSegments(_get_char_value(ch));
@@ -258,29 +245,14 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
                 return 0;  // Invalid digit
             }
 
-            // Decimal point - does NOT move cursor (RAM offset -1)
-            if (ch == '.') {
-                if (_cursorCol > DECIMAL_BOTTOM_MIN_COL && _cursorCol <= DECIMAL_BOTTOM_MAX_COL + 1) {
-                    setDecimal(_cursorRow, _cursorCol - 1, true);
-                }
-                return 1;  // Never move cursor for dot
+            // Handle decimal point and colon
+            if (_handleSpecialChars(ch, DECIMAL_BOTTOM_MIN_COL, DECIMAL_BOTTOM_MAX_COL, -1,
+                                    true, COLON_BOTTOM_COL, FLAG_COLON_DEFAULT)) {
+                return 1;
             }
 
-            // Colon - does NOT move cursor
-            if (ch == ':' && _cursorCol == COLON_BOTTOM_COL && !_isFlagSet(FLAG_COLON_DEFAULT)) {
-                setColon(_cursorRow, _cursorCol, true);
-                _setFlag(FLAG_COLON_DEFAULT);
-                return 1;  // Never move cursor for colon
-            }
-
-            // Clear colon if writing non-colon at colon position
-            if (_cursorCol == COLON_BOTTOM_COL && ch != ':' && !_isFlagSet(FLAG_COLON_DEFAULT)) {
-                uint8_t bufIdx = OFFSET_DEFAULT + (5 - _cursorCol);
-                if (_ramBuffer[bufIdx] & DECIMAL_POINT_BIT) {
-                    _ramBuffer[bufIdx] &= ~DECIMAL_POINT_BIT;
-                    _writeRam(_ramBuffer[bufIdx], ADDR_BIG_SEGS + ((6 - _cursorCol - 1) * 2));
-                }
-            }
+            // Clear colon if not flagged (additional handling needed because of colon)
+            _colonClearIfNotFlagged(ch, COLON_BOTTOM_COL, FLAG_COLON_DEFAULT);
 
             // Regular character
             uint8_t segment_data = _mapSegments(_get_char_value(ch));
