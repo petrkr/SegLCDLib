@@ -22,11 +22,11 @@ class SegLCD_HT1621_4SegDegree : public SegDriver_HT1621 {
         void init() override;
         void setDegree(bool state);
         void setMiddleDot(bool state);
-        void setColon(uint8_t row, uint8_t col, bool state);
-        void setDecimal(uint8_t row, uint8_t col, bool state);
         size_t write(uint8_t ch) override;
 
     private:
+        void _setColon(uint8_t row, uint8_t col, bool state) override;
+        void _setDecimal(uint8_t row, uint8_t col, bool state) override;
         static constexpr uint8_t RAM_SIZE = 4;
         static constexpr uint8_t DIGITS = 4;
         static constexpr uint8_t ADDR_SYMBOLS = 6;

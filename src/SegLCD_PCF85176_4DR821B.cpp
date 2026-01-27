@@ -19,7 +19,7 @@ void SegLCD_PCF85176_4DR821B::setSymbol(uint8_t symbol, bool state) {
     _writeRam(_ramBuffer[ADDR_SYMBOLS], ADDR_SYMBOLS);
 }
 
-void SegLCD_PCF85176_4DR821B::setColon(uint8_t row, uint8_t col, bool state) {
+void SegLCD_PCF85176_4DR821B::_setColon(uint8_t row, uint8_t col, bool state) {
     if (col == 0) {
         if (state) {
             setSymbol(MINUS_BIT, false);
@@ -32,7 +32,7 @@ void SegLCD_PCF85176_4DR821B::setColon(uint8_t row, uint8_t col, bool state) {
     }
 }
 
-void SegLCD_PCF85176_4DR821B::setDecimal(uint8_t row, uint8_t col, bool state) {
+void SegLCD_PCF85176_4DR821B::_setDecimal(uint8_t row, uint8_t col, bool state) {
 
     if (row != 0) {
         return; // invalid digit
@@ -77,12 +77,12 @@ size_t SegLCD_PCF85176_4DR821B::write(uint8_t ch) {
 
     // Handle clock/middle colon
     if (ch != ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_DISPLAYED)) {
-        setColon(_cursorRow, _cursorCol - 1, false);
+        _setColon(_cursorRow, _cursorCol - 1, false);
         _clearFlag(FLAG_COLON_DISPLAYED);
     }
 
     if (ch == ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_DISPLAYED)) {
-        setColon(_cursorRow, _cursorCol - 1, true);
+        _setColon(_cursorRow, _cursorCol - 1, true);
         _setFlag(FLAG_COLON_DISPLAYED);
         return true;
     }
@@ -94,7 +94,7 @@ size_t SegLCD_PCF85176_4DR821B::write(uint8_t ch) {
 
     // Clear decimal on current column when writing regular character
     if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
-        setDecimal(_cursorRow, _cursorCol, false);
+        _setDecimal(_cursorRow, _cursorCol, false);
     }
 
     uint8_t segment_data = _get_char_value(ch);

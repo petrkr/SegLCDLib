@@ -125,7 +125,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::clearLabels(LabelFlags labels)
     _writeRam(_ramBuffer[OFFSET_LABELS], ADDR_PRES_LABELS);
 }
 
-void SegLCD_PCF85176_6DigitSignalBatteryProgress::setColon(uint8_t row, uint8_t col, bool state) {
+void SegLCD_PCF85176_6DigitSignalBatteryProgress::_setColon(uint8_t row, uint8_t col, bool state) {
 
     uint8_t address = 0;
     uint8_t offset = 0;
@@ -161,7 +161,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setColon(uint8_t row, uint8_t 
     _writeRam(_ramBuffer[offset + (digit-1)], address);
 }
 
-void SegLCD_PCF85176_6DigitSignalBatteryProgress::setDecimal(uint8_t row, uint8_t col, bool state) {
+void SegLCD_PCF85176_6DigitSignalBatteryProgress::_setDecimal(uint8_t row, uint8_t col, bool state) {
 
     uint8_t address = 0;
     uint8_t offset = 0;

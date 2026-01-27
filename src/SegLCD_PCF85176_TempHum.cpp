@@ -80,7 +80,7 @@ void SegLCD_PCF85176_TempHumidity::clearLabels(uint8_t labels) {
     }
 }
 
-void SegLCD_PCF85176_TempHumidity::setDecimal(uint8_t row, uint8_t col, bool state) {
+void SegLCD_PCF85176_TempHumidity::_setDecimal(uint8_t row, uint8_t col, bool state) {
 
     uint8_t address = 0;
     uint8_t offset = 0;
@@ -162,7 +162,7 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
         }
 
         // Clear decimal on current column when writing regular character
-        setDecimal(TEMP_ROW, _cursorCol, false);
+        _setDecimal(TEMP_ROW, _cursorCol, false);
 
         // Regular character
         uint8_t c = _mapSegments(_get_char_value(ch));
@@ -184,7 +184,7 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
 
         // Clear decimal on current column when writing regular character (except at col 0 where minus is)
         if (_cursorCol > 0) {
-            setDecimal(HUM_ROW, _cursorCol, false);
+            _setDecimal(HUM_ROW, _cursorCol, false);
         }
 
         // Regular character

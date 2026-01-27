@@ -21,10 +21,10 @@ class SegLCD_HT1621_6SegBat : public SegDriver_HT1621 {
         SegLCD_HT1621_6SegBat(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read = -1);
         void init() override;
         void setBatteryLevel(uint8_t level);
-        void setDecimal(uint8_t row, uint8_t col, bool state);
         size_t write(uint8_t ch) override;
 
     private:
+        void _setDecimal(uint8_t row, uint8_t col, bool state) override;
         static constexpr uint8_t ADDR_BATT = 6;
         static constexpr uint8_t RAM_SIZE = 6;
         static constexpr uint8_t DIGITS = 6;

@@ -122,7 +122,7 @@ void SegLCD_VK0192_5DigSigBattProgress::setCursor(uint8_t row, uint8_t col) {
     SegDriver_VK0192::setCursor(row, col);
 }
 
-void SegLCD_VK0192_5DigSigBattProgress::setDecimal(uint8_t row, uint8_t col, bool state) {
+void SegLCD_VK0192_5DigSigBattProgress::_setDecimal(uint8_t row, uint8_t col, bool state) {
     if (row > 2) {
         return; // invalid digit
     }
@@ -202,11 +202,11 @@ size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
 
     // Clear decimal on current column when writing regular character
     if (_cursorRow == 0 && _cursorCol >= DECIMAL_TOP_MIN_COL && _cursorCol <= DECIMAL_TOP_MAX_COL) {
-        setDecimal(_cursorRow, _cursorCol, false);
+        _setDecimal(_cursorRow, _cursorCol, false);
     } else if (_cursorRow == 1 && _cursorCol >= DECIMAL_BOTTOM_MIN_COL && _cursorCol <= DECIMAL_BOTTOM_MAX_COL) {
-        setDecimal(_cursorRow, _cursorCol, false);
+        _setDecimal(_cursorRow, _cursorCol, false);
     } else if (_cursorRow == 2 && _cursorCol >= DECIMAL_16SEG_MIN_COL && _cursorCol <= DECIMAL_16SEG_MAX_COL) {
-        setDecimal(_cursorRow, _cursorCol, false);
+        _setDecimal(_cursorRow, _cursorCol, false);
     }
 
     // Regular character

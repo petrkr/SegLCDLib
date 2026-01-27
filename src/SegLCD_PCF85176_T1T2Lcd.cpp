@@ -93,7 +93,7 @@ void SegLCD_PCF85176_T1T2Lcd::clearT1T2Labels(uint8_t t1t2) {
     _writeRam(&_ramBuffer[OFFSET_CLOCK], 2, ADDR_CLOCK_T1T2_LABELS_SEGS);
 }
 
-void SegLCD_PCF85176_T1T2Lcd::setColon(uint8_t row, uint8_t col, bool state) {
+void SegLCD_PCF85176_T1T2Lcd::_setColon(uint8_t row, uint8_t col, bool state) {
     if (row != ROW_CLOCK || col != 2) {
         return;
     }
@@ -106,7 +106,7 @@ void SegLCD_PCF85176_T1T2Lcd::setColon(uint8_t row, uint8_t col, bool state) {
     _writeRam(_ramBuffer[OFFSET_SIGCLK], ADDR_SIGNAL_CLOCK);
 }
 
-void SegLCD_PCF85176_T1T2Lcd::setDecimal(uint8_t row, uint8_t col, bool state) {
+void SegLCD_PCF85176_T1T2Lcd::_setDecimal(uint8_t row, uint8_t col, bool state) {
 
     if (row < DECIMAL_MIN_ROW || row > DECIMAL_MAX_ROW) {
         return; // Invalid digit

@@ -22,12 +22,12 @@ void SegLCD_HT1621_4SegDegree::setMiddleDot(bool state) {
     _writeSymbols(1, state); // Bit 1 is middle dot
 }
 
-void SegLCD_HT1621_4SegDegree::setColon(uint8_t row, uint8_t col, bool state) {
+void SegLCD_HT1621_4SegDegree::_setColon(uint8_t row, uint8_t col, bool state) {
     setMiddleDot(state);
-    setDecimal(0, 1, state); // Decimal at 2nd digit is used as part of clock colon
+    _setDecimal(0, 1, state); // Decimal at 2nd digit is used as part of clock colon
 }
 
-void SegLCD_HT1621_4SegDegree::setDecimal(uint8_t row, uint8_t col, bool state) {
+void SegLCD_HT1621_4SegDegree::_setDecimal(uint8_t row, uint8_t col, bool state) {
     if (row != 0) {
         return; // Invalid digit
     }

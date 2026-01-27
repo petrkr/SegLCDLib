@@ -40,12 +40,12 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
         void clearLabels(uint8_t labels);
         void setDegree(bool state);
         void setMaintenance(bool state);
-        void setColon(uint8_t row, uint8_t col, bool state);
-        void setDecimal(uint8_t row, uint8_t col, bool state);
         void setCursor(uint8_t row, uint8_t col);
         size_t write(uint8_t ch) override;
 
     private:
+        void _setColon(uint8_t row, uint8_t col, bool state) override;
+        void _setDecimal(uint8_t row, uint8_t col, bool state) override;
         static constexpr uint8_t ADDR_SIGNAL = 0x0A;
         static constexpr uint8_t ADDR_BATT = 0x08;
         static constexpr uint8_t ADDR_SMALL_SEGS = 0x00;

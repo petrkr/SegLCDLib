@@ -377,7 +377,7 @@ bool SegLCDLib::_dotWrite(uint8_t ch, int8_t minCol, int8_t maxCol, int8_t ramOf
 
     int8_t dotCol = static_cast<int8_t>(_cursorCol) + ramOffset;
     if (dotCol >= minCol && dotCol <= maxCol) {
-        setDecimal(_cursorRow, dotCol, true);
+        _setDecimal(_cursorRow, dotCol, true);
         _setFlag(FLAG_PENDING_DOT);
     }
 
@@ -390,7 +390,7 @@ bool SegLCDLib::_colonWrite(uint8_t ch, uint8_t colonCol, uint8_t colonFlag) {
     }
 
     if (_cursorCol == colonCol && !_isFlagSet(colonFlag)) {
-        setColon(_cursorRow, colonCol, true);
+        _setColon(_cursorRow, colonCol, true);
         _setFlag(colonFlag);
     }
 
@@ -403,20 +403,20 @@ void SegLCDLib::_dotClearPrev(int8_t minCol, int8_t maxCol, int8_t ramOffset) {
     } else {
         int8_t prevCol = static_cast<int8_t>(_cursorCol) + ramOffset;
         if (prevCol >= minCol && prevCol <= maxCol) {
-            setDecimal(_cursorRow, prevCol, false);
+            _setDecimal(_cursorRow, prevCol, false);
         }
     }
 }
 
 void SegLCDLib::_dotClearCur(int8_t minCol, int8_t maxCol) {
     if (_cursorCol >= minCol && _cursorCol <= maxCol) {
-        setDecimal(_cursorRow, _cursorCol, false);
+        _setDecimal(_cursorRow, _cursorCol, false);
     }
 }
 
 void SegLCDLib::_colonClearIfNotFlagged(uint8_t ch, uint8_t colonCol, uint8_t colonFlag) {
     if (ch != ':' && _cursorCol == colonCol && !_isFlagSet(colonFlag)) {
-        setColon(_cursorRow, colonCol, false);
+        _setColon(_cursorRow, colonCol, false);
     }
 }
 

@@ -30,7 +30,7 @@ void SegLCD_HT1621_6SegBat::setBatteryLevel(uint8_t level) {
     _writeRamMasked(data2, (DIGITS - BATTERY_LEVEL_SEG[2] - 1) * 2, BATTERY_MASK);
 }
 
-void SegLCD_HT1621_6SegBat::setDecimal(uint8_t row, uint8_t col, bool state) {
+void SegLCD_HT1621_6SegBat::_setDecimal(uint8_t row, uint8_t col, bool state) {
 
     if (row != 0) {
         return; // invalid digit
@@ -58,7 +58,7 @@ size_t SegLCD_HT1621_6SegBat::write(uint8_t ch) {
 
     // Clear decimal on current column when writing regular character
     if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
-        setDecimal(0, _cursorCol, false);
+        _setDecimal(0, _cursorCol, false);
     }
 
     // Regular character

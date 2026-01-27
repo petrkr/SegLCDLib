@@ -13,7 +13,7 @@ void SegLCD_HT1622_10Dig16Seg::init() {
     command(CMD_NORMAL);
 }
 
-void SegLCD_HT1622_10Dig16Seg::setDecimal(uint8_t row, uint8_t col, bool state) {
+void SegLCD_HT1622_10Dig16Seg::_setDecimal(uint8_t row, uint8_t col, bool state) {
 
     if (row != 0) {
         return; // Only row 0 is valid for this display
@@ -59,7 +59,7 @@ size_t SegLCD_HT1622_10Dig16Seg::write(uint8_t ch) {
 
     // Clear decimal on current column when writing regular character
     if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
-        setDecimal(0, _cursorCol, false);
+        _setDecimal(0, _cursorCol, false);
     }
 
     writeDigit16seg(_cursorRow, _cursorCol, ch);

@@ -20,7 +20,7 @@ void SegLCD_PCF85176_OneDigit::init(bool reverse, bool v1fix) {
     if (v1fix) _setFlag(FLAG_V1FIX);
 }
 
-void SegLCD_PCF85176_OneDigit::setDecimal(uint8_t row, uint8_t col, bool state) {
+void SegLCD_PCF85176_OneDigit::_setDecimal(uint8_t row, uint8_t col, bool state) {
 
     if (row != 0) {
         return; // invalid digit
@@ -59,7 +59,7 @@ size_t SegLCD_PCF85176_OneDigit::write(uint8_t ch) {
     }
 
     // Clear decimal on current column when writing regular character
-    setDecimal(0, _cursorCol, false);
+    _setDecimal(0, _cursorCol, false);
 
     // Regular character
     uint8_t segment_data = _get_char_value(ch);

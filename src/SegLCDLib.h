@@ -410,14 +410,14 @@ class SegLCDLib : public Print {
          * Each LCD has its own implementation with HW specifics.
          * Default implementation is empty (no-op).
          */
-        virtual void setDecimal(uint8_t row, uint8_t col, bool state) { }
+        virtual void _setDecimal(uint8_t row, uint8_t col, bool state) { }
 
         /**
          * @brief Virtual method for setting colon.
          *
          * Default implementation is empty (no-op).
          */
-        virtual void setColon(uint8_t row, uint8_t col, bool state) { }
+        virtual void _setColon(uint8_t row, uint8_t col, bool state) { }
 
         /**
          * @brief Dynamic RAM buffer for display data (allocated by derived classes).

@@ -40,12 +40,12 @@ class SegLCD_PCF85176_T1T2Lcd : public SegDriver_PCF85176 {
         void setT1T2Labels(uint8_t t1t2);
         void clearLabels(uint8_t labels);
         void clearT1T2Labels(uint8_t t1t2);
-        void setColon(uint8_t row, uint8_t col, bool state);
-        void setDecimal(uint8_t row, uint8_t col, bool state);
         void setCursor(uint8_t row, uint8_t col) override;
         size_t write(uint8_t ch) override;
 
     private:
+        void _setColon(uint8_t row, uint8_t col, bool state) override;
+        void _setDecimal(uint8_t row, uint8_t col, bool state) override;
         static constexpr uint8_t ADDR_SIGNAL_CLOCK = 0;
         static constexpr uint8_t ADDR_BATT = 2;
         static constexpr uint8_t ADDR_LABELS = 4;

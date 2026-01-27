@@ -31,10 +31,11 @@ class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
         void setSignalLevel(uint8_t value);
         void setLabels(uint8_t labels);
         void clearLabels(uint8_t labels);
-        void setDecimal(uint8_t row, uint8_t col, bool state);
         void setCursor(uint8_t row, uint8_t col) override;
         size_t write(uint8_t ch) override;
+
     private:
+        void _setDecimal(uint8_t row, uint8_t col, bool state) override;
         static constexpr uint8_t ADDR_SIGNAL_BATT = 14;
         static constexpr uint8_t ADDR_TEMP_SEGS = 0;
         static constexpr uint8_t ADDR_HUM_SEGS = 8;

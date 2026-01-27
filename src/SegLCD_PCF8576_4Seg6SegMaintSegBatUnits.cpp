@@ -83,7 +83,7 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setMaintenance(bool state) {
     _writeRamMasked(state ? 0x20 : 0x00, 0x08, 0x20);
 }
 
-void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setColon(uint8_t row, uint8_t col, bool state) {
+void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_setColon(uint8_t row, uint8_t col, bool state) {
     switch (row) {
         case 0:
             if (col != 2) {
@@ -110,7 +110,7 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setColon(uint8_t row, uint8_t col,
     }
 }
 
-void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setDecimal(uint8_t row, uint8_t col, bool state) {
+void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_setDecimal(uint8_t row, uint8_t col, bool state) {
     uint8_t address = 0;
     uint8_t mask = 0xFF;
     uint8_t dp_mask = 0;
@@ -196,7 +196,7 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow0(uint8_t ch) {
 
     // Clear decimal on current column when writing regular character
     if (_cursorCol >= DECIMAL_TOP_MIN_COL && _cursorCol <= DECIMAL_TOP_MAX_COL) {
-        setDecimal(_cursorRow, _cursorCol, false);
+        _setDecimal(_cursorRow, _cursorCol, false);
     }
 
     // Regular character
@@ -220,29 +220,29 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow1(uint8_t ch) {
 
     // Handle colon at col 2
     if (ch == ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_DEFAULT_LEFT)) {
-        setColon(1, 2, true);
+        _setColon(1, 2, true);
         _setFlag(FLAG_COLON_DEFAULT_LEFT);
         return 1;
     }
 
     // Handle colon at col 4
     if (ch == ':' && _cursorCol == 4 && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
-        setColon(1, 4, true);
+        _setColon(1, 4, true);
         _setFlag(FLAG_COLON_DEFAULT_RIGHT);
         return 1;
     }
 
     // Clear colons if not flagged
     if (ch != ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_DEFAULT_LEFT)) {
-        setColon(1, 2, false);
+        _setColon(1, 2, false);
     }
     if (ch != ':' && _cursorCol == 4 && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
-        setColon(1, 4, false);
+        _setColon(1, 4, false);
     }
 
     // Clear decimal on current column when writing regular character
     if (_cursorCol >= DECIMAL_BOTTOM_MIN_COL && _cursorCol <= DECIMAL_BOTTOM_MAX_COL) {
-        setDecimal(_cursorRow, _cursorCol, false);
+        _setDecimal(_cursorRow, _cursorCol, false);
     }
 
     // Regular character
