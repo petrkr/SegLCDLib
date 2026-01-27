@@ -57,19 +57,6 @@ public:
             lcd->clearLabels((SegLCD_PCF85176_6DigitSignalBatteryProgress::LabelFlags)parseNumber(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "colon") == 0) {
-            lcd->setColon((uint8_t)parseNumber(nextToken(&args)),
-                         (uint8_t)parseNumber(nextToken(&args)),
-                         parseBool(nextToken(&args)));
-            return true;
-        }
-        if (strcmp(cmd, "d") == 0) {
-            lcd->setDecimal((uint8_t)parseNumber(nextToken(&args)),
-                           (uint8_t)parseNumber(nextToken(&args)),
-                           parseBool(nextToken(&args)));
-            return true;
-        }
-
         return false;
     }
 
@@ -80,12 +67,7 @@ public:
         printMenuLine(out, "  prog <0-150>       - progress bar");
         printMenuLine(out, "  wheel <value>      - wheel");
         printMenuLine(out, "  ls/lc <mask>       - set/clear labels");
-        printMenuLine(out, "  colon <r> <c> <0|1> - colon");
-        printMenuLine(out, "  d <r> <c> <0|1>    - decimal");
     }
-
-    bool hasDecimal() const override { return true; }
-    bool hasColon() const override { return true; }
 };
 
 #endif

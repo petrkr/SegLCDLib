@@ -260,15 +260,6 @@ static void handleActiveCommand(char *cmd, char *args) {
         activeLCD->print(args);
         return;
     }
-    if (strcmp(cmd, "d") == 0) {
-        if (!activePlugin->hasDecimal()) {
-            Serial.println("Decimal not supported.");
-            return;
-        }
-        activePlugin->handleCommand(activeLCD, cmd, args, Serial);
-        return;
-    }
-
     // LCD-specific commands
     if (activePlugin && activePlugin->handleCommand(activeLCD, cmd, args, Serial)) return;
 

@@ -54,12 +54,6 @@ public:
             lcd->clearLabels((uint16_t)parseNumber(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "d") == 0) {
-            lcd->setDecimal((uint8_t)parseNumber(nextToken(&args)),
-                           (uint8_t)parseNumber(nextToken(&args)),
-                           parseBool(nextToken(&args)));
-            return true;
-        }
 
         return false;
     }
@@ -70,11 +64,7 @@ public:
         printMenuLine(out, "  g <0-3>         - signal level");
         printMenuLine(out, "  prog <0-150>    - progress bar");
         printMenuLine(out, "  ls/lc <mask>    - set/clear labels");
-        printMenuLine(out, "  d <r> <c> <0|1> - decimal point");
     }
-
-    // Capabilities
-    bool hasDecimal() const override { return true; }
 };
 
 #endif

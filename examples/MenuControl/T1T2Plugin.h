@@ -60,16 +60,6 @@ public:
             lcd->setClockSymbol(parseBool(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "colon") == 0) {
-            lcd->setColon(0, 2, parseBool(nextToken(&args)));
-            return true;
-        }
-        if (strcmp(cmd, "d") == 0) {
-            lcd->setDecimal((uint8_t)parseNumber(nextToken(&args)),
-                           (uint8_t)parseNumber(nextToken(&args)),
-                           parseBool(nextToken(&args)));
-            return true;
-        }
 
         return false;
     }
@@ -81,13 +71,7 @@ public:
         printMenuLine(out, "  ls/lc <mask>    - set/clear labels");
         printMenuLine(out, "  t1t2s/c <mask>  - set/clear T1/T2");
         printMenuLine(out, "  clk <0|1>       - clock symbol");
-        printMenuLine(out, "  colon <0|1>     - colon symbol");
-        printMenuLine(out, "  d <r> <c> <0|1> - decimal point");
     }
-
-    // Capabilities
-    bool hasDecimal() const override { return true; }
-    bool hasColon() const override { return true; }
 };
 
 #endif

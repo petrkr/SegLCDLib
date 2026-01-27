@@ -37,30 +37,13 @@ public:
             lcd->setSymbol((uint8_t)parseNumber(nextToken(&args)), parseBool(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "colon") == 0) {
-            uint8_t pos = (uint8_t)parseNumber(nextToken(&args));
-            lcd->setColon(0, pos, parseBool(nextToken(&args)));
-            return true;
-        }
-        if (strcmp(cmd, "d") == 0) {
-            lcd->setDecimal((uint8_t)parseNumber(nextToken(&args)),
-                           (uint8_t)parseNumber(nextToken(&args)),
-                           parseBool(nextToken(&args)));
-            return true;
-        }
-
         return false;
     }
 
     void printMenu(Stream &out) override {
         printMenuLine(out, "4dr821 commands:");
         printMenuLine(out, "  sym <mask> <0|1>  - symbol");
-        printMenuLine(out, "  colon <pos> <0|1> - colon (0/1)");
-        printMenuLine(out, "  d <r> <c> <0|1>   - decimal (c=0-2)");
     }
-
-    bool hasDecimal() const override { return true; }
-    bool hasColon() const override { return true; }
 };
 
 #endif

@@ -95,8 +95,6 @@ public:
     virtual void destroy(SegLCDLib *lcd) = 0;
     virtual bool handleCommand(SegLCDLib *lcd, const char *cmd, char *args, Stream &out) = 0;
     virtual void printMenu(Stream &out) = 0;
-    virtual bool hasDecimal() const { return false; }
-    virtual bool hasColon() const { return false; }
 };
 ```
 

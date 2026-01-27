@@ -242,10 +242,6 @@ public:
     virtual bool handleCommand(SegLCDLib *lcd, const char *cmd, char *args, Stream &out) = 0;
     virtual void printMenu(Stream &out) = 0;
 
-    // Capabilities
-    virtual bool hasDecimal() const { return false; }
-    virtual bool hasColon() const { return false; }
-
     virtual ~LCDPlugin() {}
 };
 

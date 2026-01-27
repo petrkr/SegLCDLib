@@ -38,22 +38,13 @@ public:
             }
             return true;
         }
-        if (strcmp(cmd, "d") == 0) {
-            lcd->setDecimal((uint8_t)parseNumber(nextToken(&args)),
-                           (uint8_t)parseNumber(nextToken(&args)),
-                           parseBool(nextToken(&args)));
-            return true;
-        }
         return false;
     }
 
     void printMenu(Stream &out) override {
         printMenuLine(out, "16seg commands:");
         printMenuLine(out, "  w16 <r> <c> <char> - write 16-seg");
-        printMenuLine(out, "  d <r> <c> <0|1>    - decimal (c=0-8)");
     }
-
-    bool hasDecimal() const override { return true; }
 };
 
 #endif

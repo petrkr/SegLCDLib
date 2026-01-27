@@ -49,13 +49,6 @@ public:
             lcd->clear();
             return true;
         }
-        if (strcmp(cmd, "d") == 0) {
-            lcd->setDecimal((uint8_t)parseNumber(nextToken(&args)),
-                           (uint8_t)parseNumber(nextToken(&args)),
-                           parseBool(nextToken(&args)));
-            return true;
-        }
-
         return false;
     }
 
@@ -63,10 +56,7 @@ public:
         printMenuLine(out, "1dig commands:");
         printMenuLine(out, "  rev <0|1>       - reverse mode");
         printMenuLine(out, "  v1fix <0|1>     - v1 board fix");
-        printMenuLine(out, "  d <r> <c> <0|1> - decimal (c=0-4)");
     }
-
-    bool hasDecimal() const override { return true; }
 };
 
 #endif

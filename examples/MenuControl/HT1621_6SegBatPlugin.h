@@ -33,22 +33,13 @@ public:
             lcd->setBatteryLevel((uint8_t)parseNumber(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "d") == 0) {
-            lcd->setDecimal((uint8_t)parseNumber(nextToken(&args)),
-                           (uint8_t)parseNumber(nextToken(&args)),
-                           parseBool(nextToken(&args)));
-            return true;
-        }
         return false;
     }
 
     void printMenu(Stream &out) override {
         printMenuLine(out, "6bat commands:");
         printMenuLine(out, "  b <0-3>         - battery level");
-        printMenuLine(out, "  d <r> <c> <0|1> - decimal (c=2-4)");
     }
-
-    bool hasDecimal() const override { return true; }
 };
 
 #endif

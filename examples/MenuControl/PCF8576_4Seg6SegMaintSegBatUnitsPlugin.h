@@ -57,19 +57,6 @@ public:
             lcd->setMaintenance(parseBool(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "colon") == 0) {
-            lcd->setColon((uint8_t)parseNumber(nextToken(&args)),
-                         (uint8_t)parseNumber(nextToken(&args)),
-                         parseBool(nextToken(&args)));
-            return true;
-        }
-        if (strcmp(cmd, "d") == 0) {
-            lcd->setDecimal((uint8_t)parseNumber(nextToken(&args)),
-                           (uint8_t)parseNumber(nextToken(&args)),
-                           parseBool(nextToken(&args)));
-            return true;
-        }
-
         return false;
     }
 
@@ -80,12 +67,7 @@ public:
         printMenuLine(out, "  ls/lc <mask>       - set/clear labels");
         printMenuLine(out, "  deg <0|1>          - degree symbol");
         printMenuLine(out, "  maint <0|1>        - maintenance");
-        printMenuLine(out, "  colon <r> <c> <0|1> - colon");
-        printMenuLine(out, "  d <r> <c> <0|1>    - decimal");
     }
-
-    bool hasDecimal() const override { return true; }
-    bool hasColon() const override { return true; }
 };
 
 #endif

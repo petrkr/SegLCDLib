@@ -37,16 +37,7 @@ public:
             lcd->setMiddleDot(parseBool(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "colon") == 0) {
-            lcd->setColon(0, 1, parseBool(nextToken(&args)));
-            return true;
-        }
-        if (strcmp(cmd, "d") == 0) {
-            lcd->setDecimal((uint8_t)parseNumber(nextToken(&args)),
-                           (uint8_t)parseNumber(nextToken(&args)),
-                           parseBool(nextToken(&args)));
-            return true;
-        }
+
         return false;
     }
 
@@ -54,12 +45,7 @@ public:
         printMenuLine(out, "4deg commands:");
         printMenuLine(out, "  deg <0|1>       - degree symbol");
         printMenuLine(out, "  mdot <0|1>      - middle dot");
-        printMenuLine(out, "  colon <0|1>     - colon");
-        printMenuLine(out, "  d <r> <c> <0|1> - decimal (c=0-1)");
     }
-
-    bool hasDecimal() const override { return true; }
-    bool hasColon() const override { return true; }
 };
 
 #endif

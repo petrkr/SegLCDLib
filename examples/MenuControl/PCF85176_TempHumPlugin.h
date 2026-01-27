@@ -50,13 +50,6 @@ public:
             lcd->clearLabels((uint8_t)parseNumber(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "d") == 0) {
-            lcd->setDecimal((uint8_t)parseNumber(nextToken(&args)),
-                           (uint8_t)parseNumber(nextToken(&args)),
-                           parseBool(nextToken(&args)));
-            return true;
-        }
-
         return false;
     }
 
@@ -65,10 +58,7 @@ public:
         printMenuLine(out, "  b <0-4>         - battery level");
         printMenuLine(out, "  g <0-4>         - signal level");
         printMenuLine(out, "  ls/lc <mask>    - set/clear labels");
-        printMenuLine(out, "  d <r> <c> <0|1> - decimal");
     }
-
-    bool hasDecimal() const override { return true; }
 };
 
 #endif
