@@ -99,7 +99,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setProgress(uint8_t value) {
     if (value >= 140) {
         _ramBuffer[OFFSET_PROGRESS + 1] |= 0x02;
     }
-    if (value == 150) {
+    if (value >= 150) {
         _ramBuffer[OFFSET_PROGRESS + 1] |= 0x01;
     }
 
