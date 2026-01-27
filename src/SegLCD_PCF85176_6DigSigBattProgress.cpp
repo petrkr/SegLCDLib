@@ -210,12 +210,17 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setCursor(uint8_t row, uint8_t
 
 size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
 
+    // Wrap to next row if cursor exceeds current row capacity
+    if (_cursorRow == 0 && _cursorCol >= 4) {
+        _cursorRow = 1;
+        _cursorCol = 0;
+    } else if (_cursorRow == 1 && _cursorCol >= 6) {
+        return 0;  // End of display
+    }
+
     switch (_cursorRow) {
         case 0: {
             // Top row (4 digits)
-            if (_cursorCol >= 4) {
-                return 0;  // Invalid digit
-            }
 
             // Handle decimal point and colon
             if (_handleSpecialChars(ch, DECIMAL_TOP_MIN_COL, DECIMAL_TOP_MAX_COL, -1,
@@ -241,9 +246,6 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
         }
         case 1: {
             // Bottom row (6 digits)
-            if (_cursorCol >= 6) {
-                return 0;  // Invalid digit
-            }
 
             // Handle decimal point and colon
             if (_handleSpecialChars(ch, DECIMAL_BOTTOM_MIN_COL, DECIMAL_BOTTOM_MAX_COL, -1,
