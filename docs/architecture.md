@@ -11,9 +11,9 @@ SegLCDLib uses a layered architecture separating concerns between abstract inter
                    │
 ┌──────────────────▼──────────────────────────────────┐
 │  SegLCDLib Base Class (SegLCDLib : public Print)    │
-│  - Abstract interface (pure virtual methods)         │
-│  - LCD API 1.0 spec compliance                       │
-│  - Cursor positioning (row, col)                     │
+│  - Abstract interface (pure virtual methods)        │
+│  - LCD API 1.0 spec compliance                      │
+│  - Cursor positioning (row, col)                    │
 └──────────────────┬──────────────────────────────────┘
                    │
 ┌──────────────────▼──────────────────────────────────┐
