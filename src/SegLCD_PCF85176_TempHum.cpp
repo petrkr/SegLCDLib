@@ -1,4 +1,3 @@
-#include <Wire.h>
 #include <SegLCD_PCF85176_TempHum.h>
 
 

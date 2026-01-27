@@ -1,4 +1,3 @@
-#include <Wire.h>
 #include <SegLCD_PCF8576_4Seg6SegMaintSegBatUnits.h>
 
 

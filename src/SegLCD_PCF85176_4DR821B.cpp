@@ -1,4 +1,3 @@
-#include <Wire.h>
 #include <SegLCD_PCF85176_4DR821B.h>
 
 SegLCD_PCF85176_4DR821B::SegLCD_PCF85176_4DR821B(TwoWire& i2c, uint8_t address, uint8_t subaddress) :  SegDriver_PCF85176(i2c, address, subaddress) {

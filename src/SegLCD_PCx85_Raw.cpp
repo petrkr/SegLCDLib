@@ -1,4 +1,3 @@
-#include <Wire.h>
 #include <SegLCD_PCx85_Raw.h>
 
 
