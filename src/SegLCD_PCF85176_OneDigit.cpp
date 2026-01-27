@@ -30,17 +30,21 @@ void SegLCD_PCF85176_OneDigit::setDecimal(uint8_t row, uint8_t col, bool state) 
         return; // Invalid digit
     }
 
-    if (state) {
-        _ramBuffer[col] |= DECIMAL_POINT_BIT; // Set the decimal point bit
-    } else {
-        _ramBuffer[col] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
-    }
+    uint8_t bufIdx = col;
+    uint8_t addr = col * 8;
 
     if (_isFlagSet(FLAG_REVERSE)) {
-        _writeRam(_ramBuffer[col], (DIGITS - (col + 1)) * 8);
-    } else {
-        _writeRam(_ramBuffer[col], col * 8);
+        bufIdx = DIGITS - (col + 1);
+        addr = bufIdx * 8;
     }
+
+    if (state) {
+        _ramBuffer[bufIdx] |= DECIMAL_POINT_BIT; // Set the decimal point bit
+    } else {
+        _ramBuffer[bufIdx] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
+    }
+
+    _writeRam(_ramBuffer[bufIdx], addr);
 }
 
 size_t SegLCD_PCF85176_OneDigit::write(uint8_t ch) {
@@ -70,13 +74,16 @@ size_t SegLCD_PCF85176_OneDigit::write(uint8_t ch) {
         }
     }
 
-    _ramBuffer[_cursorCol] = segment_data;
+    uint8_t bufIdx = _cursorCol;
+    uint8_t addr = _cursorCol * 8;
 
     if (_isFlagSet(FLAG_REVERSE)) {
-        _writeRam(_ramBuffer[_cursorCol], (DIGITS - (_cursorCol + 1)) * 8);
-    } else {
-        _writeRam(_ramBuffer[_cursorCol], _cursorCol * 8);
+        bufIdx = DIGITS - (_cursorCol + 1);
+        addr = bufIdx * 8;
     }
+
+    _ramBuffer[bufIdx] = segment_data;
+    _writeRam(_ramBuffer[bufIdx], addr);
 
     _cursorCol++;
     return 1;
