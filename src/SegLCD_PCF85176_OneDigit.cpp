@@ -54,6 +54,9 @@ size_t SegLCD_PCF85176_OneDigit::write(uint8_t ch) {
         return 1;  // Never move cursor for dot
     }
 
+    // Clear decimal on current column when writing regular character
+    setDecimal(0, _cursorCol, false);
+
     // Regular character
     uint8_t segment_data = _get_char_value(ch);
 
@@ -66,9 +69,6 @@ size_t SegLCD_PCF85176_OneDigit::write(uint8_t ch) {
             segment_data ^= (1 << 2) | (1 << 3);
         }
     }
-
-    // Preserve existing decimal point
-    segment_data |= _ramBuffer[_cursorCol] & DECIMAL_POINT_BIT;
 
     _ramBuffer[_cursorCol] = segment_data;
 
