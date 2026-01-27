@@ -19,7 +19,7 @@ void SegLCD_HT1622_10Dig16Seg::setDecimal(uint8_t row, uint8_t col, bool state) 
         return; // Only row 0 is valid for this display
     }
 
-    if (col > 8) {
+    if (col > DECIMAL_MAX_COL) {
         return; // Only digits 0-8 have decimal points
     }
 
@@ -52,9 +52,14 @@ size_t SegLCD_HT1622_10Dig16Seg::write(uint8_t ch) {
         return 0;
     }
 
-    // Decimal point - does NOT move cursor (RAM offset -1)
-    if (_dotWrite(ch, 1, 9, -1)) {
+    // Decimal point - only set, don't clear previous
+    if (_dotWrite(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, -1)) {
         return 1;
+    }
+
+    // Clear decimal on current column when writing regular character
+    if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
+        setDecimal(0, _cursorCol, false);
     }
 
     writeDigit16seg(_cursorRow, _cursorCol, ch);
@@ -79,9 +84,6 @@ void SegLCD_HT1622_10Dig16Seg::writeDigit16seg(uint8_t row, uint8_t col, char c)
     // Write to RAM
     _writeRam(_ramBuffer[addr], addr * 2);
     _writeRam(_ramBuffer[addr+1], addr * 2 + 2);
-
-    // Clear decimal point at this position (consistent with PCF85176 behavior)
-    setDecimal(row, col, false);
 }
 
 int8_t SegLCD_HT1622_10Dig16Seg::_get16SegmentsAddress(uint8_t row, uint8_t col) {
