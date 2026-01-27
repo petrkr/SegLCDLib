@@ -180,15 +180,14 @@ size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
         return 0;
     }
 
-    // Handle decimal point (RAM offset +1: VK0192 specific mapping)
-    // Per-row decimal handling
-    if (_cursorRow == 0 && _handleSpecialChars(ch, DECIMAL_TOP_MIN_COL, DECIMAL_TOP_MAX_COL, +1)) {
+    // Handle decimal point - only set, don't clear previous
+    if (_cursorRow == 0 && _dotWrite(ch, DECIMAL_TOP_MIN_COL, DECIMAL_TOP_MAX_COL, -1)) {
         return 1;
     }
-    if (_cursorRow == 1 && _handleSpecialChars(ch, DECIMAL_BOTTOM_MIN_COL, DECIMAL_BOTTOM_MAX_COL, +1)) {
+    if (_cursorRow == 1 && _dotWrite(ch, DECIMAL_BOTTOM_MIN_COL, DECIMAL_BOTTOM_MAX_COL, -1)) {
         return 1;
     }
-    if (_cursorRow == 2 && _handleSpecialChars(ch, DECIMAL_16SEG_MIN_COL, DECIMAL_16SEG_MAX_COL, +1)) {
+    if (_cursorRow == 2 && _dotWrite(ch, DECIMAL_16SEG_MIN_COL, DECIMAL_16SEG_MAX_COL, -1)) {
         return 1;
     }
 
@@ -201,7 +200,16 @@ size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
         }
     }
 
-    // Regular character (NO MORE clear calls needed - _handleSpecialChars does them all!)
+    // Clear decimal on current column when writing regular character
+    if (_cursorRow == 0 && _cursorCol >= DECIMAL_TOP_MIN_COL && _cursorCol <= DECIMAL_TOP_MAX_COL) {
+        setDecimal(_cursorRow, _cursorCol, false);
+    } else if (_cursorRow == 1 && _cursorCol >= DECIMAL_BOTTOM_MIN_COL && _cursorCol <= DECIMAL_BOTTOM_MAX_COL) {
+        setDecimal(_cursorRow, _cursorCol, false);
+    } else if (_cursorRow == 2 && _cursorCol >= DECIMAL_16SEG_MIN_COL && _cursorCol <= DECIMAL_16SEG_MAX_COL) {
+        setDecimal(_cursorRow, _cursorCol, false);
+    }
+
+    // Regular character
     if (_cursorRow == 0 || _cursorRow == 1) {
         writeDigit7seg(_cursorRow, _cursorCol, ch);
     } else if (_cursorRow == 2) {
