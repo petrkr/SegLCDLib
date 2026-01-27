@@ -24,7 +24,7 @@ All displays use segment LCD technology controlled by I2C or 3-wire serial proto
 - **Digits:** 6 7-segment digits
 - **Features:** Signal strength (4 bars), Battery level (3 states), Progress indicator
 - **Wiring:** I2C (SDA, SCL)
-- **I2C Address:** 0x38 (default, configurable via address pins)
+- **I2C Address:** 0x38 (SA0=0) or 0x39 (SA0=1)
 - **Controller:** PCF85176
 - **Image:** ![6-digit display](images/6digsigbatprogress.webp)
 - **Example:** `examples/PCF85176/6DigSigBattProgress/`
@@ -33,7 +33,7 @@ All displays use segment LCD technology controlled by I2C or 3-wire serial proto
 **Code Example:**
 ```cpp
 #include "SegLCD_PCF85176_6DigSigBattProgress.h"
-SegLCD_PCF85176_6DigSigBattProgress lcd(0x38);
+SegLCD_PCF85176_6DigSigBattProgress lcd(Wire);
 
 lcd.init();
 lcd.setCursor(0, 0);
@@ -50,7 +50,7 @@ lcd.setBattery(2);  // Medium battery
 - **Digits:** 1 custom segment display
 - **Features:** Customizable segment layout (up to 5 segments)
 - **Wiring:** I2C (SDA, SCL)
-- **I2C Address:** 0x38 (default)
+- **I2C Address:** 0x38 (SA0=0) or 0x39 (SA0=1)
 - **Controller:** PCF85176
 - **Image:** ![One digit](images/onedigit.webp)
 - **Example:** `examples/PCF85176/OneDigit/`
@@ -64,7 +64,7 @@ lcd.setBattery(2);  // Medium battery
 - **Digits:** 6 7-segment digits
 - **Features:** Temperature and humidity symbols
 - **Wiring:** I2C (SDA, SCL)
-- **I2C Address:** 0x38 (default)
+- **I2C Address:** 0x38 (SA0=0) or 0x39 (SA0=1)
 - **Controller:** PCF85176
 - **Image:** ![Temp/Humidity](images/temphumlcd.webp)
 - **Example:** `examples/PCF85176/TempHumidity/`
@@ -73,7 +73,7 @@ lcd.setBattery(2);  // Medium battery
 **Code Example:**
 ```cpp
 #include "SegLCD_PCF85176_TempHum.h"
-SegLCD_PCF85176_TempHum lcd(0x38);
+SegLCD_PCF85176_TempHum lcd(Wire);
 
 lcd.init();
 lcd.setCursor(0, 0);  // Temperature row
@@ -90,7 +90,7 @@ lcd.print(45);        // 45%
 - **Layout:** 3-row display (Clock, T1 Label, T2 Label)
 - **Features:** Multi-zone control for temperature sensors
 - **Wiring:** I2C (SDA, SCL)
-- **I2C Address:** 0x38 (default)
+- **I2C Address:** 0x38 (SA0=0) or 0x39 (SA0=1)
 - **Controller:** PCF85176
 - **Image:** ![T1T2](images/t1t2lcd.webp)
 - **Example:** `examples/PCF85176/T1T2Lcd/`
@@ -103,7 +103,7 @@ lcd.print(45);        // 45%
 - **Segments:** Custom Tesla dashboard display
 - **Features:** Multiple symbol zones
 - **Wiring:** I2C (SDA, SCL)
-- **I2C Address:** 0x38 (default)
+- **I2C Address:** 0x38 (SA0=0) or 0x39 (SA0=1)
 - **Controller:** PCF85176
 - **Image:** ![Tesla 4DR821B](images/4DR821B.webp)
 - **Reference:** https://www.teslakatalog.cz/4DR821B.html
@@ -261,8 +261,8 @@ lcd.setBattery(1);   // Low battery
 
 | Controller | Protocol | Pins | I2C Addr | Examples | Complexity |
 |-----------|----------|------|----------|----------|------------|
-| **PCF85176** | I2C | 2 | 0x38 | 6 | Simple |
-| **PCF8576** | I2C | 2 | 0x38 | 1 | Simple |
+| **PCF85176** | I2C | 2 | 0x38/0x39 | 6 | Simple |
+| **PCF8576** | I2C | 2 | 0x38/0x39 | 1 | Simple |
 | **HT1621** | 3-wire | 3 | N/A | 3 | Medium |
 | **HT1622** | 3-wire | 3 | N/A | 2 | Medium |
 | **VK0192** | 3-wire | 3 | N/A | 1 | Advanced |

@@ -67,7 +67,7 @@ void loop() {
 }
 ```
 
-**Expected address range for PCF85176:** 0x38-0x3F
+**Expected I2C addresses for PCF85176:** 0x38 (SA0=0) or 0x39 (SA0=1)
 
 ### Document Pinout
 
@@ -94,7 +94,7 @@ Use the appropriate RAW LCD class to prototype segment mapping without writing a
 #include <Wire.h>
 #include "SegLCD_PCF85176_Raw.h"
 
-SegLCD_PCF85176_Raw lcd(0x38);  // Your I2C address
+SegLCD_PCF85176_Raw lcd(Wire);  // Default I2C address 0x38
 
 void setup() {
     Wire.begin();
@@ -221,9 +221,11 @@ class SegLCD_PCF85176_MyDisplay : public SegDriver_PCF85176 {
 public:
     /**
      * @brief Constructor
-     * @param i2cAddress I2C address (default 0x38)
+     * @param i2c I2C bus (Wire)
+     * @param address I2C address (0x38 or 0x39 based on SA0 pin)
+     * @param subaddress Protocol subaddress (A0-A2 pins, default 0)
      */
-    SegLCD_PCF85176_MyDisplay(uint8_t i2cAddress = 0x38);
+    SegLCD_PCF85176_MyDisplay(TwoWire& i2c, uint8_t address = 0x38, uint8_t subaddress = 0);
 
     /**
      * @brief Initialize display
@@ -378,8 +380,8 @@ Example for PCF85176 6-digit display:
 #include <Wire.h>
 #include "SegLCD_PCF85176_MyDisplay.h"
 
-// Create LCD instance (I2C address 0x38)
-SegLCD_PCF85176_MyDisplay lcd(0x38);
+// Create LCD instance
+SegLCD_PCF85176_MyDisplay lcd(Wire);
 
 void setup() {
     Wire.begin();
@@ -425,7 +427,7 @@ Add a section for your display under the appropriate controller:
 - **Digits:** 6 7-segment digits
 - **Features:** Battery level, Signal strength
 - **Wiring:** I2C (SDA, SCL)
-- **I2C Address:** 0x38 (default)
+- **I2C Address:** 0x38 (SA0=0) or 0x39 (SA0=1)
 - **Controller:** PCF85176
 - **Purchase:** [Link to AliExpress/store]
 - **Example:** `examples/PCF85176/MyDisplay/`
@@ -433,7 +435,7 @@ Add a section for your display under the appropriate controller:
 **Code Example:**
 \`\`\`cpp
 #include "SegLCD_PCF85176_MyDisplay.h"
-SegLCD_PCF85176_MyDisplay lcd(0x38);
+SegLCD_PCF85176_MyDisplay lcd(Wire);
 
 lcd.init();
 lcd.print(123456);
@@ -481,11 +483,11 @@ lcd.setSignal(3);
 
 2. **Scan for address:**
    - Run I2C scanner (code above)
-   - Typical address 0x38-0x3F
+   - PCF85176 uses 0x38 (SA0=0) or 0x39 (SA0=1)
 
-3. **Address pins setting:**
-   - Look for A0, A1, A2 pads on module
-   - Address = 0x38 | (A2 << 2) | (A1 << 1) | A0
+3. **SA0 pin setting:**
+   - Look for SA0 pad on module (determines I2C address)
+   - A0, A1, A2 are subaddresses in protocol, not I2C address pins
 
 ---
 

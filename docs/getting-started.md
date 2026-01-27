@@ -126,7 +126,8 @@ See [Architecture](architecture.md) for class hierarchy and full [API Reference]
 - Confirm board selection and COM port in Arduino IDE
 
 **Wrong I2C address:**
-- PCF85176 default is 0x38, but can be configured with address pins (A0-A2)
+- PCF85176 I2C address is set by SA0 pin: 0x38 (SA0=0) or 0x39 (SA0=1)
+- A0-A2 are subaddresses in the protocol, not I2C address pins
 - HT1621/HT1622/VK0192 use 3-wire serial (no I2C address)
 
 **Library not found:**

@@ -102,7 +102,8 @@ Controllers handle protocol-level communication with LCD hardware. Each driver a
 ```cpp
 class SegDriver_PCx85 : public SegLCDLib {
     // I2C address configuration
-    uint8_t _address;    // 0x38 + address pins (A0-A2)
+    uint8_t _address;      // 0x38 (SA0=0) or 0x39 (SA0=1)
+    uint8_t _subaddress;   // A0-A2 bits (protocol subaddress)
 
     // RAM buffering (minimize I2C transactions)
     uint8_t _ramBuffer[40];  // PCF85176 has 39 bytes RAM
@@ -116,7 +117,8 @@ class SegDriver_PCx85 : public SegLCDLib {
 **Features:**
 - I2C protocol (2 pins: SDA, SCL)
 - 40-byte RAM for segment data
-- Address configurable via A0-A2 pins (0x38-0x3F range)
+- I2C address set by SA0 pin (0x38 or 0x39)
+- A0-A2 are protocol subaddresses (not I2C address pins)
 - Multiplexed display support (1/3 or 1/4 duty)
 - Bias and drive mode configuration
 
@@ -223,7 +225,7 @@ private:
 class SegLCD_PCF85176_6DigSigBattProgress : public SegDriver_PCF85176 {
 public:
     // Constructor
-    SegLCD_PCF85176_6DigSigBattProgress(uint8_t i2cAddress = 0x38);
+    SegLCD_PCF85176_6DigSigBattProgress(TwoWire& i2c, uint8_t address = 0x38, uint8_t subaddress = 0);
 
     // Base methods (pure virtual implementations)
     void init();                              // Init controller + clear

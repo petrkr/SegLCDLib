@@ -15,30 +15,35 @@ Detailed specifications for each supported LCD controller. For quick selection, 
 | Property | Value |
 |----------|-------|
 | **Protocol** | I2C (2-wire) |
-| **I2C Addresses** | 0x38-0x3F (8 addresses, A0-A2 pins) |
+| **I2C Address** | 0x38 or 0x39 (SA0 pin) |
+| **Subaddresses** | A0-A2 (protocol subaddress, not I2C) |
 | **RAM** | 40 bytes (39 usable) |
 | **Max Segments** | 320 (40 bytes × 8 bits) |
 | **Power** | 3.3V or 5V (controller dependent) |
 
-### I2C Addressing
+### I2C and Subaddressing
 
-The I2C address is determined by address pins A0, A2, A2 on the controller:
+The I2C address is determined by the **SA0 pin** only:
+- SA0 = 0 → I2C address 0x38
+- SA0 = 1 → I2C address 0x39
+
+**A0, A1, A2 are NOT I2C address pins** - they are subaddresses used within the communication protocol to select one of 8 devices on the same I2C address.
 
 ```
-Base address: 0x38
-A2  A1  A0  →  Address
-0   0   0   →  0x38 (default)
-0   0   1   →  0x39
-0   1   0   →  0x3A
-0   1   1   →  0x3B
-1   0   0   →  0x3C
-1   0   1   →  0x3D
-1   1   0   →  0x3E
-1   1   1   →  0x3F
+I2C Address (SA0 pin):
+SA0 = 0  →  0x38
+SA0 = 1  →  0x39
+
+Subaddress (A0-A2, in protocol):
+A2  A1  A0  →  Subaddress
+0   0   0   →  0 (default)
+0   0   1   →  1
+...
+1   1   1   →  7
 ```
 
 **Finding Address:**
-Use the `PCF85176/RawLCD` example to scan I2C bus:
+Use I2C scanner or the `PCF85176/RawLCD` example:
 ```cpp
 #include "SegLCD_PCF85176_Raw.h"
 
@@ -46,11 +51,13 @@ void setup() {
     Wire.begin();
     Serial.begin(9600);
 
-    // Scan addresses 0x38-0x3F
-    for (uint8_t addr = 0x38; addr <= 0x3F; addr++) {
-        SegLCD_PCF85176_Raw lcd(addr);
-        lcd.init();
-        Serial.println(addr, HEX);  // Found address
+    // Try both possible I2C addresses
+    for (uint8_t addr : {0x38, 0x39}) {
+        Wire.beginTransmission(addr);
+        if (Wire.endTransmission() == 0) {
+            Serial.print("Found at: 0x");
+            Serial.println(addr, HEX);
+        }
     }
 }
 ```
@@ -59,8 +66,8 @@ void setup() {
 
 **Initialization Sequence:**
 1. I2C START condition
-2. Address byte (0x38 + address bits)
-3. Control register byte (function setting, bias, drive mode)
+2. Address byte (0x38 or 0x39 based on SA0)
+3. Subaddress + control byte (A0-A2 bits + function setting)
 4. RAM data bytes (0-39)
 5. I2C STOP condition
 
@@ -140,7 +147,7 @@ GND        →   GND
 
 void setup() {
     Wire.begin();
-    SegLCD_PCF85176_TempHum lcd(0x38);  // Default address
+    SegLCD_PCF85176_TempHum lcd(Wire);  // Default address 0x38
     lcd.init();
 }
 
