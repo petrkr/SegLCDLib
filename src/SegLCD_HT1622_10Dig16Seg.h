@@ -25,7 +25,7 @@ class SegLCD_HT1622_10Dig16Seg : public SegDriver_HT1622 {
         size_t write(uint8_t ch) override;
 
     private:
-        static constexpr uint8_t RAM_SIZE = 45;
+        static constexpr uint8_t RAM_SIZE = 23;  // 10 digits * 2 bytes + 3 bytes for decimals = ~23 bytes
         static constexpr uint8_t DIGITS = 10;
 
         // Decimal configuration: RAM offset -1 (dot belongs to previous position)

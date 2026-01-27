@@ -39,12 +39,12 @@ void SegLCD_HT1622_10Dig16Seg::setDecimal(uint8_t row, uint8_t col, bool state) 
 
     // Read current value, modify bit, write back
     if (state) {
-        _ramBuffer[address] |= (1 << bitPosition);
+        _ramBuffer[address/2] |= (1 << bitPosition);
     } else {
-        _ramBuffer[address] &= ~(1 << bitPosition);
+        _ramBuffer[address/2] &= ~(1 << bitPosition);
     }
 
-    _writeRam(_ramBuffer[address], address);
+    _writeRam(_ramBuffer[address/2], address);
 }
 
 size_t SegLCD_HT1622_10Dig16Seg::write(uint8_t ch) {
