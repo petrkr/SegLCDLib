@@ -5,18 +5,17 @@
 #include <SegDriver_PCx85.h>
 
 /**
- * @brief PCF85176 driver for 6-digit temperature/humidity LCD
+ * @file SegLCD_PCF85176_TempHum.h
+ * @brief PCF85176 driver for temperature/humidity LCD.
+ */
+
+/**
+ * @brief Temperature/humidity LCD with dual rows (PCF85176).
  *
- * Dual-row 6-digit 7-segment display with temperature and humidity indicators.
- * Row 0: Temperature (2 digits)
- * Row 1: Humidity (2 digits)
- * Features: °C and % symbols.
+ * Row 0: Temperature, Row 1: Humidity. Features C and % symbols.
+ * I2C interface (SA0 pin sets address, A0-A2 are subaddresses).
  *
- * @note Separate PCF85176 I2C controller (not integrated)
- * @note I2C protocol (SDA, SCL pins)
- * @note Default I2C address: 0x38
- *
- * @example examples/PCF85176/TempHumidity/TempHumidity.ino
+ * @see examples/PCF85176/TempHumidity/TempHumidity.ino
  */
 class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
     public:

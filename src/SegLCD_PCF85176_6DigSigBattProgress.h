@@ -5,16 +5,17 @@
 #include <SegDriver_PCx85.h>
 
 /**
- * @brief PCF85176 driver for 6-digit LCD with signal/battery/progress indicators
+ * @file SegLCD_PCF85176_6DigSigBattProgress.h
+ * @brief PCF85176 driver for 6-digit LCD with signal/battery/progress.
+ */
+
+/**
+ * @brief 6-digit LCD with signal/battery/progress indicators (PCF85176).
  *
- * 6-digit 7-segment display with signal strength, battery level, and progress bar.
- * Features: 4-bar signal indicator, 3-level battery, 5-segment progress wheel.
+ * Features: 4-bar signal, 3-level battery, progress wheel, unit labels.
+ * I2C interface (SA0 pin sets address, A0-A2 are subaddresses).
  *
- * @note Separate PCF85176 I2C controller (not integrated)
- * @note I2C protocol (SDA, SCL pins)
- * @note Default I2C address: 0x38
- *
- * @example examples/PCF85176/6DigSigBattProgress/6DigSigBattProgress.ino
+ * @see examples/PCF85176/6DigSigBattProgress/6DigSigBattProgress.ino
  */
 class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
     public:

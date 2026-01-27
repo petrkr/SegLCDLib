@@ -4,17 +4,18 @@
 #include <SegDriver_HT1622.h>
 
 /**
- * @brief HT1622 driver for 10-digit 16-segment LCD
+ * @file SegLCD_HT1622_10Dig16Seg.h
+ * @brief HT1622 driver for 10-digit 16-segment LCD.
+ */
+
+/**
+ * @brief 10-digit 16-segment alphanumeric LCD (HT1622).
  *
- * 10-digit display with 16-segment capability per digit (alphanumeric).
- * Integrated HT1622 controller with enhanced RAM.
- * Features: decimal points, 16-segment characters.
+ * Features: decimal points, full alphanumeric characters.
+ * Integrated HT1622 controller, 3-wire serial protocol.
+ * Strict timing requirements (4us pulse width).
  *
- * @note Integrated controller on LCD module (no separate IC)
- * @note 3-wire serial protocol (CLK, DATA, CS pins)
- * @note Strict timing requirements (4μs pulse width)
- *
- * @example examples/HT1622/10Digit16SegmentLCD/10Digit16SegmentLCD.ino
+ * @see examples/HT1622/10Digit16SegmentLCD/10Digit16SegmentLCD.ino
  */
 class SegLCD_HT1622_10Dig16Seg : public SegDriver_HT1622 {
     public:

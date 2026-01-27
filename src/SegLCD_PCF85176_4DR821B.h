@@ -5,16 +5,17 @@
 #include <SegDriver_PCx85.h>
 
 /**
- * @brief PCF85176 driver for Tesla 4DR821B / 4DT821B dashboard LCD
+ * @file SegLCD_PCF85176_4DR821B.h
+ * @brief PCF85176 driver for Tesla 4DR821B dashboard LCD.
+ */
+
+/**
+ * @brief Tesla 4DR821B / 4DT821B dashboard cluster LCD (PCF85176).
  *
- * Tesla dashboard cluster display with custom segment layout.
- * Multiple symbol zones for dashboard indicators and status.
+ * Custom segment layout with dashboard indicators and status symbols.
+ * I2C interface (SA0 pin sets address, A0-A2 are subaddresses).
  *
- * @note Separate PCF85176 I2C controller (not integrated)
- * @note I2C protocol (SDA, SCL pins)
- * @note Default I2C address: 0x38
- *
- * @example examples/PCF85176/4DR821B/4DR821B.ino
+ * @see examples/PCF85176/4DR821B/4DR821B.ino
  */
 class SegLCD_PCF85176_4DR821B : public SegDriver_PCF85176 {
     public:

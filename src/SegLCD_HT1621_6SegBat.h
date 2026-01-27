@@ -4,15 +4,17 @@
 #include <SegDriver_HT1621.h>
 
 /**
- * @brief HT1621 driver for 6-digit LCD with battery indicator
+ * @file SegLCD_HT1621_6SegBat.h
+ * @brief HT1621 driver for 6-digit LCD with battery indicator.
+ */
+
+/**
+ * @brief 6-digit 7-segment LCD with battery indicator (HT1621).
  *
- * 6-digit 7-segment display with integrated HT1621 controller.
  * Features: battery level indicator, decimal points.
+ * Integrated HT1621 controller, 3-wire serial protocol.
  *
- * @note Integrated controller on LCD module (no separate IC)
- * @note 3-wire serial protocol (CLK, DATA, CS pins)
- *
- * @example examples/HT1621/6DigBat/6DigBat.ino
+ * @see examples/HT1621/6DigBat/6DigBat.ino
  */
 class SegLCD_HT1621_6SegBat : public SegDriver_HT1621 {
     public:

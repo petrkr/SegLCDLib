@@ -5,17 +5,17 @@
 #include <SegDriver_PCx85.h>
 
 /**
- * @brief PCF85176 driver for T1T2 multi-zone LCD display
+ * @file SegLCD_PCF85176_T1T2Lcd.h
+ * @brief PCF85176 driver for T1T2 multi-zone LCD.
+ */
+
+/**
+ * @brief Multi-zone T1/T2 LCD with clock display (PCF85176).
  *
- * 3-row display: Row 0 (clock), Row 1 (T1 label), Row 2 (T2 label).
- * Each row can display independently.
- * Features: clock display, temperature zone labels, signal/battery indicators.
+ * 3-row display: clock, T1 zone, T2 zone. Signal/battery indicators.
+ * I2C interface (SA0 pin sets address, A0-A2 are subaddresses).
  *
- * @note Separate PCF85176 I2C controller (not integrated)
- * @note I2C protocol (SDA, SCL pins)
- * @note Default I2C address: 0x38
- *
- * @example examples/PCF85176/T1T2Lcd/T1T2Lcd.ino
+ * @see examples/PCF85176/T1T2Lcd/T1T2Lcd.ino
  */
 class SegLCD_PCF85176_T1T2Lcd : public SegDriver_PCF85176 {
     public:
