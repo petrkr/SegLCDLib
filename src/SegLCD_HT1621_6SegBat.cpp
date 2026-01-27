@@ -51,9 +51,14 @@ size_t SegLCD_HT1621_6SegBat::write(uint8_t ch) {
         return 0;
     }
 
-    // Handle decimal point (RAM offset 0: stored in same position)
-    if (_handleSpecialChars(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, 0)) {
+    // Handle decimal point - only set, don't clear previous
+    if (_dotWrite(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, -1)) {
         return 1;
+    }
+
+    // Clear decimal on current column when writing regular character
+    if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
+        setDecimal(0, _cursorCol, false);
     }
 
     // Regular character
