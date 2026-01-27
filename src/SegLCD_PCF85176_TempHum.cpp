@@ -148,8 +148,8 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
             _writeRam(_ramBuffer[OFFSET_HUM], ADDR_HUM_SEGS);
         }
 
-        // Handle decimal point
-        if (_handleSpecialChars(ch, 0, TEMP_DIGITS - 1, -1)) {
+        // Handle decimal point - only set, don't clear previous
+        if (_dotWrite(ch, 0, TEMP_DIGITS - 1, -1)) {
             return 1;
         }
 
@@ -161,10 +161,11 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
             return 1;  // Minus doesn't move cursor
         }
 
+        // Clear decimal on current column when writing regular character
+        setDecimal(TEMP_ROW, _cursorCol, false);
+
         // Regular character
         uint8_t c = _mapSegments(_get_char_value(ch));
-        // Preserve existing decimal point
-        c |= _ramBuffer[OFFSET_TEMP + _cursorCol] & DECIMAL_POINT_BIT;
         _ramBuffer[OFFSET_TEMP + _cursorCol] = c;
         _writeRam(_ramBuffer[OFFSET_TEMP + _cursorCol], ADDR_TEMP_SEGS + _cursorCol * 2);
         _cursorCol++;
@@ -176,9 +177,14 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
             return 0;  // Invalid digit
         }
 
-        // Handle decimal point
-        if (_handleSpecialChars(ch, 1, HUM_DIGITS - 1, -1)) {
+        // Handle decimal point - only set, don't clear previous
+        if (_dotWrite(ch, 1, HUM_DIGITS - 1, -1)) {
             return 1;
+        }
+
+        // Clear decimal on current column when writing regular character (except at col 0 where minus is)
+        if (_cursorCol > 0) {
+            setDecimal(HUM_ROW, _cursorCol, false);
         }
 
         // Regular character
@@ -188,8 +194,6 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
             _ramBuffer[OFFSET_HUM + _cursorCol] &= MINUS_SIGN_BIT;
             _ramBuffer[OFFSET_HUM + _cursorCol] |= (c & ~MINUS_SIGN_BIT);
         } else {
-            // Preserve existing decimal point
-            c |= _ramBuffer[OFFSET_HUM + _cursorCol] & DECIMAL_POINT_BIT;
             _ramBuffer[OFFSET_HUM + _cursorCol] = c;
         }
         _writeRam(_ramBuffer[OFFSET_HUM + _cursorCol], ADDR_HUM_SEGS + _cursorCol * 2);
