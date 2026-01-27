@@ -62,7 +62,6 @@ void SegDriver_HT1621::_setMode(ModeDrive drive, ModeBias bias) {
             break;
         default:
             return; // Invalid drive mode, do nothing
-            break;
     }
 
     command(data);
