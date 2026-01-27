@@ -15,3 +15,6 @@
 
 # Doxygen output
 docs/html/
+
+# Doxygen theme (downloaded for local builds)
+doxygen-awesome-css/

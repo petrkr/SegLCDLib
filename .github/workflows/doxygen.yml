@@ -20,6 +20,10 @@ jobs:
             - name: Install Doxygen
               run: sudo apt-get update && sudo apt-get install doxygen -y
 
+            - name: Download doxygen-awesome-css
+              run: |
+                git clone --depth 1 https://github.com/jothepro/doxygen-awesome-css.git doxygen-awesome-css
+
             - name: Setup Pages
               id: pages
               uses: actions/configure-pages@v5
