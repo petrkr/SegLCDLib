@@ -181,24 +181,27 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow0(uint8_t ch) {
         return 0;  // Invalid digit
     }
 
-    // Handle decimal point and colon
-    if (_handleSpecialChars(ch, DECIMAL_TOP_MIN_COL, DECIMAL_TOP_MAX_COL, -1,
-                            true, COLON_TOP_COL, FLAG_COLON_TOP)) {
+    // Handle decimal point - only set, don't clear previous
+    if (_dotWrite(ch, DECIMAL_TOP_MIN_COL, DECIMAL_TOP_MAX_COL, -1)) {
+        return 1;
+    }
+
+    // Handle colon
+    if (_colonWrite(ch, COLON_TOP_COL, FLAG_COLON_TOP)) {
         return 1;
     }
 
     // Clear colon if not flagged (additional handling needed because of colon)
     _colonClearIfNotFlagged(ch, COLON_TOP_COL, FLAG_COLON_TOP);
 
+    // Clear decimal on current column when writing regular character
+    if (_cursorCol >= DECIMAL_TOP_MIN_COL && _cursorCol <= DECIMAL_TOP_MAX_COL) {
+        setDecimal(_cursorRow, _cursorCol, false);
+    }
+
     // Regular character
     uint8_t segment_data = _mapSegmentsTop(_get_char_value(ch));
     uint8_t addr = ADDR_SMALL_SEGS + (_cursorCol * 2);
-
-    // Preserve colon bit after colon position
-    if (_cursorCol == 3 && _isFlagSet(FLAG_COLON_TOP)) {
-        uint8_t current = _ramBuffer[addr >> 1] & DECIMAL_TOP_POINT_BIT;
-        segment_data = current | (segment_data & ~DECIMAL_TOP_POINT_BIT);
-    }
 
     _writeRamMasked(segment_data, addr, addr == 0x06 ? 0xF7 : 0xFF);
     _cursorCol++;
@@ -210,35 +213,41 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow1(uint8_t ch) {
         return 0;  // Invalid digit
     }
 
-    // Handle decimal point
-    if (_handleSpecialChars(ch, DECIMAL_BOTTOM_MIN_COL, DECIMAL_BOTTOM_MAX_COL, -1)) {
+    // Handle decimal point - only set, don't clear previous
+    if (_dotWrite(ch, DECIMAL_BOTTOM_MIN_COL, DECIMAL_BOTTOM_MAX_COL, -1)) {
         return 1;
     }
 
     // Handle colon at col 2
-    if (_colonWrite(ch, COLON_BOTTOM_LEFT_COL, FLAG_COLON_DEFAULT_LEFT)) {
+    if (ch == ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_DEFAULT_LEFT)) {
+        setColon(1, 2, true);
+        _setFlag(FLAG_COLON_DEFAULT_LEFT);
         return 1;
     }
 
     // Handle colon at col 4
-    if (_colonWrite(ch, COLON_BOTTOM_RIGHT_COL, FLAG_COLON_DEFAULT_RIGHT)) {
+    if (ch == ':' && _cursorCol == 4 && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
+        setColon(1, 4, true);
+        _setFlag(FLAG_COLON_DEFAULT_RIGHT);
         return 1;
     }
 
     // Clear colons if not flagged
-    _colonClearIfNotFlagged(ch, COLON_BOTTOM_LEFT_COL, FLAG_COLON_DEFAULT_LEFT);
-    _colonClearIfNotFlagged(ch, COLON_BOTTOM_RIGHT_COL, FLAG_COLON_DEFAULT_RIGHT);
+    if (ch != ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_DEFAULT_LEFT)) {
+        setColon(1, 2, false);
+    }
+    if (ch != ':' && _cursorCol == 4 && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
+        setColon(1, 4, false);
+    }
+
+    // Clear decimal on current column when writing regular character
+    if (_cursorCol >= DECIMAL_BOTTOM_MIN_COL && _cursorCol <= DECIMAL_BOTTOM_MAX_COL) {
+        setDecimal(_cursorRow, _cursorCol, false);
+    }
 
     // Regular character
     uint8_t segment_data = _mapSegments(_get_char_value(ch));
-
-    // Preserve colon bit after right colon position
-    if (_cursorCol == 5 && _isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
-        _buffer_default[_cursorCol] &= DECIMAL_BOTTOM_POINT_BIT;
-        _buffer_default[_cursorCol] |= (segment_data & ~DECIMAL_BOTTOM_POINT_BIT);
-    } else {
-        _buffer_default[_cursorCol] = segment_data;
-    }
+    _buffer_default[_cursorCol] = segment_data;
 
     uint8_t col = 5 - _cursorCol;
     uint8_t addr = ADDR_BIG_SEGS + (col * 2);
