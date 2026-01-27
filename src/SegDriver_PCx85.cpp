@@ -12,7 +12,7 @@ void SegDriver_PCx85::init() {
 }
 
 void SegDriver_PCx85::bankSelect(uint8_t input, uint8_t output) {
-    uint8_t data;
+    uint8_t data = 0;
 
     data |= CMD_BANK_SELECT;
     data |= input << 1;
@@ -25,7 +25,7 @@ void SegDriver_PCx85::bankSelect(uint8_t input, uint8_t output) {
 }
 
 void SegDriver_PCx85::blink(BlinkFrequency frequency, BlinkMode mode) {
-    uint8_t data;
+    uint8_t data = 0;
 
     data |= CMD_BLINK;
     data |= mode << 2;
@@ -91,7 +91,7 @@ void SegDriver_PCx85::_writeRam(uint8_t *data, size_t length, uint8_t address) {
 }
 
 void SegDriver_PCx85::_deviceSelect() {
-    uint8_t data;
+    uint8_t data = 0;
 
     data |= CMD_DEVICE_SELECT;
     data |= _subaddress;
@@ -106,7 +106,7 @@ void SegDriver_PCx85::_setMode(ModeStatus status, ModeDrive drive, ModeBias bias
     _drive = drive;
     _bias = bias;
 
-    uint8_t data;
+    uint8_t data = 0;
 
     data |= CMD_MODE;
     data |= status << 3;
