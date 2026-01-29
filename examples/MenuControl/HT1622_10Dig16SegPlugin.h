@@ -15,6 +15,7 @@ public:
         }
 
         auto *lcd = new SegLCD_HT1622_10Dig16Seg(cfg.cs, cfg.data, cfg.wr);
+        initPowerPin(cfg.power);
         lcd->init();
         lcd->setAutoFlush(true);
         lcd->clear();

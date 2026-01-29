@@ -19,6 +19,7 @@ public:
             return nullptr;
         }
         auto *lcd = new SegLCD_PCF8576_4Seg6SegMaintSegBatUnits(Wire, cfg.i2cAddr, cfg.subAddr);
+        initPowerPin(cfg.power);
         lcd->init();
         lcd->setAutoFlush(true);
         lcd->clear();

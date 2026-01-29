@@ -9,6 +9,7 @@ class PCF85176_OneDigitPlugin : public LCDPlugin {
 private:
     bool _reverse = false;
     bool _v1fix = false;
+    int8_t _power = -1;
 
 public:
     const char *name() const override { return "1dig"; }
@@ -23,6 +24,8 @@ public:
             return nullptr;
         }
         auto *lcd = new SegLCD_PCF85176_OneDigit(Wire, cfg.i2cAddr, cfg.subAddr);
+        _power = cfg.power;
+        initPowerPin(_power);
         lcd->init(_reverse, _v1fix);
         lcd->setAutoFlush(true);
         lcd->clear();
@@ -39,12 +42,14 @@ public:
 
         if (strcmp(cmd, "rev") == 0) {
             _reverse = parseBool(nextToken(&args));
+            initPowerPin(_power);
             lcd->init(_reverse, _v1fix);
             lcd->clear();
             return true;
         }
         if (strcmp(cmd, "v1fix") == 0) {
             _v1fix = parseBool(nextToken(&args));
+            initPowerPin(_power);
             lcd->init(_reverse, _v1fix);
             lcd->clear();
             return true;

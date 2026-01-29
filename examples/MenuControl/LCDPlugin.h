@@ -15,6 +15,7 @@ struct DisplayConfig {
     int8_t sda = -1, scl = -1;
     int8_t cs = -1, wr = -1, data = -1;
     int8_t backlight = -1;
+    int8_t power = -1;
     SegLCDLib::BacklightMode backlightMode = SegLCDLib::BACKLIGHT_DIGITAL;
     uint8_t i2cAddr = 0x38, subAddr = 0x00;
 };
@@ -127,6 +128,12 @@ static inline void printMenuBottom(Stream &out) {
     for (size_t i = 0; i < MENU_INNER_WIDTH + 2; ++i) out.print("─");
     out.print("┘");
     out.println(c_reset);
+}
+
+static inline void initPowerPin(int8_t pin) {
+    if (pin < 0) return;
+    pinMode(pin, OUTPUT);
+    digitalWrite(pin, HIGH);
 }
 
 static bool parseBool(const char *s) {

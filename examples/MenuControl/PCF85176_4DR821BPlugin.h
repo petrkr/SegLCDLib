@@ -19,6 +19,7 @@ public:
             return nullptr;
         }
         auto *lcd = new SegLCD_PCF85176_4DR821B(Wire, cfg.i2cAddr, cfg.subAddr);
+        initPowerPin(cfg.power);
         lcd->init();
         lcd->setAutoFlush(true);
         lcd->clear();

@@ -21,6 +21,7 @@ public:
         }
 
         auto *lcd = new SegLCD_VK0192_5DigSigBattProgress(cfg.cs, cfg.data, cfg.wr);
+        initPowerPin(cfg.power);
         lcd->init();
         lcd->setAutoFlush(true);
         lcd->clear();

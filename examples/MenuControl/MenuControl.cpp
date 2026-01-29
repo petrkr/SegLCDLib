@@ -381,6 +381,10 @@ static void printConfigSummary(Stream &out) {
             out.print("Backlight mode: ");
             out.println(backlightModeName(config.backlightMode));
         }
+        if (config.power >= 0) {
+            out.print("Power pin: ");
+            out.println(config.power);
+        }
     }
 }
 
@@ -483,6 +487,11 @@ static void configurePins() {
         Serial.println(backlightModeName(config.backlightMode));
     }
 
+    Serial.print("Power pin (-1=none) [-1]: ");
+    String powerStr = readLine();
+    config.power = powerStr.length() ? (int8_t)parseNumber(powerStr.c_str()) : -1;
+    Serial.println(config.power);
+
 }
 
 static void handleSettingsCommand(char *cmd, char *args) {
@@ -527,7 +536,7 @@ static void handleSettingsCommand(char *cmd, char *args) {
         char *value = nextToken(&args);
         if (!param || !value) {
             Serial.println("Usage: set <param> <value>");
-            Serial.println("Params: sda, scl, addr, cs, wr, data, backlight, blmode");
+            Serial.println("Params: sda, scl, addr, cs, wr, data, backlight, blmode, power");
             return;
         }
 
@@ -551,6 +560,9 @@ static void handleSettingsCommand(char *cmd, char *args) {
             Serial.println("OK");
         } else if (strcmp(param, "backlight") == 0) {
             config.backlight = (int8_t)parseNumber(value);
+            Serial.println("OK");
+        } else if (strcmp(param, "power") == 0) {
+            config.power = (int8_t)parseNumber(value);
             Serial.println("OK");
         } else if (strcmp(param, "blmode") == 0) {
             if (strcmp(value, "pwm") == 0) {
@@ -590,6 +602,8 @@ static void handleSettingsCommand(char *cmd, char *args) {
             Serial.println(config.data);
         } else if (strcmp(param, "backlight") == 0) {
             Serial.println(config.backlight);
+        } else if (strcmp(param, "power") == 0) {
+            Serial.println(config.power);
         } else if (strcmp(param, "blmode") == 0) {
             Serial.println(backlightModeName(config.backlightMode));
         } else {

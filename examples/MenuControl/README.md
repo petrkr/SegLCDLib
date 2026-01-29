@@ -108,6 +108,7 @@ struct DisplayConfig {
     int8_t sda = -1, scl = -1; // I2C pins
     int8_t cs = -1, wr = -1, data = -1; // 3-WIRE pins
     int8_t backlight = -1;
+    int8_t power = -1;
     uint8_t i2cAddr = 0x38, subAddr = 0x00;
 };
 ```
