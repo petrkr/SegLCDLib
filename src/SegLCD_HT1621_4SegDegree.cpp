@@ -63,9 +63,18 @@ size_t SegLCD_HT1621_4SegDegree::write(uint8_t ch) {
     }
 
     // Handle decimal point and colon (note: cursor at col 2 when writing ':')
-    if (_handleSpecialChars(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, -1,
-                            true, COLON_COL + 1, FLAG_COLON_DISPLAYED)) {
+    if (_dotWrite(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, -1)) {
         return 1;
+    }
+    if (_colonWrite(ch, COLON_COL + 1, FLAG_COLON_DISPLAYED)) {
+        return 1;
+    }
+
+    // Clear pending dot flag or clear decimal on current column
+    if (_isFlagSet(FLAG_PENDING_DOT)) {
+        _clearFlag(FLAG_PENDING_DOT);
+    } else if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
+        _setDecimal(0, _cursorCol, false);
     }
 
     uint8_t segment_data = _mapSegments(_get_char_value(ch));
