@@ -14,6 +14,16 @@ void SegLCD_HT1621_4SegDegree::init() {
     command(CMD_NORMAL);
 }
 
+void SegLCD_HT1621_4SegDegree::clear() {
+    SegDriver_HT1621::clear();
+    _clearAllFlags();
+}
+
+void SegLCD_HT1621_4SegDegree::setCursor(uint8_t row, uint8_t col) {
+    _clearFlag(FLAG_COLON_SESSION);
+    SegLCDLib::setCursor(row, col);
+}
+
 void SegLCD_HT1621_4SegDegree::setDegree(bool state) {
     _writeSymbols(0, state); // Bit 0 is degree
 }
@@ -23,8 +33,19 @@ void SegLCD_HT1621_4SegDegree::setMiddleDot(bool state) {
 }
 
 void SegLCD_HT1621_4SegDegree::_setColon(uint8_t row, uint8_t col, bool state) {
-    setMiddleDot(state);
-    _setDecimal(0, 1, state); // Decimal at 2nd digit is used as part of clock colon
+    (void)row;
+    (void)col;
+
+    // Colon = middle dot + decimal at 2nd digit
+    if (state) {
+        _ramBuffer[3] |= (1 << 1); // middle dot
+        _ramBuffer[3] |= (1 << 2); // dot at 2nd digit
+    } else {
+        _ramBuffer[3] &= ~(1 << 1);
+        _ramBuffer[3] &= ~(1 << 2);
+    }
+
+    _writeRam(_ramBuffer[3], ADDR_SYMBOLS);
 }
 
 void SegLCD_HT1621_4SegDegree::_setDecimal(uint8_t row, uint8_t col, bool state) {
@@ -67,14 +88,24 @@ size_t SegLCD_HT1621_4SegDegree::write(uint8_t ch) {
         return 1;
     }
     if (_colonWrite(ch, COLON_COL + 1, FLAG_COLON_DISPLAYED)) {
+        _setFlag(FLAG_COLON_SESSION);
         return 1;
+    }
+
+    // Clear colon when writing digit after colon without ':' in this session
+    if (ch != ':' && _cursorCol == COLON_COL + 1 &&
+        _isFlagSet(FLAG_COLON_DISPLAYED) && !_isFlagSet(FLAG_COLON_SESSION)) {
+        _setColon(0, COLON_COL, false);
+        _clearFlag(FLAG_COLON_DISPLAYED);
     }
 
     // Clear pending dot flag or clear decimal on current column
     if (_isFlagSet(FLAG_PENDING_DOT)) {
         _clearFlag(FLAG_PENDING_DOT);
     } else if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
-        _setDecimal(0, _cursorCol, false);
+        if (!(_cursorCol == 1 && _isFlagSet(FLAG_COLON_DISPLAYED))) {
+            _setDecimal(0, _cursorCol, false);
+        }
     }
 
     uint8_t segment_data = _mapSegments(_get_char_value(ch));
@@ -86,10 +117,6 @@ size_t SegLCD_HT1621_4SegDegree::write(uint8_t ch) {
         _ramBuffer[i] &= ~(1 << (common + 4));      // Clear bits for higher segment
     }
 
-    // do not clear degree and middle dot at segment 6
-    if (_cursorCol != 2 && _cursorCol != 3) {
-        _ramBuffer[3] &= ~(1 << common);
-    }
     // Clear segment 7
     _ramBuffer[3] &= ~(1 << (common + 4));      // Clear bits for higher segment
 

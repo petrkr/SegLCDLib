@@ -20,6 +20,8 @@ class SegLCD_HT1621_4SegDegree : public SegDriver_HT1621 {
     public:
         SegLCD_HT1621_4SegDegree(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read = -1);
         void init() override;
+        void clear() override;
+        void setCursor(uint8_t row, uint8_t col) override;
         void setDegree(bool state);
         void setMiddleDot(bool state);
         size_t write(uint8_t ch) override;
@@ -42,6 +44,7 @@ class SegLCD_HT1621_4SegDegree : public SegDriver_HT1621 {
 
         // Flag for colon state
         static constexpr uint8_t FLAG_COLON_DISPLAYED = 0x01;
+        static constexpr uint8_t FLAG_COLON_SESSION = 0x02;
 
         uint8_t _mapSegments(uint8_t val);
         void _writeSymbols(uint8_t bitnum, bool state);
