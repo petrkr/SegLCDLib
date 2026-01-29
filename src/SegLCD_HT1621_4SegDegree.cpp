@@ -21,6 +21,7 @@ void SegLCD_HT1621_4SegDegree::clear() {
 
 void SegLCD_HT1621_4SegDegree::setCursor(uint8_t row, uint8_t col) {
     _clearFlag(FLAG_COLON_SESSION);
+    _clearFlag(FLAG_PENDING_DOT);
     SegLCDLib::setCursor(row, col);
 }
 
@@ -84,7 +85,11 @@ size_t SegLCD_HT1621_4SegDegree::write(uint8_t ch) {
     }
 
     // Handle decimal point and colon (note: cursor at col 2 when writing ':')
-    if (_dotWrite(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, -1)) {
+    if (ch == '.') {
+        int8_t dotCol = static_cast<int8_t>(_cursorCol) - 1;
+        if (dotCol >= DECIMAL_MIN_COL && dotCol <= DECIMAL_MAX_COL) {
+            _setDecimal(0, dotCol, true);
+        }
         return 1;
     }
     if (_colonWrite(ch, COLON_COL + 1, FLAG_COLON_DISPLAYED)) {
@@ -99,10 +104,8 @@ size_t SegLCD_HT1621_4SegDegree::write(uint8_t ch) {
         _clearFlag(FLAG_COLON_DISPLAYED);
     }
 
-    // Clear pending dot flag or clear decimal on current column
-    if (_isFlagSet(FLAG_PENDING_DOT)) {
-        _clearFlag(FLAG_PENDING_DOT);
-    } else if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
+    // Clear decimal on current column unless it's part of a colon
+    if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
         if (!(_cursorCol == 1 && _isFlagSet(FLAG_COLON_DISPLAYED))) {
             _setDecimal(0, _cursorCol, false);
         }
