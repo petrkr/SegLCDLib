@@ -20,7 +20,7 @@
 class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
     public:
         typedef enum {
-            LABEL_C = 0x01,
+            LABEL_DEGREE_C = 0x01,
             LABEL_PROC = 0x02,
         } LabelFlags;
 
@@ -41,12 +41,11 @@ class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
         static constexpr uint8_t ADDR_HUM_SEGS = 8;
 
         static constexpr uint8_t RAM_SIZE = 8;
-        static constexpr uint8_t OFFSET_SIGBATT = 0;
-        static constexpr uint8_t OFFSET_TEMP = 1;
-        static constexpr uint8_t OFFSET_HUM = 5;
+        static constexpr uint8_t OFFSET_SIGBATT = 7;
+        static constexpr uint8_t OFFSET_TEMP = 0;
+        static constexpr uint8_t OFFSET_HUM = 4;
 
         static constexpr uint8_t FLAG_MINUS_DISPLAYED = 0x01;
-        static constexpr uint8_t FLAG_PENDING_DOT = 0x02;
 
         // Display-specific constants
         static constexpr uint8_t TEMP_DIGITS = 4;
@@ -54,16 +53,17 @@ class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
         static constexpr uint8_t TEMP_ROW = 0;
         static constexpr uint8_t HUM_ROW = 1;
 
-        // Decimal configuration: RAM offset -1 (dot belongs to previous position)
-        static constexpr uint8_t DECIMAL_TOP_MIN_COL = 1;
-        static constexpr uint8_t DECIMAL_TOP_MAX_COL = 3;
-        static constexpr uint8_t DECIMAL_BOTTOM_MIN_COL = 2;
-        static constexpr uint8_t DECIMAL_BOTTOM_MAX_COL = 2;  // Only col 2 on bottom row
-        static constexpr int8_t DECIMAL_RAM_OFFSET = -1;  // -1: dot belongs to previous position
-        // Legacy aliases
-        static constexpr uint8_t TEMP_DECIMAL_MIN_COL = DECIMAL_TOP_MIN_COL;
-        static constexpr uint8_t TEMP_DECIMAL_MAX_COL = DECIMAL_TOP_MAX_COL;
-        static constexpr uint8_t HUM_DECIMAL_COL = DECIMAL_BOTTOM_MIN_COL;
+        // Label column positions (last digit in each row)
+        static constexpr uint8_t LABEL_TEMP_COL = TEMP_DIGITS - 1;  // Col 3 for C
+        static constexpr uint8_t LABEL_HUM_COL = HUM_DIGITS - 1;    // Col 2 for %
+
+        // Decimal configuration for write() flow (dot belongs to previous position).
+        // Values are logical cursor ranges passed to _dotWrite().
+        static constexpr uint8_t DECIMAL_TOP_MIN_COL = 0;
+        static constexpr uint8_t DECIMAL_TOP_MAX_COL = TEMP_DIGITS - 1;
+        static constexpr uint8_t DECIMAL_BOTTOM_MIN_COL = 1;
+        static constexpr uint8_t DECIMAL_BOTTOM_MAX_COL = HUM_DIGITS - 1;
+        static constexpr int8_t DECIMAL_COL_OFFSET = -1;  // -1: dot belongs to previous position
 
         // TempHum specific bit positions
         static constexpr uint8_t DECIMAL_POINT_BIT = 0x08;

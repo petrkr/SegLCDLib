@@ -55,27 +55,27 @@ void SegLCD_PCF85176_TempHumidity::setSignalLevel(uint8_t level) {
 
 void SegLCD_PCF85176_TempHumidity::setLabels(uint8_t labels) {
 
-    if (labels & LABEL_C) {
-        _ramBuffer[OFFSET_TEMP + 3] |= LABEL_BIT; // Set the C label
-        _writeRam(_ramBuffer[OFFSET_TEMP + 3], ADDR_TEMP_SEGS + TEMP_LABEL_OFFSET); // C label is at position 4 (3 in zero-based index)
+    if (labels & LABEL_DEGREE_C) {
+        _ramBuffer[OFFSET_TEMP + LABEL_TEMP_COL] |= LABEL_BIT; // Set the C label
+        _writeRam(_ramBuffer[OFFSET_TEMP + LABEL_TEMP_COL], ADDR_TEMP_SEGS + TEMP_LABEL_OFFSET);
     }
 
     if (labels & LABEL_PROC) {
-        _ramBuffer[OFFSET_HUM + 2] |= LABEL_BIT; // Set the proc symbol
-        _writeRam(_ramBuffer[OFFSET_HUM + 2], ADDR_HUM_SEGS + HUM_LABEL_OFFSET); // proc symbol is at position 3 (2 in zero-based index)
+        _ramBuffer[OFFSET_HUM + LABEL_HUM_COL] |= LABEL_BIT; // Set the proc symbol
+        _writeRam(_ramBuffer[OFFSET_HUM + LABEL_HUM_COL], ADDR_HUM_SEGS + HUM_LABEL_OFFSET);
     }
 }
 
 void SegLCD_PCF85176_TempHumidity::clearLabels(uint8_t labels) {
 
-    if (labels & LABEL_C) {
-        _ramBuffer[OFFSET_TEMP + 3] &= ~LABEL_BIT; // Clear the C label
-        _writeRam(_ramBuffer[OFFSET_TEMP + 3], ADDR_TEMP_SEGS + TEMP_LABEL_OFFSET); // C label is at position 4 (3 in zero-based index)
+    if (labels & LABEL_DEGREE_C) {
+        _ramBuffer[OFFSET_TEMP + LABEL_TEMP_COL] &= ~LABEL_BIT; // Clear the C label
+        _writeRam(_ramBuffer[OFFSET_TEMP + LABEL_TEMP_COL], ADDR_TEMP_SEGS + TEMP_LABEL_OFFSET);
     }
 
     if (labels & LABEL_PROC) {
-        _ramBuffer[OFFSET_HUM + 2] &= ~LABEL_BIT; // Clear the proc symbol
-        _writeRam(_ramBuffer[OFFSET_HUM + 2], ADDR_HUM_SEGS + HUM_LABEL_OFFSET); // proc symbol is at position 3 (2 in zero-based index)
+        _ramBuffer[OFFSET_HUM + LABEL_HUM_COL] &= ~LABEL_BIT; // Clear the proc symbol
+        _writeRam(_ramBuffer[OFFSET_HUM + LABEL_HUM_COL], ADDR_HUM_SEGS + HUM_LABEL_OFFSET);
     }
 }
 
@@ -148,7 +148,7 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
         }
 
         // Handle decimal point - only set, don't clear previous
-        if (_dotWrite(ch, 0, TEMP_DIGITS - 1, -1)) {
+        if (_dotWrite(ch, DECIMAL_TOP_MIN_COL, DECIMAL_TOP_MAX_COL, DECIMAL_COL_OFFSET)) {
             return 1;
         }
 
@@ -161,11 +161,18 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
         }
 
         // Clear decimal on current column when writing regular character
-        _setDecimal(TEMP_ROW, _cursorCol, false);
+        if (_cursorCol != LABEL_TEMP_COL) {  // Label column has C label, not decimal
+            _setDecimal(TEMP_ROW, _cursorCol, false);
+        }
 
         // Regular character
         uint8_t c = _mapSegments(_get_char_value(ch));
-        _ramBuffer[OFFSET_TEMP + _cursorCol] = c;
+        if (_cursorCol == LABEL_TEMP_COL) {
+            // Preserve C label bit - keep bit 3, write other bits from c
+            _ramBuffer[OFFSET_TEMP + _cursorCol] = (_ramBuffer[OFFSET_TEMP + _cursorCol] & 0x08) | (c & ~0x08);
+        } else {
+            _ramBuffer[OFFSET_TEMP + _cursorCol] = c;
+        }
         _writeRam(_ramBuffer[OFFSET_TEMP + _cursorCol], ADDR_TEMP_SEGS + _cursorCol * 2);
         _cursorCol++;
         return 1;
@@ -177,12 +184,12 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
         }
 
         // Handle decimal point - only set, don't clear previous
-        if (_dotWrite(ch, 1, HUM_DIGITS - 1, -1)) {
+        if (_dotWrite(ch, DECIMAL_BOTTOM_MIN_COL, DECIMAL_BOTTOM_MAX_COL, DECIMAL_COL_OFFSET)) {
             return 1;
         }
 
-        // Clear decimal on current column when writing regular character (except at col 0 where minus is)
-        if (_cursorCol > 0) {
+        // Clear decimal on current column when writing regular character (except at col 0 where minus is, and label column where % is)
+        if (_cursorCol >= DECIMAL_BOTTOM_MIN_COL && _cursorCol != LABEL_HUM_COL) {
             _setDecimal(HUM_ROW, _cursorCol, false);
         }
 
@@ -190,8 +197,10 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
         uint8_t c = _mapSegments(_get_char_value(ch));
         if (_cursorCol == 0) {
             // Preserve minus sign bit at position 0
-            _ramBuffer[OFFSET_HUM + _cursorCol] &= MINUS_SIGN_BIT;
-            _ramBuffer[OFFSET_HUM + _cursorCol] |= (c & ~MINUS_SIGN_BIT);
+            _ramBuffer[OFFSET_HUM + _cursorCol] = (_ramBuffer[OFFSET_HUM + _cursorCol] & MINUS_SIGN_BIT) | (c & ~MINUS_SIGN_BIT);
+        } else if (_cursorCol == LABEL_HUM_COL) {
+            // Preserve % label bit - keep bit 3, write other bits from c
+            _ramBuffer[OFFSET_HUM + _cursorCol] = (_ramBuffer[OFFSET_HUM + _cursorCol] & 0x08) | (c & ~0x08);
         } else {
             _ramBuffer[OFFSET_HUM + _cursorCol] = c;
         }

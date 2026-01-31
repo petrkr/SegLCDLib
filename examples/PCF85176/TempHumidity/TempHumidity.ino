@@ -52,10 +52,10 @@ void setup() {
   lcd.print("98.76");
   lcd.setCursor(1, 0);
   lcd.print("54.3");
-  lcd.setLabels(SegLCD_PCF85176_TempHumidity::LABEL_C | SegLCD_PCF85176_TempHumidity::LABEL_PROC);
+  lcd.setLabels(SegLCD_PCF85176_TempHumidity::LABEL_DEGREE_C | SegLCD_PCF85176_TempHumidity::LABEL_PROC);
 
   delay(2000);
-  lcd.clearLabels(SegLCD_PCF85176_TempHumidity::LABEL_C | SegLCD_PCF85176_TempHumidity::LABEL_PROC);
+  lcd.clearLabels(SegLCD_PCF85176_TempHumidity::LABEL_DEGREE_C | SegLCD_PCF85176_TempHumidity::LABEL_PROC);
 
 }
 
