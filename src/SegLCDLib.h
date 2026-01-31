@@ -359,6 +359,18 @@ class SegLCDLib : public Print {
         void _colonClearIfNotFlagged(uint8_t ch, uint8_t colonCol, uint8_t colonFlag);
 
         /**
+         * @brief Clear previous colon if FLAG_PENDING_DOT is not set.
+         *
+         * Similar to _dotClearPrev(), but for colons. Clears colon at previous position
+         * (current cursor + ramOffset) when writing a regular character.
+         *
+         * @param colonCol Colon position
+         * @param colonFlag Flag bit for this colon
+         * @param ramOffset RAM offset for colon (-1, 0, or +1)
+         */
+        void _colonClearPrev(uint8_t colonCol, uint8_t colonFlag, int8_t ramOffset);
+
+        /**
          * @brief Unified handler for decimal/colon special characters.
          *
          * Combines decimal/colon write handling with automatic clearing of previous

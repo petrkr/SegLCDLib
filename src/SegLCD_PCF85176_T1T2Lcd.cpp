@@ -171,8 +171,8 @@ size_t SegLCD_PCF85176_T1T2Lcd::write(uint8_t ch) {
                 return 1;
             }
 
-            // Clear colon if not flagged
-            _colonClearIfNotFlagged(ch, 2, FLAG_COLON_CLOCK);
+            // Clear colon when writing digit before colon
+            _colonClearPrev(2, FLAG_COLON_CLOCK, 0);
 
             if (_cursorCol >=0 && _cursorCol < 4) {
                 _ramBuffer[OFFSET_CLOCK + _cursorCol] &= ~0b11111110;

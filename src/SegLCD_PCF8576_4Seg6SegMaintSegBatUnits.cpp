@@ -190,8 +190,8 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow0(uint8_t ch) {
         return 1;
     }
 
-    // Clear colon if not flagged (additional handling needed because of colon)
-    _colonClearIfNotFlagged(ch, COLON_TOP_COL, FLAG_COLON_TOP);
+    // Clear colon when writing digit before colon
+    _colonClearPrev(COLON_TOP_COL, FLAG_COLON_TOP, 0);
 
     // Clear decimal on current column when writing regular character
     if (_cursorCol >= DECIMAL_TOP_MIN_COL && _cursorCol <= DECIMAL_TOP_MAX_COL) {
@@ -231,13 +231,9 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow1(uint8_t ch) {
         return 1;
     }
 
-    // Clear colons if not flagged
-    if (ch != ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_DEFAULT_LEFT)) {
-        _setColon(1, 2, false);
-    }
-    if (ch != ':' && _cursorCol == 4 && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
-        _setColon(1, 4, false);
-    }
+    // Clear colons when writing digits before them
+    _colonClearPrev(2, FLAG_COLON_DEFAULT_LEFT, 0);
+    _colonClearPrev(4, FLAG_COLON_DEFAULT_RIGHT, 0);
 
     // Clear decimal on current column when writing regular character
     if (_cursorCol >= DECIMAL_BOTTOM_MIN_COL && _cursorCol <= DECIMAL_BOTTOM_MAX_COL) {

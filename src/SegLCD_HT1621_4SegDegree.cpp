@@ -97,12 +97,8 @@ size_t SegLCD_HT1621_4SegDegree::write(uint8_t ch) {
         return 1;
     }
 
-    // Clear colon when writing digit after colon without ':' in this session
-    if (ch != ':' && _cursorCol == COLON_COL + 1 &&
-        _isFlagSet(FLAG_COLON_DISPLAYED) && !_isFlagSet(FLAG_COLON_SESSION)) {
-        _setColon(0, COLON_COL, false);
-        _clearFlag(FLAG_COLON_DISPLAYED);
-    }
+    // Clear colon when writing digit before colon without ':' in this session
+    _colonClearPrev(COLON_COL, FLAG_COLON_DISPLAYED, -1);
 
     // Clear decimal on current column unless it's part of a colon
     if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {

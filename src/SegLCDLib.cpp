@@ -420,6 +420,17 @@ void SegLCDLib::_colonClearIfNotFlagged(uint8_t ch, uint8_t colonCol, uint8_t co
     }
 }
 
+void SegLCDLib::_colonClearPrev(uint8_t colonCol, uint8_t colonFlag, int8_t ramOffset) {
+    if (_isFlagSet(colonFlag)) {
+        _clearFlag(colonFlag);
+    } else {
+        int8_t colonRelativePos = static_cast<int8_t>(_cursorCol) + ramOffset;
+        if (colonRelativePos < colonCol) {
+            _setColon(_cursorRow, colonCol, false);
+        }
+    }
+}
+
 bool SegLCDLib::_handleSpecialChars(uint8_t ch,
                                      int8_t dotMin, int8_t dotMax, int8_t dotRamOffset,
                                      bool hasColon, uint8_t colonCol, uint8_t colonFlag) {

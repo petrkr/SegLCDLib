@@ -74,11 +74,8 @@ size_t SegLCD_PCF85176_4DR821B::write(uint8_t ch) {
         return 1;
     }
 
-    // Handle clock/middle colon
-    if (ch != ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_DISPLAYED)) {
-        _setColon(_cursorRow, _cursorCol - 1, false);
-        _clearFlag(FLAG_COLON_DISPLAYED);
-    }
+    // Clear colon when writing digit before colon
+    _colonClearPrev(1, FLAG_COLON_DISPLAYED, +1);
 
     if (ch == ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_DISPLAYED)) {
         _setColon(_cursorRow, _cursorCol - 1, true);

@@ -227,8 +227,8 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
                 return 1;
             }
 
-            // Clear colon if not flagged (additional handling needed because of colon)
-            _colonClearIfNotFlagged(ch, COLON_TOP_COL, FLAG_COLON_TOP);
+            // Clear colon when writing digit before colon
+            _colonClearPrev(COLON_TOP_COL, FLAG_COLON_TOP, 0);
 
             // Regular character
             uint8_t segment_data = _mapSegments(_get_char_value(ch));
@@ -252,8 +252,8 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
                 return 1;
             }
 
-            // Clear colon if not flagged (additional handling needed because of colon)
-            _colonClearIfNotFlagged(ch, COLON_BOTTOM_COL, FLAG_COLON_DEFAULT);
+            // Clear colon when writing digit before colon
+            _colonClearPrev(COLON_BOTTOM_COL, FLAG_COLON_DEFAULT, 0);
 
             // Regular character
             uint8_t segment_data = _mapSegments(_get_char_value(ch));
