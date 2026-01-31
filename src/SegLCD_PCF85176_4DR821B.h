@@ -33,6 +33,8 @@ class SegLCD_PCF85176_4DR821B : public SegDriver_PCF85176 {
     private:
         void _setColon(uint8_t row, uint8_t col, bool state) override;
         void _setDecimal(uint8_t row, uint8_t col, bool state) override;
+        void _setCol0Symbol(uint8_t ch);
+        bool _handleCol0Overlay(uint8_t ch);
         static constexpr uint8_t RAM_SIZE = 5;
 
         static constexpr uint8_t FLAG_COLON_DISPLAYED = 0x01;
@@ -47,7 +49,6 @@ class SegLCD_PCF85176_4DR821B : public SegDriver_PCF85176 {
         static constexpr uint8_t MINUS_BIT = 0x40;
         static constexpr uint8_t DECIMAL_MIN_COL = 0;
         static constexpr uint8_t DECIMAL_MAX_COL = 2;
-
-        bool _handleCol0Overlay(uint8_t ch);
+        static constexpr int8_t DECIMAL_COL_OFFSET = -1;
 };
 #endif

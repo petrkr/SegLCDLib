@@ -10,24 +10,55 @@ void SegLCD_PCF85176_4DR821B::init() {
 }
 
 void SegLCD_PCF85176_4DR821B::setSymbol(uint8_t symbol, bool state) {
-    if (state)
-        _ramBuffer[ADDR_SYMBOLS] |= symbol;
-    else
-        _ramBuffer[ADDR_SYMBOLS] &= ~symbol;
+    // Only handle arrow (0x10) and tilda (0x80)
+    uint8_t mask = symbol & (SYMBOL_ARROW | SYMBOL_TILDA);
+    if (mask == 0)
+        return; // Invalid symbol
 
+    if (state)
+        _ramBuffer[ADDR_SYMBOLS] |= mask;
+    else
+        _ramBuffer[ADDR_SYMBOLS] &= ~mask;
+
+    _writeRam(_ramBuffer[ADDR_SYMBOLS], ADDR_SYMBOLS);
+}
+
+void SegLCD_PCF85176_4DR821B::_setCol0Symbol(uint8_t ch) {
+    // Set minus/plus/colon symbols at column 0
+    switch (ch) {
+        case '-':
+            _ramBuffer[ADDR_SYMBOLS] = (_ramBuffer[ADDR_SYMBOLS] | MINUS_BIT) & ~LEFT_COLON_BIT;
+            break;
+        case '+':
+            _ramBuffer[ADDR_SYMBOLS] |= (MINUS_BIT | LEFT_COLON_BIT);
+            break;
+        case ':':
+            _ramBuffer[ADDR_SYMBOLS] = (_ramBuffer[ADDR_SYMBOLS] | LEFT_COLON_BIT) & ~MINUS_BIT;
+            break;
+        default:
+            return;
+    }
     _writeRam(_ramBuffer[ADDR_SYMBOLS], ADDR_SYMBOLS);
 }
 
 void SegLCD_PCF85176_4DR821B::_setColon(uint8_t row, uint8_t col, bool state) {
     if (col == 0) {
         if (state) {
-            setSymbol(MINUS_BIT, false);
+            _ramBuffer[ADDR_SYMBOLS] &= ~MINUS_BIT;
+            _ramBuffer[ADDR_SYMBOLS] |= LEFT_COLON_BIT;
+        } else {
+            _ramBuffer[ADDR_SYMBOLS] &= ~LEFT_COLON_BIT;
         }
-        setSymbol(LEFT_COLON_BIT, state);
+        _writeRam(_ramBuffer[ADDR_SYMBOLS], ADDR_SYMBOLS);
     }
 
     if (col == 1) {
-        setSymbol(MIDDLE_COLON_BIT, state);
+        if (state) {
+            _ramBuffer[ADDR_SYMBOLS] |= MIDDLE_COLON_BIT;
+        } else {
+            _ramBuffer[ADDR_SYMBOLS] &= ~MIDDLE_COLON_BIT;
+        }
+        _writeRam(_ramBuffer[ADDR_SYMBOLS], ADDR_SYMBOLS);
     }
 }
 
@@ -69,18 +100,29 @@ size_t SegLCD_PCF85176_4DR821B::write(uint8_t ch) {
         return 0; //Invalid digit
     }
 
-    // Handle decimal point - only set, don't clear previous
-    if (_dotWrite(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, -1)) {
+    // Handle decimal point - only set, don't clear previous.
+    // On this LCD, dot before col 2 and middle colon are mutually exclusive.
+    if (_dotWrite(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, DECIMAL_COL_OFFSET)) {
+        if (_cursorCol == 2) {
+            _setColon(_cursorRow, 1, false);
+            _clearFlag(FLAG_COLON_DISPLAYED);
+        }
         return 1;
     }
 
-    // Clear colon when writing digit before colon
-    _colonClearPrev(1, FLAG_COLON_DISPLAYED, +1);
+    if (ch == ':' && _cursorCol == 2) {
+        if (!_isFlagSet(FLAG_COLON_DISPLAYED)) {
+            _setColon(_cursorRow, _cursorCol - 1, true);
+            _setFlag(FLAG_COLON_DISPLAYED);
+        }
+        _setDecimal(_cursorRow, _cursorCol - 1, false);
+        return 1;
+    }
 
-    if (ch == ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_DISPLAYED)) {
-        _setColon(_cursorRow, _cursorCol - 1, true);
-        _setFlag(FLAG_COLON_DISPLAYED);
-        return true;
+    // Colon is between col 1 and 2; clear only when rewriting col 1.
+    if (ch != ':' && _cursorCol == 1) {
+        _setColon(_cursorRow, 1, false);
+        _clearFlag(FLAG_COLON_DISPLAYED);
     }
 
     // Handle overlay symbols in column 0: '-', '+', ':'
@@ -113,20 +155,9 @@ bool SegLCD_PCF85176_4DR821B::_handleCol0Overlay(uint8_t ch) {
     switch (ch)
     {
         case '-':
-            setSymbol(MINUS_BIT, true);
-            setSymbol(LEFT_COLON_BIT, false);
-            _setFlag(FLAG_COL0_OVERLAY);
-            return false;
-
-        case ':':
-            setSymbol(MINUS_BIT, false);
-            setSymbol(LEFT_COLON_BIT, true);
-            _setFlag(FLAG_COL0_OVERLAY);
-            return false;
-
         case '+':
-            setSymbol(MINUS_BIT, true);
-            setSymbol(LEFT_COLON_BIT, true);
+        case ':':
+            _setCol0Symbol(ch);
             _setFlag(FLAG_COL0_OVERLAY);
             return false;
 
@@ -138,8 +169,8 @@ bool SegLCD_PCF85176_4DR821B::_handleCol0Overlay(uint8_t ch) {
     if (_isFlagSet(FLAG_COL0_OVERLAY)) {
         _clearFlag(FLAG_COL0_OVERLAY);
     } else {
-        setSymbol(MINUS_BIT, false);
-        setSymbol(LEFT_COLON_BIT, false);
+        _ramBuffer[ADDR_SYMBOLS] &= ~(MINUS_BIT | LEFT_COLON_BIT);
+        _writeRam(_ramBuffer[ADDR_SYMBOLS], ADDR_SYMBOLS);
     }
 
     return true;
