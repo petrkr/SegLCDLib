@@ -196,14 +196,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::_setDecimal(uint8_t row, uint8
 }
 
 void SegLCD_PCF85176_6DigitSignalBatteryProgress::setCursor(uint8_t row, uint8_t col) {
-    if (row == 0 && col < 2) {
-        _clearFlag(FLAG_COLON_TOP);
-    }
-
-    if (row == 1 && col < 5) {
-        _clearFlag(FLAG_COLON_DEFAULT);
-    }
-
+    // Don't clear flags here - let write() handle colon clearing
     SegDriver_PCF85176::setCursor(row, col);
 }
 
@@ -221,14 +214,30 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
         case 0: {
             // Top row (4 digits)
 
-            // Handle decimal point and colon
-            if (_handleSpecialChars(ch, DECIMAL_TOP_MIN_COL, DECIMAL_TOP_MAX_COL, -1,
-                                    true, COLON_TOP_COL, FLAG_COLON_TOP)) {
+            // Handle decimal point (without previous-dot clear) and colon
+            if (_dotWrite(ch, DECIMAL_TOP_MIN_COL, DECIMAL_TOP_MAX_COL, -1)) {
                 return 1;
             }
+            if (ch == ':' && _cursorCol == COLON_TOP_COL) {
+                if (!_isFlagSet(FLAG_COLON_TOP)) {
+                    _setColon(_cursorRow, COLON_TOP_COL, true);
+                    _setFlag(FLAG_COLON_TOP);
+                }
+                return 1;
+            }
+            if (_isFlagSet(FLAG_PENDING_DOT)) {
+                _clearFlag(FLAG_PENDING_DOT);
+            }
+            _dotClearCur(DECIMAL_TOP_MIN_COL, DECIMAL_TOP_MAX_COL);
 
-            // Clear colon when writing digit before colon
-            _colonClearPrev(COLON_TOP_COL, FLAG_COLON_TOP, 0);
+            // Clear colon if not flagged (additional handling needed because of colon)
+            _colonClearIfNotFlagged(ch, COLON_TOP_COL, FLAG_COLON_TOP);
+
+            // Clear colon when writing to position just before colon (col 1)
+            if (ch != ':' && _cursorCol == 1 && _isFlagSet(FLAG_COLON_TOP)) {
+                _setColon(_cursorRow, COLON_TOP_COL, false);
+                _clearFlag(FLAG_COLON_TOP);
+            }
 
             // Regular character
             uint8_t segment_data = _mapSegments(_get_char_value(ch));
@@ -246,14 +255,32 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
         case 1: {
             // Bottom row (6 digits)
 
-            // Handle decimal point and colon
-            if (_handleSpecialChars(ch, DECIMAL_BOTTOM_MIN_COL, DECIMAL_BOTTOM_MAX_COL, -1,
-                                    true, COLON_BOTTOM_COL, FLAG_COLON_DEFAULT)) {
+            // Handle decimal point (without previous-dot clear) and colon
+            if (_dotWrite(ch, DECIMAL_BOTTOM_MIN_COL, DECIMAL_BOTTOM_MAX_COL, -1)) {
                 return 1;
             }
+            // Use HW colon only at its dedicated position.
+            // On other positions ':' must be rendered as a normal font character.
+            if (ch == ':' && _cursorCol == COLON_BOTTOM_COL) {
+                if (!_isFlagSet(FLAG_COLON_DEFAULT)) {
+                    _setColon(_cursorRow, COLON_BOTTOM_COL, true);
+                    _setFlag(FLAG_COLON_DEFAULT);
+                }
+                return 1;
+            }
+            if (_isFlagSet(FLAG_PENDING_DOT)) {
+                _clearFlag(FLAG_PENDING_DOT);
+            }
+            _dotClearCur(DECIMAL_BOTTOM_MIN_COL, DECIMAL_BOTTOM_MAX_COL);
 
-            // Clear colon when writing digit before colon
-            _colonClearPrev(COLON_BOTTOM_COL, FLAG_COLON_DEFAULT, 0);
+            // Clear colon if not flagged (additional handling needed because of colon)
+            _colonClearIfNotFlagged(ch, COLON_BOTTOM_COL, FLAG_COLON_DEFAULT);
+
+            // Clear colon when writing to position just before colon (col 3)
+            if (ch != ':' && _cursorCol == 3 && _isFlagSet(FLAG_COLON_DEFAULT)) {
+                _setColon(_cursorRow, COLON_BOTTOM_COL, false);
+                _clearFlag(FLAG_COLON_DEFAULT);
+            }
 
             // Regular character
             uint8_t segment_data = _mapSegments(_get_char_value(ch));
