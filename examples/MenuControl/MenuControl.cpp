@@ -8,6 +8,7 @@
 #include "PCF85176_6DigSigBattProgressPlugin.h"
 #include "PCF85176_OneDigitPlugin.h"
 #include "PCF85176_TempHumPlugin.h"
+#include "PCx85_RawPlugin.h"
 #include "PCF8576_4Seg6SegMaintSegBatUnitsPlugin.h"
 
 #if defined(ARDUINO_ARCH_ESP32)
@@ -24,13 +25,14 @@ static PCF85176_4DR821BPlugin plugin4dr821;
 static PCF85176_6DigSigBattProgressPlugin plugin6prog;
 static PCF85176_OneDigitPlugin plugin1dig;
 static PCF85176_TempHumPlugin pluginTempHum;
+static PCx85_RawPlugin pluginPcxRaw;
 static PCF8576_4Seg6SegMaintSegBatUnitsPlugin plugin4s6s;
 
 static LCDPlugin *plugins[] = {
     &pluginT1T2, &pluginVK0192,
     &plugin4deg, &plugin6bat, &plugin16seg,
     &plugin4dr821, &plugin6prog, &plugin1dig,
-    &pluginTempHum, &plugin4s6s
+    &pluginTempHum, &pluginPcxRaw, &plugin4s6s
 };
 static const uint8_t pluginCount = sizeof(plugins) / sizeof(plugins[0]);
 
@@ -342,6 +344,24 @@ static const char *backlightModeName(SegLCDLib::BacklightMode mode) {
     return mode == SegLCDLib::BACKLIGHT_PWM ? "pwm" : "digital";
 }
 
+static const char *driveModeName(ModeDrive mode) {
+    switch (mode) {
+        case MODE_DRIVE_STATIC: return "static";
+        case MODE_DRIVE_12: return "12";
+        case MODE_DRIVE_13: return "13";
+        case MODE_DRIVE_14: return "14";
+        default: return "?";
+    }
+}
+
+static const char *biasModeName(ModeBias mode) {
+    switch (mode) {
+        case MODE_BIAS_12: return "12";
+        case MODE_BIAS_13: return "13";
+        default: return "?";
+    }
+}
+
 static void initBacklightIfConfigured() {
     if (!activeLCD || config.backlight < 0) return;
     activeLCD->initBacklight(config.backlight, config.backlightMode);
@@ -384,6 +404,12 @@ static void printConfigSummary(Stream &out) {
         if (config.power >= 0) {
             out.print("Power pin: ");
             out.println(config.power);
+        }
+        if (strcmp(plugins[config.displayId]->name(), "pcx85_raw") == 0) {
+            out.print("Drive mode: ");
+            out.println(driveModeName(config.rawDrive));
+            out.print("Bias mode: ");
+            out.println(biasModeName(config.rawBias));
         }
     }
 }
@@ -536,7 +562,7 @@ static void handleSettingsCommand(char *cmd, char *args) {
         char *value = nextToken(&args);
         if (!param || !value) {
             Serial.println("Usage: set <param> <value>");
-            Serial.println("Params: sda, scl, addr, cs, wr, data, backlight, blmode, power");
+            Serial.println("Params: sda, scl, addr, cs, wr, data, backlight, blmode, power, drive, bias");
             return;
         }
 
@@ -574,6 +600,22 @@ static void handleSettingsCommand(char *cmd, char *args) {
             } else {
                 Serial.println("Invalid backlight mode (digital/pwm)");
             }
+        } else if (strcmp(param, "drive") == 0) {
+            ModeDrive drive;
+            if (!parseDriveMode(value, drive)) {
+                Serial.println("Invalid drive (static|12|13|14)");
+            } else {
+                config.rawDrive = drive;
+                Serial.println("OK");
+            }
+        } else if (strcmp(param, "bias") == 0) {
+            ModeBias bias;
+            if (!parseBiasMode(value, bias)) {
+                Serial.println("Invalid bias (12|13)");
+            } else {
+                config.rawBias = bias;
+                Serial.println("OK");
+            }
         } else {
             Serial.println("Unknown parameter");
         }
@@ -606,6 +648,10 @@ static void handleSettingsCommand(char *cmd, char *args) {
             Serial.println(config.power);
         } else if (strcmp(param, "blmode") == 0) {
             Serial.println(backlightModeName(config.backlightMode));
+        } else if (strcmp(param, "drive") == 0) {
+            Serial.println(driveModeName(config.rawDrive));
+        } else if (strcmp(param, "bias") == 0) {
+            Serial.println(biasModeName(config.rawBias));
         } else {
             Serial.println("Unknown parameter");
         }

@@ -18,6 +18,8 @@ struct DisplayConfig {
     int8_t power = -1;
     SegLCDLib::BacklightMode backlightMode = SegLCDLib::BACKLIGHT_DIGITAL;
     uint8_t i2cAddr = 0x38, subAddr = 0x00;
+    ModeDrive rawDrive = MODE_DRIVE_14;
+    ModeBias rawBias = MODE_BIAS_13;
 };
 
 // Terminal ANSI helpers (implemented in MenuControl.cpp)
@@ -28,6 +30,30 @@ const char *mcAnsi(const char *code);
 static long parseNumber(const char *s) {
     if (!s) return 0;
     return strtol(s, nullptr, 0);
+}
+
+static inline bool parseDriveMode(const char *s, ModeDrive &out) {
+    if (!s) return false;
+    if (strcasecmp(s, "static") == 0 || strcmp(s, "1") == 0 || strcmp(s, "1/1") == 0) {
+        out = MODE_DRIVE_STATIC; return true;
+    }
+    if (strcmp(s, "2") == 0 || strcmp(s, "12") == 0 || strcmp(s, "1/2") == 0) {
+        out = MODE_DRIVE_12; return true;
+    }
+    if (strcmp(s, "3") == 0 || strcmp(s, "13") == 0 || strcmp(s, "1/3") == 0) {
+        out = MODE_DRIVE_13; return true;
+    }
+    if (strcmp(s, "4") == 0 || strcmp(s, "14") == 0 || strcmp(s, "1/4") == 0) {
+        out = MODE_DRIVE_14; return true;
+    }
+    return false;
+}
+
+static inline bool parseBiasMode(const char *s, ModeBias &out) {
+    if (!s) return false;
+    if (strcmp(s, "13") == 0 || strcmp(s, "1/3") == 0) { out = MODE_BIAS_13; return true; }
+    if (strcmp(s, "12") == 0 || strcmp(s, "1/2") == 0) { out = MODE_BIAS_12; return true; }
+    return false;
 }
 
 static const size_t MENU_INNER_WIDTH = 38;
@@ -243,7 +269,7 @@ public:
     // Create LCD instance - returns nullptr on error
     virtual SegLCDLib* create(const DisplayConfig &cfg) = 0;
     virtual void destroy(SegLCDLib *lcd) = 0;
-
+  
     // Handle LCD-specific commands
     // Returns true if command was handled, false otherwise
     virtual bool handleCommand(SegLCDLib *lcd, const char *cmd, char *args, Stream &out) = 0;
