@@ -1,24 +1,24 @@
 /**
  * @example PCF85176/RawLCD/RawLCD.ino
- * @brief Example of RAW LCD display using PCF85176
+ * @brief Example of RAW LCD display using PCx85
  */
 
-#include "SegLCD_PCF85176_Raw.h"
+#include "SegLCD_PCx85_Raw.h"
 
 #include <Wire.h>
 
-SegLCD_PCF85176_Raw lcd(Wire);
+SegLCD_PCx85_Raw lcd(Wire);
 
 void setup() {
   Serial.begin(115200);
   delay(1000);
   Serial.println("Initilalize I2C...");
-  Wire.begin(0, 1);
+  Wire.begin(1, 2);
 
   Serial.println("Initialize LCD...");
 
   // Demo for static one segment LCD display
-  lcd.init(MODE_DRIVE_STATIC, MODE_BIAS_13);
+  lcd.init(MODE_DRIVE_14, MODE_BIAS_13);
 
   // Clear LCD
   lcd.clear();
@@ -31,7 +31,13 @@ void setup() {
   delay(1000);
 
   // Write at address 8 one byte
-  lcd.writeRam((uint8_t)0b01000000, 8);
+  lcd.writeRam((uint8_t)0b01000000, 2);
+
+  // Write at address 8 one byte
+  lcd.writeRam((uint8_t)0b01000000, 4);
+
+  // Write at address 8 one byte
+  lcd.writeRam((uint8_t)0b01000000, 6);
 
   delay(1000);
 
