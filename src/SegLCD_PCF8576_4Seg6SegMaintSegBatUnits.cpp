@@ -181,17 +181,28 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow0(uint8_t ch) {
     }
 
     // Handle decimal point - only set, don't clear previous
-    if (_dotWrite(ch, DECIMAL_TOP_MIN_COL, DECIMAL_TOP_MAX_COL, -1)) {
+    if (_dotWrite(ch, DECIMAL_TOP_MIN_COL, DECIMAL_TOP_MAX_COL, DECIMAL_COL_OFFSET)) {
+        if (_cursorCol == COLON_TOP_COL) {
+            _setColon(_cursorRow, COLON_TOP_COL, false);
+        }
         return 1;
     }
 
-    // Handle colon
-    if (_colonWrite(ch, COLON_TOP_COL, FLAG_COLON_TOP)) {
+    // Handle colon only at dedicated HW position
+    if (ch == ':' && _cursorCol == COLON_TOP_COL) {
+        if (!_isFlagSet(FLAG_COLON_TOP)) {
+            _setColon(_cursorRow, COLON_TOP_COL, true);
+        }
+        _setDecimal(_cursorRow, _cursorCol - 1, false);
         return 1;
     }
 
-    // Clear colon when writing digit before colon
-    _colonClearPrev(COLON_TOP_COL, FLAG_COLON_TOP, 0);
+    // Clear colon when rewriting the digit just before it.
+    // This includes ':' glyph written as a regular character at col 1.
+    if (_cursorCol == (COLON_TOP_COL - 1)) {
+        _setColon(_cursorRow, COLON_TOP_COL, false);
+        _clearFlag(FLAG_COLON_TOP);
+    }
 
     // Clear decimal on current column when writing regular character
     if (_cursorCol >= DECIMAL_TOP_MIN_COL && _cursorCol <= DECIMAL_TOP_MAX_COL) {
@@ -213,27 +224,43 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow1(uint8_t ch) {
     }
 
     // Handle decimal point - only set, don't clear previous
-    if (_dotWrite(ch, DECIMAL_BOTTOM_MIN_COL, DECIMAL_BOTTOM_MAX_COL, -1)) {
+    if (_dotWrite(ch, DECIMAL_BOTTOM_MIN_COL, DECIMAL_BOTTOM_MAX_COL, DECIMAL_COL_OFFSET)) {
+        if (_cursorCol == COLON_BOTTOM_LEFT_COL) {
+            _setColon(_cursorRow, COLON_BOTTOM_LEFT_COL, false);
+        }
+        if (_cursorCol == COLON_BOTTOM_RIGHT_COL) {
+            _setColon(_cursorRow, COLON_BOTTOM_RIGHT_COL, false);
+        }
         return 1;
     }
 
     // Handle colon at col 2
-    if (ch == ':' && _cursorCol == 2 && !_isFlagSet(FLAG_COLON_DEFAULT_LEFT)) {
-        _setColon(1, 2, true);
-        _setFlag(FLAG_COLON_DEFAULT_LEFT);
+    if (ch == ':' && _cursorCol == COLON_BOTTOM_LEFT_COL) {
+        if (!_isFlagSet(FLAG_COLON_DEFAULT_LEFT)) {
+            _setColon(_cursorRow, COLON_BOTTOM_LEFT_COL, true);
+        }
+        _setDecimal(_cursorRow, _cursorCol - 1, false);
         return 1;
     }
 
     // Handle colon at col 4
-    if (ch == ':' && _cursorCol == 4 && !_isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
-        _setColon(1, 4, true);
-        _setFlag(FLAG_COLON_DEFAULT_RIGHT);
+    if (ch == ':' && _cursorCol == COLON_BOTTOM_RIGHT_COL) {
+        if (!_isFlagSet(FLAG_COLON_DEFAULT_RIGHT)) {
+            _setColon(_cursorRow, COLON_BOTTOM_RIGHT_COL, true);
+        }
+        _setDecimal(_cursorRow, _cursorCol - 1, false);
         return 1;
     }
 
-    // Clear colons when writing digits before them
-    _colonClearPrev(2, FLAG_COLON_DEFAULT_LEFT, 0);
-    _colonClearPrev(4, FLAG_COLON_DEFAULT_RIGHT, 0);
+    // Clear colons when rewriting the digit just before each separator colon.
+    if (_cursorCol == 1) {
+        _setColon(1, 2, false);
+        _clearFlag(FLAG_COLON_DEFAULT_LEFT);
+    }
+    if (_cursorCol == 3) {
+        _setColon(1, 4, false);
+        _clearFlag(FLAG_COLON_DEFAULT_RIGHT);
+    }
 
     // Clear decimal on current column when writing regular character
     if (_cursorCol >= DECIMAL_BOTTOM_MIN_COL && _cursorCol <= DECIMAL_BOTTOM_MAX_COL) {
