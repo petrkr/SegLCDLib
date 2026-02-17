@@ -167,12 +167,19 @@ size_t SegLCD_PCF85176_T1T2Lcd::write(uint8_t ch) {
     switch (_cursorRow) {
         case ROW_CLOCK:
             // Handle colon
-            if (_colonWrite(ch, 2, FLAG_COLON_CLOCK)) {
+            if (ch == ':' && _cursorCol == 2) {
+                if (!_isFlagSet(FLAG_COLON_CLOCK)) {
+                    _setColon(_cursorRow, 2, true);
+                    _setFlag(FLAG_COLON_CLOCK);
+                }
                 return 1;
             }
 
-            // Clear colon when writing digit before colon
-            _colonClearPrev(2, FLAG_COLON_CLOCK, 0);
+            // Clear colon only when cursor reaches the digit just before it.
+            if (ch != ':' && _cursorCol == 1) {
+                _setColon(_cursorRow, 2, false);
+                _clearFlag(FLAG_COLON_CLOCK);
+            }
 
             if (_cursorCol >=0 && _cursorCol < 4) {
                 _ramBuffer[OFFSET_CLOCK + _cursorCol] &= ~0b11111110;
@@ -187,8 +194,14 @@ size_t SegLCD_PCF85176_T1T2Lcd::write(uint8_t ch) {
             break;
         case ROW_T1:
             // Handle decimal point
-            if (_handleSpecialChars(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, -1)) {
+            if (_dotWrite(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, DECIMAL_COL_OFFSET)) {
                 return 1;
+            }
+            if (_isFlagSet(FLAG_PENDING_DOT)) {
+                _clearFlag(FLAG_PENDING_DOT);
+            }
+            if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
+                _setDecimal(_cursorRow, _cursorCol, false);
             }
 
             _ramBuffer[OFFSET_T1 + _cursorCol] = segment_data;
@@ -196,8 +209,14 @@ size_t SegLCD_PCF85176_T1T2Lcd::write(uint8_t ch) {
             break;
         case ROW_T2:
             // Handle decimal point
-            if (_handleSpecialChars(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, -1)) {
+            if (_dotWrite(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, DECIMAL_COL_OFFSET)) {
                 return 1;
+            }
+            if (_isFlagSet(FLAG_PENDING_DOT)) {
+                _clearFlag(FLAG_PENDING_DOT);
+            }
+            if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
+                _setDecimal(_cursorRow, _cursorCol, false);
             }
 
             _ramBuffer[OFFSET_T2 + _cursorCol] = segment_data;

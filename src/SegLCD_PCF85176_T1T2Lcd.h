@@ -76,6 +76,7 @@ class SegLCD_PCF85176_T1T2Lcd : public SegDriver_PCF85176 {
         static constexpr uint8_t DECIMAL_MAX_ROW = 2;
         static constexpr uint8_t DECIMAL_MIN_COL = 0;
         static constexpr uint8_t DECIMAL_MAX_COL = 3;
+        static constexpr int8_t DECIMAL_COL_OFFSET = -1;
 
         // Symbols constants
         static constexpr uint8_t SYMBOL_CLOCK_MASK = 0x04;
