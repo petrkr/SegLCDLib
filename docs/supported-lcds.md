@@ -44,6 +44,34 @@ lcd.setBattery(2);  // Medium battery
 
 ---
 
+### 2-Row 4-Digit Signal/Battery/Power
+
+**Specifications:**
+- **Digits:** 2 rows × 4 digits
+- **Features:** Signal (1 bit), Battery (4 levels), Power icon
+- **Wiring:** I2C (SDA, SCL)
+- **I2C Address:** 0x38 (SA0=0) or 0x39 (SA0=1)
+- **Controller:** PCF85176
+- **Image:** ![2-row 4-digit display](images/2row4digsigbatpwr.webp)
+- **Example:** `examples/PCF85176/2Row4DigSigBatPwr/`
+
+**Code Example:**
+```cpp
+#include "SegLCD_PCF85176_2Row4DigSigBatPwr.h"
+SegLCD_PCF85176_2Row4DigSigBatPwr lcd(Wire);
+
+lcd.init();
+lcd.setCursor(0, 0);
+lcd.print(1234);
+lcd.setCursor(1, 0);
+lcd.print(5678);
+lcd.setSignalLevel(1);
+lcd.setBatteryLevel(4);
+lcd.setPowerSymbol(true);
+```
+
+---
+
 ### One Digit (Up to 5 Segments)
 
 **Specifications:**
@@ -261,7 +289,7 @@ lcd.setBattery(1);   // Low battery
 
 | Controller | Protocol | Pins | I2C Addr | Examples | Complexity |
 |-----------|----------|------|----------|----------|------------|
-| **PCF85176** | I2C | 2 | 0x38/0x39 | 6 | Simple |
+| **PCF85176** | I2C | 2 | 0x38/0x39 | 7 | Simple |
 | **PCF8576** | I2C | 2 | 0x38/0x39 | 1 | Simple |
 | **HT1621** | 3-wire | 3 | N/A | 3 | Medium |
 | **HT1622** | 3-wire | 3 | N/A | 2 | Medium |

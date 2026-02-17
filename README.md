@@ -47,6 +47,7 @@ See [Supported LCDs](docs/supported-lcds.md) for full catalog.
 |---------|-----------|----------|
 | Temperature/Humidity | PCF85176 | 6-digit, icons |
 | 6-Digit Signal/Battery | PCF85176 | Signal bars, battery, progress |
+| 2x4-Digit Sig/Bat/Power | PCF85176 | 2 rows, signal, battery, power |
 | 4-Digit with Degree | HT1621 | Colon, degree symbol |
 | 6-Digit with Battery | HT1621 | Battery indicator |
 | 10-Digit 16-Segment | HT1622 | Enhanced segments |
@@ -66,8 +67,8 @@ See [Supported LCDs](docs/supported-lcds.md) for full catalog.
 
 ## Examples
 
-13 complete examples in `examples/` directory:
-- PCF85176: 6 examples (RawLCD, TempHum, 6DigSigBat, etc.)
+14 complete examples in `examples/` directory:
+- PCF85176: 7 examples (RawLCD, TempHum, 2Row4DigSigBatPwr, etc.)
 - HT1621: 3 examples (4DigDeg, 6DigBat, RawLCD)
 - HT1622: 2 examples (10Digit16Segment, RawLCD)
 - VK0192: 1 example (5DigSigBatProg)
