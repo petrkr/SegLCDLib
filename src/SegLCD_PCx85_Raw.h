@@ -19,6 +19,7 @@ class SegLCD_PCx85_Raw : public SegDriver_PCx85 {
     public:
         SegLCD_PCx85_Raw(TwoWire& i2c, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
         void init(ModeDrive drive, ModeBias bias);
+        size_t write(uint8_t ch) override;
         void writeRam(uint8_t data, uint8_t address = 0);
         void writeRam(uint8_t *data, size_t length, uint8_t address = 0);
 };

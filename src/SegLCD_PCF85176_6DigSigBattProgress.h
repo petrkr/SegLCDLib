@@ -1,5 +1,5 @@
-#ifndef SEGLCD_PCx85_RAW_H
-#define SEGLCD_PCx85_RAW_H
+#ifndef SEGLCD_PCF85176_6DIGSIGBATTPROGRESS_H
+#define SEGLCD_PCF85176_6DIGSIGBATTPROGRESS_H
 
 #include <Wire.h>
 #include <SegDriver_PCx85.h>
