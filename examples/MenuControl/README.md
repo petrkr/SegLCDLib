@@ -14,6 +14,7 @@ Pluginable menu control system for SegLCDLib displays. Supports multiple LCD typ
 
 - **T1T2**: PCF85176 I2C controller with temperature/humidity labels
 - **VK0192**: 5-digit display with signal/battery/progress indicators
+- **2Row4DigSigBatPwr**: 2x4-digit display with signal/battery/power
 
 ## Usage
 
@@ -73,6 +74,11 @@ Once initialized, use display-specific commands:
 > b 2              # Set battery to level 2
 > prog 75          # Set progress bar to 75
 > ls 0x0001        # Set labels (P label)
+
+# 2Row4DigSigBatPwr-specific:
+> b 3              # Set battery to level 3
+> g 1              # Set signal to level 1
+> pwr 1            # Power symbol on
 ```
 
 ### Returning to Settings
@@ -135,6 +141,7 @@ MenuControl/
 ├── LCDPlugin.h               # Plugin interface + helpers
 ├── T1T2Plugin.h              # T1T2 implementation
 ├── VK0192Plugin.h            # VK0192 implementation
+├── PCF85176_2Row4DigSigBatPwrPlugin.h
 └── README.md                 # This file
 ```
 
