@@ -211,17 +211,16 @@ size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
 
     // Regular character
     if (_cursorRow == 0 || _cursorRow == 1) {
-        writeDigit7seg(_cursorRow, _cursorCol, ch);
+        _writeDigit7seg(_cursorRow, _cursorCol, ch);
     } else if (_cursorRow == 2) {
-        writeDigit16seg(_cursorRow, _cursorCol, ch);
+        _writeDigit16seg(_cursorRow, _cursorCol, ch);
     }
     _cursorCol++;
 
     return 1;
 }
 
-// TODO: rename to private function and use in write
-void SegLCD_VK0192_5DigSigBattProgress::writeDigit7seg(uint8_t row, uint8_t col, char c) {
+void SegLCD_VK0192_5DigSigBattProgress::_writeDigit7seg(uint8_t row, uint8_t col, char c) {
     uint8_t mapped = _mapSegments(_get_char_value(c));
     int8_t addr = _get7SegmentsAddress(row, col);
 
@@ -270,7 +269,7 @@ void SegLCD_VK0192_5DigSigBattProgress::writeDigit7seg(uint8_t row, uint8_t col,
     _writeRam(_ramBuffer[addr+1], addr * 2 + 2);
 }
 
-void SegLCD_VK0192_5DigSigBattProgress::writeDigit16seg(uint8_t row, uint8_t col, char c) {
+void SegLCD_VK0192_5DigSigBattProgress::_writeDigit16seg(uint8_t row, uint8_t col, char c) {
     uint16_t mapped = _map16Segments(_get_16char_value(c));
     int8_t addr = _get16SegmentsAddress(row, col);
 

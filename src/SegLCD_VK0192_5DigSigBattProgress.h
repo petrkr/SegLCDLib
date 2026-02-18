@@ -41,10 +41,9 @@ class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
         void setCursor(uint8_t row, uint8_t col) override;
         size_t write(uint8_t ch) override;
 
-        void writeDigit7seg(uint8_t row, uint8_t col, char c);
-        void writeDigit16seg(uint8_t row, uint8_t col, char c);
-
     private:
+        void _writeDigit7seg(uint8_t row, uint8_t col, char c);
+        void _writeDigit16seg(uint8_t row, uint8_t col, char c);
         void _setDecimal(uint8_t row, uint8_t col, bool state) override;
         static constexpr uint8_t RAM_SIZE = 24;
 

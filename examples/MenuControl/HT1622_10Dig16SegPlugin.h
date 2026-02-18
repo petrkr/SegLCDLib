@@ -35,7 +35,8 @@ public:
             uint8_t c = (uint8_t)parseNumber(nextToken(&args));
             const char *ch = nextToken(&args);
             if (ch && ch[0]) {
-                lcd->writeDigit16seg(r, c, ch[0]);
+                lcd->setCursor(r, c);
+                lcd->write((uint8_t)ch[0]);
             }
             return true;
         }

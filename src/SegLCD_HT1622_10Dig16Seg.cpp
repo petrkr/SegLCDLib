@@ -62,13 +62,13 @@ size_t SegLCD_HT1622_10Dig16Seg::write(uint8_t ch) {
         _setDecimal(0, _cursorCol, false);
     }
 
-    writeDigit16seg(_cursorRow, _cursorCol, ch);
+    _writeDigit16seg(_cursorRow, _cursorCol, ch);
     _cursorCol++;
 
     return 1;
 }
 
-void SegLCD_HT1622_10Dig16Seg::writeDigit16seg(uint8_t row, uint8_t col, char c) {
+void SegLCD_HT1622_10Dig16Seg::_writeDigit16seg(uint8_t row, uint8_t col, char c) {
 
     uint16_t mapped = _map16Segments(_get_16char_value(c));
     int8_t addr = _get16SegmentsAddress(row, col);
