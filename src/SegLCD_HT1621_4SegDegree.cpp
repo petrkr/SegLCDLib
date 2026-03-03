@@ -87,18 +87,30 @@ size_t SegLCD_HT1621_4SegDegree::write(uint8_t ch) {
     // Handle decimal point and colon (note: cursor at col 2 when writing ':')
     if (ch == '.') {
         int8_t dotCol = static_cast<int8_t>(_cursorCol) - 1;
+        if (_cursorCol == (COLON_COL + 1)) {
+            // Shared segment: when switching to '.', colon (middle dot) must turn off.
+            _setColon(_cursorRow, COLON_COL, false);
+            _clearFlag(FLAG_COLON_DISPLAYED);
+        }
         if (dotCol >= DECIMAL_MIN_COL && dotCol <= DECIMAL_MAX_COL) {
             _setDecimal(0, dotCol, true);
         }
         return 1;
     }
-    if (_colonWrite(ch, COLON_COL + 1, FLAG_COLON_DISPLAYED)) {
+    if (ch == ':' && _cursorCol == (COLON_COL + 1)) {
+        if (!_isFlagSet(FLAG_COLON_DISPLAYED)) {
+            _setColon(_cursorRow, COLON_COL, true);
+            _setFlag(FLAG_COLON_DISPLAYED);
+        }
         _setFlag(FLAG_COLON_SESSION);
         return 1;
     }
 
-    // Clear colon when writing digit before colon without ':' in this session
-    _colonClearPrev(COLON_COL, FLAG_COLON_DISPLAYED, -1);
+    // Clear colon only when rewriting digit directly before separator (col 1).
+    if (ch != ':' && _cursorCol == COLON_COL) {
+        _setColon(_cursorRow, COLON_COL, false);
+        _clearFlag(FLAG_COLON_DISPLAYED);
+    }
 
     // Clear decimal on current column unless it's part of a colon
     if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
