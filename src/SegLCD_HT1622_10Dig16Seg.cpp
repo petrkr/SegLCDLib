@@ -48,12 +48,12 @@ void SegLCD_HT1622_10Dig16Seg::_setDecimal(uint8_t row, uint8_t col, bool state)
 }
 
 size_t SegLCD_HT1622_10Dig16Seg::write(uint8_t ch) {
-    if (_cursorRow != 0 || _cursorCol >= 10) {
+    if (_cursorRow != 0 || _cursorCol >= DIGITS) {
         return 0;
     }
 
     // Decimal point - only set, don't clear previous
-    if (_dotWrite(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, -1)) {
+    if (_dotWrite(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, DECIMAL_COL_OFFSET)) {
         return 1;
     }
 
@@ -87,11 +87,11 @@ void SegLCD_HT1622_10Dig16Seg::_writeDigit16seg(uint8_t row, uint8_t col, char c
 }
 
 int8_t SegLCD_HT1622_10Dig16Seg::_get16SegmentsAddress(uint8_t row, uint8_t col) {
-    if (row != 0 || col > 10) {
+    if (row != 0 || col >= DIGITS) {
         return -1; // Invalid row
     }
 
-    return (9-col) * 2;
+    return (DIGITS - col - 1) * 2;
 }
 
 // A1HFG1 KLED2 A2IBJ G2MCD1
