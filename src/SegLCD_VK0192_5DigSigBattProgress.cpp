@@ -50,6 +50,10 @@ void SegLCD_VK0192_5DigSigBattProgress::setSignalLevel(uint8_t level) {
 }
 
 void SegLCD_VK0192_5DigSigBattProgress::setProgress(uint8_t value) {
+    if (value > MAX_PROGRESS) {
+        value = MAX_PROGRESS;
+    }
+
     _ramBuffer[ADDR_PROGRESS_P1] &= ~(PROGRESS_MASK);
     _ramBuffer[ADDR_PROGRESS_P2] &= ~(PROGRESS_MASK);
     _ramBuffer[ADDR_PROGRESS_P3] &= ~(PROGRESS_MASK);
@@ -100,7 +104,7 @@ void SegLCD_VK0192_5DigSigBattProgress::setProgress(uint8_t value) {
     if (value >= 140) {
         _ramBuffer[ADDR_PROGRESS_P4] |= PROGRESS_LEVEL_SEG[14];
     }
-    if (value >= 150) {
+    if (value >= MAX_PROGRESS) {
         _ramBuffer[ADDR_PROGRESS_P4] |= PROGRESS_LEVEL_SEG[15];
     }
 
@@ -163,7 +167,7 @@ void SegLCD_VK0192_5DigSigBattProgress::_setDecimal(uint8_t row, uint8_t col, bo
         return;
     }
 
-    int8_t addr = _get7SegmentsAddress(row, col + DECIMAL_RAM_OFFSET);
+    int8_t addr = _get7SegmentsAddress(row, col + DECIMAL_ADDR_COL_OFFSET);
 
     // Invalid address
     if (addr < 0) {
@@ -185,13 +189,13 @@ size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
     }
 
     // Handle decimal point - only set, don't clear previous
-    if (_cursorRow == 0 && _dotWrite(ch, DECIMAL_TOP_MIN_COL, DECIMAL_TOP_MAX_COL, -1)) {
+    if (_cursorRow == 0 && _dotWrite(ch, DECIMAL_TOP_MIN_COL, DECIMAL_TOP_MAX_COL, DECIMAL_COL_OFFSET)) {
         return 1;
     }
-    if (_cursorRow == 1 && _dotWrite(ch, DECIMAL_BOTTOM_MIN_COL, DECIMAL_BOTTOM_MAX_COL, -1)) {
+    if (_cursorRow == 1 && _dotWrite(ch, DECIMAL_BOTTOM_MIN_COL, DECIMAL_BOTTOM_MAX_COL, DECIMAL_COL_OFFSET)) {
         return 1;
     }
-    if (_cursorRow == 2 && _dotWrite(ch, DECIMAL_16SEG_MIN_COL, DECIMAL_16SEG_MAX_COL, -1)) {
+    if (_cursorRow == 2 && _dotWrite(ch, DECIMAL_16SEG_MIN_COL, DECIMAL_16SEG_MAX_COL, DECIMAL_COL_OFFSET)) {
         return 1;
     }
 
@@ -245,8 +249,8 @@ void SegLCD_VK0192_5DigSigBattProgress::_writeDigit7seg(uint8_t row, uint8_t col
 
     // Clear segment bits, preserve low nibble and only the decimal bit that belongs here
     uint8_t preserveMask = 0x0F;
-    if (DECIMAL_RAM_OFFSET != 0) {
-        int8_t prevCol = static_cast<int8_t>(col) - DECIMAL_RAM_OFFSET;
+    if (DECIMAL_ADDR_COL_OFFSET != 0) {
+        int8_t prevCol = static_cast<int8_t>(col) - DECIMAL_ADDR_COL_OFFSET;
         if ((row == 0 && prevCol >= DECIMAL_TOP_MIN_COL && prevCol <= DECIMAL_TOP_MAX_COL) ||
             (row == 1 && prevCol >= DECIMAL_BOTTOM_MIN_COL && prevCol <= DECIMAL_BOTTOM_MAX_COL)) {
             preserveMask |= DECIMAL_POINT_BIT;
@@ -313,6 +317,10 @@ int8_t SegLCD_VK0192_5DigSigBattProgress::_get7SegmentsAddress(uint8_t row, uint
 
     if (row == 1) {
         digitIndex += 5;
+    }
+
+    if (digitIndex >= NUM_7SEG_DIGITS) {
+        return -1;
     }
 
     switch (digitIndex) {
