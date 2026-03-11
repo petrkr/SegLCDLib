@@ -23,7 +23,6 @@ class SegLCD_HT1621_4SegDegree : public SegDriver_HT1621 {
         void clear() override;
         void setCursor(uint8_t row, uint8_t col) override;
         void setDegree(bool state);
-        void setMiddleDot(bool state);
         size_t write(uint8_t ch) override;
 
     private:
@@ -36,7 +35,6 @@ class SegLCD_HT1621_4SegDegree : public SegDriver_HT1621 {
         // Decimal configuration: dots at positions 0-1, stored in symbols buffer
         static constexpr uint8_t DECIMAL_MIN_COL = 0;
         static constexpr uint8_t DECIMAL_MAX_COL = 1;
-        static constexpr int8_t DECIMAL_RAM_OFFSET = -1;  // -1: dot belongs to previous position
         // Note: This LCD uses symbols buffer for dots/colon, not DECIMAL_POINT_BIT
 
         // Colon configuration
@@ -44,7 +42,6 @@ class SegLCD_HT1621_4SegDegree : public SegDriver_HT1621 {
 
         // Flag for colon state
         static constexpr uint8_t FLAG_COLON_DISPLAYED = 0x01;
-        static constexpr uint8_t FLAG_COLON_SESSION = 0x02;
 
         uint8_t _mapSegments(uint8_t val);
         void _writeSymbols(uint8_t bitnum, bool state);

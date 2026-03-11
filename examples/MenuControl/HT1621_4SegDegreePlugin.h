@@ -34,10 +34,6 @@ public:
             lcd->setDegree(parseBool(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "mdot") == 0) {
-            lcd->setMiddleDot(parseBool(nextToken(&args)));
-            return true;
-        }
 
         return false;
     }
@@ -45,7 +41,6 @@ public:
     void printMenu(Stream &out) override {
         printMenuLine(out, "4deg commands:");
         printMenuLine(out, "  deg <0|1>       - degree symbol");
-        printMenuLine(out, "  mdot <0|1>      - middle dot");
     }
 };
 

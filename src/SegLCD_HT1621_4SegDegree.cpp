@@ -20,17 +20,11 @@ void SegLCD_HT1621_4SegDegree::clear() {
 }
 
 void SegLCD_HT1621_4SegDegree::setCursor(uint8_t row, uint8_t col) {
-    _clearFlag(FLAG_COLON_SESSION);
-    _clearFlag(FLAG_PENDING_DOT);
     SegLCDLib::setCursor(row, col);
 }
 
 void SegLCD_HT1621_4SegDegree::setDegree(bool state) {
     _writeSymbols(0, state); // Bit 0 is degree
-}
-
-void SegLCD_HT1621_4SegDegree::setMiddleDot(bool state) {
-    _writeSymbols(1, state); // Bit 1 is middle dot
 }
 
 void SegLCD_HT1621_4SegDegree::_setColon(uint8_t row, uint8_t col, bool state) {
@@ -102,7 +96,6 @@ size_t SegLCD_HT1621_4SegDegree::write(uint8_t ch) {
             _setColon(_cursorRow, COLON_COL, true);
             _setFlag(FLAG_COLON_DISPLAYED);
         }
-        _setFlag(FLAG_COLON_SESSION);
         return 1;
     }
 
