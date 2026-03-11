@@ -80,7 +80,7 @@ void setup() {
   lcd.print("34"); // Should remove dot at digit 1
 
   delay(2000);
-  lcd.setLabels(SegLCD_VK0192_5DigSigBattProgress::LABEL_C);
+  lcd.setDegree(true);
 
   lcd.setCursor(2, 0);
   lcd.print("H.e.l.l.o");

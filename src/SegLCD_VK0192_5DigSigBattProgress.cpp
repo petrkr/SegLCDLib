@@ -111,11 +111,15 @@ void SegLCD_VK0192_5DigSigBattProgress::setProgress(uint8_t value) {
 }
 
 void SegLCD_VK0192_5DigSigBattProgress::setLabels(uint16_t labels) {
-    _updateLabels(labels, true);
+    _updateLabels(labels & ~LABEL_DEGREE_C, true);
 }
 
 void SegLCD_VK0192_5DigSigBattProgress::clearLabels(uint16_t labels) {
-    _updateLabels(labels, false);
+    _updateLabels(labels & ~LABEL_DEGREE_C, false);
+}
+
+void SegLCD_VK0192_5DigSigBattProgress::setDegree(bool state) {
+    _updateLabels(LABEL_DEGREE_C, state);
 }
 
 void SegLCD_VK0192_5DigSigBattProgress::setCursor(uint8_t row, uint8_t col) {
@@ -419,7 +423,7 @@ void SegLCD_VK0192_5DigSigBattProgress::_updateLabels(uint16_t labels, bool set)
         }
     }
 
-    if (labels & LABEL_C) {
+    if (labels & LABEL_DEGREE_C) {
         if (set) {
             _ramBuffer[ADDR_LABELS_2] |= 0x40;
         } else {
