@@ -384,30 +384,6 @@ bool SegLCDLib::_dotWrite(uint8_t ch, int8_t minCol, int8_t maxCol, int8_t ramOf
     return true;
 }
 
-bool SegLCDLib::_colonWrite(uint8_t ch, uint8_t colonCol, uint8_t colonFlag) {
-    if (ch != ':') {
-        return false;
-    }
-
-    if (_cursorCol == colonCol && !_isFlagSet(colonFlag)) {
-        _setColon(_cursorRow, colonCol, true);
-        _setFlag(colonFlag);
-    }
-
-    return true;
-}
-
-void SegLCDLib::_dotClearPrev(int8_t minCol, int8_t maxCol, int8_t ramOffset) {
-    if (_isFlagSet(FLAG_PENDING_DOT)) {
-        _clearFlag(FLAG_PENDING_DOT);
-    } else {
-        int8_t prevCol = static_cast<int8_t>(_cursorCol) + ramOffset;
-        if (prevCol >= minCol && prevCol <= maxCol) {
-            _setDecimal(_cursorRow, prevCol, false);
-        }
-    }
-}
-
 void SegLCDLib::_dotClearCur(int8_t minCol, int8_t maxCol) {
     if (_cursorCol >= minCol && _cursorCol <= maxCol) {
         _setDecimal(_cursorRow, _cursorCol, false);
@@ -418,35 +394,4 @@ void SegLCDLib::_colonClearIfNotFlagged(uint8_t ch, uint8_t colonCol, uint8_t co
     if (ch != ':' && _cursorCol == colonCol && !_isFlagSet(colonFlag)) {
         _setColon(_cursorRow, colonCol, false);
     }
-}
-
-void SegLCDLib::_colonClearPrev(uint8_t colonCol, uint8_t colonFlag, int8_t ramOffset) {
-    if (_isFlagSet(colonFlag)) {
-        _clearFlag(colonFlag);
-    } else {
-        int8_t colonRelativePos = static_cast<int8_t>(_cursorCol) + ramOffset;
-        if (colonRelativePos < colonCol) {
-            _setColon(_cursorRow, colonCol, false);
-        }
-    }
-}
-
-bool SegLCDLib::_handleSpecialChars(uint8_t ch,
-                                     int8_t dotMin, int8_t dotMax, int8_t dotRamOffset,
-                                     bool hasColon, uint8_t colonCol, uint8_t colonFlag) {
-    // Decimal handling
-    if (_dotWrite(ch, dotMin, dotMax, dotRamOffset)) {
-        return true;
-    }
-
-    // Colon handling (optional)
-    if (hasColon && _colonWrite(ch, colonCol, colonFlag)) {
-        return true;
-    }
-
-    // Clear previous/current decimals before regular character
-    _dotClearPrev(dotMin, dotMax, dotRamOffset);
-    _dotClearCur(dotMin, dotMax);
-
-    return false; // Regular character - caller should process it
 }

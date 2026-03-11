@@ -304,7 +304,7 @@ class SegLCDLib : public Print {
         /**
          * @brief Write decimal point.
          *
-         * Internal helper for _handleSpecialChars(). Not typically called directly.
+         * Internal helper for display-specific write() implementations.
          *
          * @param ch Character to process
          * @param minCol Minimum valid column for decimal
@@ -315,32 +315,9 @@ class SegLCDLib : public Print {
         bool _dotWrite(uint8_t ch, int8_t minCol, int8_t maxCol, int8_t ramOffset);
 
         /**
-         * @brief Write colon.
-         *
-         * Internal helper for _handleSpecialChars(). Not typically called directly.
-         *
-         * @param ch Character to process
-         * @param colonCol Expected colon position
-         * @param colonFlag Flag bit for this colon
-         * @return true if character ':' was processed
-         */
-        bool _colonWrite(uint8_t ch, uint8_t colonCol, uint8_t colonFlag);
-
-        /**
-         * @brief Clear previous decimal if FLAG_PENDING_DOT is not set.
-         *
-         * Internal helper for _handleSpecialChars(). Not typically called directly.
-         *
-         * @param minCol Minimum valid column for decimal
-         * @param maxCol Maximum valid column for decimal
-         * @param ramOffset RAM offset for decimal (-1, 0, or +1)
-         */
-        void _dotClearPrev(int8_t minCol, int8_t maxCol, int8_t ramOffset);
-
-        /**
          * @brief Clear current decimal (overwrite).
          *
-         * Internal helper for _handleSpecialChars(). Not typically called directly.
+         * Internal helper for display-specific write() implementations.
          *
          * @param minCol Minimum valid column
          * @param maxCol Maximum valid column
@@ -350,71 +327,13 @@ class SegLCDLib : public Print {
         /**
          * @brief Clear colon if its flag is not set.
          *
-         * Internal helper for _handleSpecialChars(). Not typically called directly.
+         * Internal helper for display-specific write() implementations.
          *
          * @param ch Character being processed
          * @param colonCol Colon position
          * @param colonFlag Flag bit for this colon
          */
         void _colonClearIfNotFlagged(uint8_t ch, uint8_t colonCol, uint8_t colonFlag);
-
-        /**
-         * @brief Clear previous colon if FLAG_PENDING_DOT is not set.
-         *
-         * Similar to _dotClearPrev(), but for colons. Clears colon at previous position
-         * (current cursor + ramOffset) when writing a regular character.
-         *
-         * @param colonCol Colon position
-         * @param colonFlag Flag bit for this colon
-         * @param ramOffset RAM offset for colon (-1, 0, or +1)
-         */
-        void _colonClearPrev(uint8_t colonCol, uint8_t colonFlag, int8_t ramOffset);
-
-        /**
-         * @brief Unified handler for decimal/colon special characters.
-         *
-         * Combines decimal/colon write handling with automatic clearing of previous
-         * decimals. This is the primary API for LCD implementations.
-         *
-         * Call sequence:
-         * 1. Try _dotWrite() - if matched, return true (caller should skip regular char processing)
-         * 2. Try _colonWrite() (if hasColon=true) - if matched, return true
-         * 3. Call _dotClearPrev() and _dotClearCur() before regular character processing
-         * 4. Return false (caller should process regular character)
-         *
-         * Example for simple decimal-only display:
-         * \code{.cpp}
-         * if (_handleSpecialChars(ch, 0, 3, -1)) {
-         *     return 1;
-         * }
-         * // Regular character processing...
-         * writeDigit(ch);
-         * _cursorCol++;
-         * return 1;
-         * \endcode
-         *
-         * Example with colon (4-digit with decimal and colon):
-         * \code{.cpp}
-         * if (_handleSpecialChars(ch, 0, 3, -1,
-         *                         true, 2, FLAG_COLON)) {
-         *     return 1;
-         * }
-         * // Regular character processing...
-         * \endcode
-         *
-         * @param ch Character to process
-         * @param dotMin Minimum column for decimal
-         * @param dotMax Maximum column for decimal
-         * @param dotRamOffset RAM offset for decimal (-1/0/+1)
-         * @param hasColon true if colon handling needed (default: false)
-         * @param colonCol Colon column (ignored if !hasColon)
-         * @param colonFlag Colon flag bit (ignored if !hasColon)
-         * @return true if special char (. or :) was processed, false for regular chars
-         */
-        bool _handleSpecialChars(uint8_t ch,
-                                 int8_t dotMin, int8_t dotMax, int8_t dotRamOffset,
-                                 bool hasColon = false,
-                                 uint8_t colonCol = 0, uint8_t colonFlag = 0);
 
         /**
          * @brief Virtual method for setting decimal point.
