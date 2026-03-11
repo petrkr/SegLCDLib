@@ -215,7 +215,11 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
             // Top row (4 digits)
 
             // Handle decimal point (without previous-dot clear) and colon
-            if (_dotWrite(ch, DECIMAL_TOP_MIN_COL, DECIMAL_TOP_MAX_COL, -1)) {
+            if (_dotWrite(ch, DECIMAL_TOP_MIN_COL, DECIMAL_TOP_MAX_COL, DECIMAL_COL_OFFSET)) {
+                if (_cursorCol == COLON_TOP_COL) {
+                    _setColon(_cursorRow, COLON_TOP_COL, false);
+                    _clearFlag(FLAG_COLON_TOP);
+                }
                 return 1;
             }
             if (ch == ':' && _cursorCol == COLON_TOP_COL) {
@@ -223,6 +227,7 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
                     _setColon(_cursorRow, COLON_TOP_COL, true);
                     _setFlag(FLAG_COLON_TOP);
                 }
+                _setDecimal(_cursorRow, _cursorCol - 1, false);
                 return 1;
             }
             if (_isFlagSet(FLAG_PENDING_DOT)) {
@@ -256,7 +261,11 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
             // Bottom row (6 digits)
 
             // Handle decimal point (without previous-dot clear) and colon
-            if (_dotWrite(ch, DECIMAL_BOTTOM_MIN_COL, DECIMAL_BOTTOM_MAX_COL, -1)) {
+            if (_dotWrite(ch, DECIMAL_BOTTOM_MIN_COL, DECIMAL_BOTTOM_MAX_COL, DECIMAL_COL_OFFSET)) {
+                if (_cursorCol == COLON_BOTTOM_COL) {
+                    _setColon(_cursorRow, COLON_BOTTOM_COL, false);
+                    _clearFlag(FLAG_COLON_DEFAULT);
+                }
                 return 1;
             }
             // Use HW colon only at its dedicated position.
@@ -266,6 +275,7 @@ size_t SegLCD_PCF85176_6DigitSignalBatteryProgress::write(uint8_t ch) {
                     _setColon(_cursorRow, COLON_BOTTOM_COL, true);
                     _setFlag(FLAG_COLON_DEFAULT);
                 }
+                _setDecimal(_cursorRow, _cursorCol - 1, false);
                 return 1;
             }
             if (_isFlagSet(FLAG_PENDING_DOT)) {
