@@ -37,6 +37,6 @@ class SegLCD_PCF85176_OneDigit : public SegDriver_PCF85176 {
         static constexpr uint8_t DECIMAL_POINT_BIT = 0x01;
         static constexpr uint8_t DECIMAL_MIN_COL = 0;
         static constexpr uint8_t DECIMAL_MAX_COL = DIGITS-1; // All digits supports decimal
-        static constexpr int8_t DECIMAL_RAM_OFFSET = -1;  // -1: dot belongs to previous position
+        static constexpr int8_t DECIMAL_COL_OFFSET = -1;  // -1: dot belongs to previous position
 };
 #endif
