@@ -25,7 +25,6 @@ class SegLCD_HT1621_6SegBat : public SegDriver_HT1621 {
 
     private:
         void _setDecimal(uint8_t row, uint8_t col, bool state) override;
-        static constexpr uint8_t ADDR_BATT = 6;
         static constexpr uint8_t RAM_SIZE = 6;
         static constexpr uint8_t DIGITS = 6;
 
@@ -33,7 +32,7 @@ class SegLCD_HT1621_6SegBat : public SegDriver_HT1621 {
         static constexpr uint8_t DECIMAL_MIN_COL = 2;
         static constexpr uint8_t DECIMAL_MAX_COL = 4;
         static constexpr uint8_t DECIMAL_POINT_BIT = 0x80;
-        static constexpr int8_t DECIMAL_RAM_OFFSET = 0;   // 0: dot in same byte
+        static constexpr int8_t DECIMAL_COL_OFFSET = -1;  // -1: dot belongs to previous position
 
         // Signal/Battery level constants
         static constexpr uint8_t MAX_BATTERY_LEVEL = 3;

@@ -52,7 +52,7 @@ size_t SegLCD_HT1621_6SegBat::write(uint8_t ch) {
     }
 
     // Handle decimal point - only set, don't clear previous
-    if (_dotWrite(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, -1)) {
+    if (_dotWrite(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, DECIMAL_COL_OFFSET)) {
         return 1;
     }
 
