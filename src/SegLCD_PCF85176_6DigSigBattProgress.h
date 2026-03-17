@@ -39,12 +39,14 @@ class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
         void setWheel(uint16_t value);
         void setLabels(LabelFlags labels);
         void clearLabels(LabelFlags labels);
-        void setCursor(uint8_t row, uint8_t col);
+        void setCursor(uint8_t row, uint8_t col) override;
         size_t write(uint8_t ch) override;
 
-    private:
+    protected:
         void _setColon(uint8_t row, uint8_t col, bool state) override;
         void _setDecimal(uint8_t row, uint8_t col, bool state) override;
+
+    private:
         static constexpr uint8_t ADDR_SIGNAL_BATT = 0;
         static constexpr uint8_t ADDR_WHEEL = 2;
         static constexpr uint8_t ADDR_SMALL_SEGS = 6;
