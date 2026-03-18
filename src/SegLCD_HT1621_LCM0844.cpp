@@ -50,25 +50,26 @@ void SegLCD_HT1621_LCM0844::setLoadLevel(uint8_t level) {
 }
 
 void SegLCD_HT1621_LCM0844::_setDecimal(uint8_t row, uint8_t col, bool state) {
-
     if (row != 0) {
-        return; // invalid digit
+        return;
     }
 
-    if (col < DECIMAL_MIN_COL || col > DECIMAL_MAX_COL) {
-        return; // Invalid digit
-    }
+    uint8_t hw_addr = 0;
+    for (uint8_t i = 0; i < (sizeof(DECIMAL_DIGITS) / sizeof(DECIMAL_DIGITS[0])); i++) {
+        if (DECIMAL_DIGITS[i] != col) {
+            continue;
+        }
 
-    uint8_t digit_offset = 2;
-    if (_cursorCol > 4) {
-        digit_offset = 6;
-    }
+        uint8_t digit_offset = 2;
+        if (col > 4) {
+            digit_offset = 6;
+        }
 
-    uint8_t hw_addr = (col * 2) + digit_offset;
+        hw_addr = (col * 2) + digit_offset;
+        break;
+    }
 
     uint8_t data = state ? DECIMAL_POINT_BIT : 0x00;
-
-    // Decimal point is stored in RAM of the NEXT digit (col+1)
     _writeRamMasked(data, hw_addr, DECIMAL_POINT_BIT);
 }
 
@@ -77,17 +78,13 @@ size_t SegLCD_HT1621_LCM0844::write(uint8_t ch) {
         return 0;
     }
 
-    // Handle decimal point - only set, don't clear previous
-    if (_dotWrite(ch, DECIMAL_MIN_COL, DECIMAL_MAX_COL, DECIMAL_COL_OFFSET)) {
+    if (ch == '.' && _cursorCol > 0) {
+        _setDecimal(0, _cursorCol + DECIMAL_COL_OFFSET, true);
         return 1;
     }
 
-    // Clear decimal on current column when writing regular character
-    if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
-        _setDecimal(0, _cursorCol, false);
-    }
+    _setDecimal(0, _cursorCol, false);
 
-    // Regular character
     uint8_t segment_data = _mapSegments(_get_char_value(ch));
     uint8_t digit_offset = 2;
     if (_cursorCol > 2) {

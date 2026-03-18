@@ -51,9 +51,7 @@ class SegLCD_HT1621_LCM0844 : public SegDriver_HT1621 {
         static constexpr uint8_t RAM_SIZE = 16;
         static constexpr uint8_t DIGITS = 8;
 
-        // Decimal configuration (physical digits 2,3,4 have decimal points)
-        static constexpr uint8_t DECIMAL_MIN_COL = 0;
-        static constexpr uint8_t DECIMAL_MAX_COL = 7;
+        static constexpr uint8_t DECIMAL_DIGITS[4] = {0, 1, 5, 6};
         static constexpr uint8_t DECIMAL_POINT_BIT = 0x01;
         static constexpr int8_t DECIMAL_COL_OFFSET = -1;  // -1: dot belongs to previous position
 
