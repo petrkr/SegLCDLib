@@ -49,6 +49,23 @@ void SegLCD_HT1621_LCM0844::setLoadLevel(uint8_t level) {
     _writeRamMasked(data, LOAD_LEVEL_ADR, LOAD_MASK);
 }
 
+void SegLCD_HT1621_LCM0844::_updateUnits(uint32_t units, bool set) {
+    size_t count;
+    const AddressMapping* map = _getUnitMap(count);
+    for (size_t i = 0; i < count; i++) {
+        const AddressMapping& entry = map[i];
+        uint8_t bits = 0;
+        for (uint8_t j = 0; entry.bits[j].flag; j++) {
+            if (units & entry.bits[j].flag) {
+                bits |= entry.bits[j].bit;
+            }
+        }
+        if (bits) {
+            _writeRamMasked(set ? bits : 0x00, entry.address, bits);
+        }
+    }
+}
+
 void SegLCD_HT1621_LCM0844::_updateLabels(uint32_t labels, bool set) {
     size_t count;
     const AddressMapping* map = _getLabelMap(count);
@@ -81,6 +98,14 @@ void SegLCD_HT1621_LCM0844::_updateSymbols(uint32_t symbols, bool set) {
             _writeRamMasked(set ? bits : 0x00, entry.address, bits);
         }
     }
+}
+
+void SegLCD_HT1621_LCM0844::setUnits(uint32_t units) {
+    _updateUnits(units, true);
+}
+
+void SegLCD_HT1621_LCM0844::clearUnits(uint32_t units) {
+    _updateUnits(units, false);
 }
 
 void SegLCD_HT1621_LCM0844::setLabels(uint32_t labels) {
