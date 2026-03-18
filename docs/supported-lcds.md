@@ -225,7 +225,7 @@ lcd.setBattery(2);  // Medium battery
 - **Wiring:** 3 pins (CLK, DATA, CS) + Power + GND
 - **Protocol:** 3-wire serial
 - **Controller:** HT1621 (integrated)
-- **Image:** `![LCM0844](images/LCM0844.webp)`
+- **Image:** ![LCM0844](images/LCM0844.webp)
 - **Example:** `examples/HT1621/LCM0844/`
 - **Purchase:** https://www.aliexpress.com/item/1005010575036798.html
 
