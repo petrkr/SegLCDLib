@@ -49,12 +49,58 @@ void SegLCD_HT1621_LCM0844::setLoadLevel(uint8_t level) {
     _writeRamMasked(data, LOAD_LEVEL_ADR, LOAD_MASK);
 }
 
+void SegLCD_HT1621_LCM0844::_updateLabels(uint32_t labels, bool set) {
+    for (size_t i = 0; i < sizeof(LABEL_MAP) / sizeof(LABEL_MAP[0]); i++) {
+        const AddressMapping& entry = LABEL_MAP[i];
+        uint8_t bits = 0;
+        for (uint8_t j = 0; entry.bits[j].flag; j++) {
+            if (labels & entry.bits[j].flag) {
+                bits |= entry.bits[j].bit;
+            }
+        }
+        if (bits) {
+            _writeRamMasked(set ? bits : 0x00, entry.address, bits);
+        }
+    }
+}
+
+void SegLCD_HT1621_LCM0844::_updateSymbols(uint8_t symbols, bool set) {
+    for (size_t i = 0; i < sizeof(SYMBOL_MAP) / sizeof(SYMBOL_MAP[0]); i++) {
+        const AddressMapping& entry = SYMBOL_MAP[i];
+        uint8_t bits = 0;
+        for (uint8_t j = 0; entry.bits[j].flag; j++) {
+            if (symbols & entry.bits[j].flag) {
+                bits |= entry.bits[j].bit;
+            }
+        }
+        if (bits) {
+            _writeRamMasked(set ? bits : 0x00, entry.address, bits);
+        }
+    }
+}
+
+void SegLCD_HT1621_LCM0844::setLabels(uint32_t labels) {
+    _updateLabels(labels, true);
+}
+
+void SegLCD_HT1621_LCM0844::clearLabels(uint32_t labels) {
+    _updateLabels(labels, false);
+}
+
+void SegLCD_HT1621_LCM0844::setSymbols(uint8_t symbols) {
+    _updateSymbols(symbols, true);
+}
+
+void SegLCD_HT1621_LCM0844::clearSymbols(uint8_t symbols) {
+    _updateSymbols(symbols, false);
+}
+
 void SegLCD_HT1621_LCM0844::_setDecimal(uint8_t row, uint8_t col, bool state) {
     if (row != 0) {
         return;
     }
 
-    uint8_t hw_addr = 0;
+    int8_t hw_addr = -1;
     for (uint8_t i = 0; i < (sizeof(DECIMAL_DIGITS) / sizeof(DECIMAL_DIGITS[0])); i++) {
         if (DECIMAL_DIGITS[i] != col) {
             continue;
@@ -69,8 +115,12 @@ void SegLCD_HT1621_LCM0844::_setDecimal(uint8_t row, uint8_t col, bool state) {
         break;
     }
 
+    if (hw_addr < 0) {
+        return;
+    }
+
     uint8_t data = state ? DECIMAL_POINT_BIT : 0x00;
-    _writeRamMasked(data, hw_addr, DECIMAL_POINT_BIT);
+    _writeRamMasked(data, (uint8_t)hw_addr, DECIMAL_POINT_BIT);
 }
 
 size_t SegLCD_HT1621_LCM0844::write(uint8_t ch) {
