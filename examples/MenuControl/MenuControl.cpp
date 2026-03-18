@@ -3,6 +3,7 @@
 #include "VK0192Plugin.h"
 #include "HT1621_4SegDegreePlugin.h"
 #include "HT1621_6SegBatPlugin.h"
+#include "HT1621_LCM0844Plugin.h"
 #include "HT1621_RawPlugin.h"
 #include "HT1622_10Dig16SegPlugin.h"
 #include "PCF85176_4DR821BPlugin.h"
@@ -22,6 +23,7 @@ static T1T2Plugin pluginT1T2;
 static VK0192Plugin pluginVK0192;
 static HT1621_4SegDegreePlugin plugin4deg;
 static HT1621_6SegBatPlugin plugin6bat;
+static HT1621_LCM0844Plugin pluginLcm0844;
 static HT1621_RawPlugin pluginHt1621Raw;
 static HT1622_10Dig16SegPlugin plugin16seg;
 static PCF85176_4DR821BPlugin plugin4dr821;
@@ -34,7 +36,7 @@ static PCF8576_4Seg6SegMaintSegBatUnitsPlugin plugin4s6s;
 
 static LCDPlugin *plugins[] = {
     &pluginT1T2, &pluginVK0192,
-    &plugin4deg, &plugin6bat, &pluginHt1621Raw, &plugin16seg,
+    &plugin4deg, &plugin6bat, &pluginLcm0844, &pluginHt1621Raw, &plugin16seg,
     &plugin4dr821, &plugin2row4dig, &plugin6prog, &plugin1dig,
     &pluginTempHum, &pluginPcxRaw, &plugin4s6s
 };
