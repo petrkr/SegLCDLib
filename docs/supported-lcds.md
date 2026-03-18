@@ -217,6 +217,33 @@ lcd.setBattery(2);  // Medium battery
 
 ---
 
+### LCM0844
+
+**Specifications:**
+- **Digits:** 8 7-segment digits
+- **Features:** Left/right units, status labels, battery/load indicators, power-flow symbols
+- **Wiring:** 3 pins (CLK, DATA, CS) + Power + GND
+- **Protocol:** 3-wire serial
+- **Controller:** HT1621 (integrated)
+- **Image:** `![LCM0844](images/LCM0844.webp)`
+- **Example:** `examples/HT1621/LCM0844/`
+- **Purchase:** https://www.aliexpress.com/item/1005010575036798.html
+
+**Code Example:**
+```cpp
+#include "SegLCD_HT1621_LCM0844.h"
+
+const int CLK = 5, DATA = 6, CS = 7;
+SegLCD_HT1621_LCM0844 lcd(CLK, DATA, CS);
+
+lcd.init();
+lcd.print("12.34");
+lcd.setBatteryLevel(4);
+lcd.setLoadLevel(3);
+```
+
+---
+
 ### RAW LCD (HT1621)
 
 **Purpose:** Testing and prototyping with HT1621
@@ -291,7 +318,7 @@ lcd.setBattery(1);   // Low battery
 |-----------|----------|------|----------|----------|------------|
 | **PCF85176** | I2C | 2 | 0x38/0x39 | 7 | Simple |
 | **PCF8576** | I2C | 2 | 0x38/0x39 | 1 | Simple |
-| **HT1621** | 3-wire | 3 | N/A | 3 | Medium |
+| **HT1621** | 3-wire | 3 | N/A | 4 | Medium |
 | **HT1622** | 3-wire | 3 | N/A | 2 | Medium |
 | **VK0192** | 3-wire | 3 | N/A | 1 | Advanced |
 

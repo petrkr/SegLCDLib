@@ -50,6 +50,7 @@ See [Supported LCDs](docs/supported-lcds.md) for full catalog.
 | 2x4-Digit Sig/Bat/Power | PCF85176 | 2 rows, signal, battery, power |
 | 4-Digit with Degree | HT1621 | Colon, degree symbol |
 | 6-Digit with Battery | HT1621 | Battery indicator |
+| LCM0844 | HT1621 | 8 digits, labels, battery/load |
 | 10-Digit 16-Segment | HT1622 | Enhanced segments |
 | 5-Digit Signal/Battery | VK0192 | Advanced controller |
 
@@ -67,9 +68,9 @@ See [Supported LCDs](docs/supported-lcds.md) for full catalog.
 
 ## Examples
 
-14 complete examples in `examples/` directory:
+15 complete examples in `examples/` directory:
 - PCF85176: 7 examples (RawLCD, TempHum, 2Row4DigSigBatPwr, etc.)
-- HT1621: 3 examples (4DigDeg, 6DigBat, RawLCD)
+- HT1621: 4 examples (4DigDeg, 6DigBat, LCM0844, RawLCD)
 - HT1622: 2 examples (10Digit16Segment, RawLCD)
 - VK0192: 1 example (5DigSigBatProg)
 - PCF8576: 1 example (4Seg6SegMaintSegBatUnits)
