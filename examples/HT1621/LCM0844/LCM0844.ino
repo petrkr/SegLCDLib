@@ -1,6 +1,6 @@
 /**
- * @example HT1621/RawLCD/RawLCD.ino
- * @brief Example of RAW LCD display using HT1621
+ * @example HT1621/LCM0844/LCM0844.ino
+ * @brief Example of LCM0844 LCD display using HT1621
  */
 
 #include "SegLCD_HT1621_LCM0844.h"
@@ -23,6 +23,13 @@ void setup() {
   lcd.clear();
 
   delay(1000);
+
+  lcd.setLabels(SegLCD_HT1621_LCM0844::LABEL_BATT_AGM);
+  lcd.setSymbols(SegLCD_HT1621_LCM0844::SYMBOL_MUTE);
+
+  delay(2000);
+  lcd.clearLabels(SegLCD_HT1621_LCM0844::LABEL_BATT_AGM);
+  lcd.clearSymbols(SegLCD_HT1621_LCM0844::SYMBOL_MUTE);
 
   for (int i=0; i<=5; i++)
   {
