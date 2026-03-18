@@ -37,6 +37,22 @@ public:
             lcd->setLoadLevel((uint8_t)parseNumber(nextToken(&args)));
             return true;
         }
+        if (strcmp(cmd, "ls") == 0) {
+            lcd->setLabels((uint32_t)parseNumber(nextToken(&args)));
+            return true;
+        }
+        if (strcmp(cmd, "lc") == 0) {
+            lcd->clearLabels((uint32_t)parseNumber(nextToken(&args)));
+            return true;
+        }
+        if (strcmp(cmd, "ss") == 0) {
+            lcd->setSymbols((uint8_t)parseNumber(nextToken(&args)));
+            return true;
+        }
+        if (strcmp(cmd, "sc") == 0) {
+            lcd->clearSymbols((uint8_t)parseNumber(nextToken(&args)));
+            return true;
+        }
         if (strcmp(cmd, "raw") == 0) {
             const char *addrStr = nextToken(&args);
             const char *valStr = nextToken(&args);
@@ -75,9 +91,11 @@ public:
 
     void printMenu(Stream &out) override {
         printMenuLine(out, "lcm0844 commands:");
-        printMenuLine(out, "  b <0-5>         - battery level");
-        printMenuLine(out, "  load <0-5>      - load level");
-        printMenuLine(out, "  raw <addr> <v>  - write RAM byte");
+        printMenuLine(out, "  b <0-5>            - battery level");
+        printMenuLine(out, "  load <0-5>         - load level");
+        printMenuLine(out, "  ls/lc <mask>       - set/clear labels");
+        printMenuLine(out, "  ss/sc <mask>       - set/clear symbols");
+        printMenuLine(out, "  raw <addr> <v>    - write RAM byte");
         printMenuLine(out, "  rawbuf <a> <v1> <v2> ...");
     }
 };
