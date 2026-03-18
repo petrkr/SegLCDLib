@@ -197,77 +197,85 @@ class SegLCD_HT1621_LCM0844 : public SegDriver_HT1621 {
             FlagBit bits[8];  // terminated by {0, 0}
         };
 
-        static constexpr AddressMapping LABEL_MAP[] = {
-            {0x00, {
-                    {LABEL_AC, LABEL_BIT_AC},
-                    {LABEL_PV2, LABEL_BIT_PV2},
-                    {LABEL_PV1, LABEL_BIT_PV1},
-                    {LABEL_INPUT, LABEL_BIT_INPUT},
-                    {LABEL_LEFT_BATT, LABEL_BIT_LEFT_BATT},
-                    {LABEL_LEFT_MEGA_PREFIX, LABEL_BIT_LEFT_MEGA_PREFIX},
-                    {LABEL_LEFT_KILO_PREFIX, LABEL_BIT_LEFT_KILO_PREFIX}
-                }
-            },
-            {0x06, {
-                    {LABEL_LEFT_HZ, LABEL_BIT_LEFT_HZ}
-                }
-            },
-            {0x08, {
-                    {LABEL_LEFT_WATT, LABEL_BIT_LEFT_WATT},
-                    {LABEL_LEFT_AMPERE, LABEL_BIT_LEFT_AMPERE},
-                    {LABEL_LEFT_VOLT, LABEL_BIT_LEFT_VOLT},
-                    {LABEL_LEFT_PERCENT, LABEL_BIT_LEFT_PERCENT},
-                    {LABEL_CENTER_HOUR, LABEL_BIT_CENTER_HOUR},
-                    {LABEL_CENTER_MINUTE, LABEL_BIT_CENTER_MINUTE},
-                    {LABEL_LEFT_WATT_HOUR_SUFFIX, LABEL_BIT_LEFT_WATT_HOUR_SUFFIX}
-                }
-            },
-            {0x0E, {
-                    {LABEL_OUTPUT, LABEL_BIT_OUTPUT},
-                    {LABEL_RIGHT_BATT, LABEL_BIT_RIGHT_BATT},
-                    {LABEL_LOAD, LABEL_BIT_LOAD},
-                    {LABEL_RIGHT_KILO_PREFIX, LABEL_BIT_RIGHT_KILO_PREFIX},
-                    {LABEL_ERROR, LABEL_BIT_ERROR}
-                }
-            },
-            {0x14, {
-                    {LABEL_RIGHT_HZ, LABEL_BIT_RIGHT_HZ}
-                }
-            },
-            {0x16, {
-                    {LABEL_RIGHT_WATT, LABEL_BIT_RIGHT_WATT},
-                    {LABEL_RIGHT_AMPERE, LABEL_BIT_RIGHT_AMPERE},
-                    {LABEL_RIGHT_VOLT, LABEL_BIT_RIGHT_VOLT},
-                    {LABEL_RIGHT_PERCENT, LABEL_BIT_RIGHT_PERCENT},
-                    {LABEL_OVERLOAD, LABEL_BIT_OVERLOAD}
-                }
-            },
-            {0x1A, {
-                    {LABEL_BATT_AGM, LABEL_BIT_BATT_AGM},
-                    {LABEL_BATT_FLD, LABEL_BIT_BATT_FLD},
-                    {LABEL_BATT_USER, LABEL_BIT_BATT_USER}
-                }
-            },
-            {0x1C, {
-                    {LABEL_RIGHT_WATT_HOUR_SUFFIX, LABEL_BIT_RIGHT_WATT_HOUR_SUFFIX}
-                }
-            },
-            {0x1E, {
-                    {LABEL_RIGHT_MEGA_PREFIX, LABEL_BIT_RIGHT_MEGA_PREFIX}
-                }
-            },
-        };
+        static const AddressMapping* _getLabelMap(size_t &count) {
+            static constexpr AddressMapping map[] = {
+                {0x00, {
+                        {LABEL_AC, LABEL_BIT_AC},
+                        {LABEL_PV2, LABEL_BIT_PV2},
+                        {LABEL_PV1, LABEL_BIT_PV1},
+                        {LABEL_INPUT, LABEL_BIT_INPUT},
+                        {LABEL_LEFT_BATT, LABEL_BIT_LEFT_BATT},
+                        {LABEL_LEFT_MEGA_PREFIX, LABEL_BIT_LEFT_MEGA_PREFIX},
+                        {LABEL_LEFT_KILO_PREFIX, LABEL_BIT_LEFT_KILO_PREFIX}
+                    }
+                },
+                {0x06, {
+                        {LABEL_LEFT_HZ, LABEL_BIT_LEFT_HZ}
+                    }
+                },
+                {0x08, {
+                        {LABEL_LEFT_WATT, LABEL_BIT_LEFT_WATT},
+                        {LABEL_LEFT_AMPERE, LABEL_BIT_LEFT_AMPERE},
+                        {LABEL_LEFT_VOLT, LABEL_BIT_LEFT_VOLT},
+                        {LABEL_LEFT_PERCENT, LABEL_BIT_LEFT_PERCENT},
+                        {LABEL_CENTER_HOUR, LABEL_BIT_CENTER_HOUR},
+                        {LABEL_CENTER_MINUTE, LABEL_BIT_CENTER_MINUTE},
+                        {LABEL_LEFT_WATT_HOUR_SUFFIX, LABEL_BIT_LEFT_WATT_HOUR_SUFFIX}
+                    }
+                },
+                {0x0E, {
+                        {LABEL_OUTPUT, LABEL_BIT_OUTPUT},
+                        {LABEL_RIGHT_BATT, LABEL_BIT_RIGHT_BATT},
+                        {LABEL_LOAD, LABEL_BIT_LOAD},
+                        {LABEL_RIGHT_KILO_PREFIX, LABEL_BIT_RIGHT_KILO_PREFIX},
+                        {LABEL_ERROR, LABEL_BIT_ERROR}
+                    }
+                },
+                {0x14, {
+                        {LABEL_RIGHT_HZ, LABEL_BIT_RIGHT_HZ}
+                    }
+                },
+                {0x16, {
+                        {LABEL_RIGHT_WATT, LABEL_BIT_RIGHT_WATT},
+                        {LABEL_RIGHT_AMPERE, LABEL_BIT_RIGHT_AMPERE},
+                        {LABEL_RIGHT_VOLT, LABEL_BIT_RIGHT_VOLT},
+                        {LABEL_RIGHT_PERCENT, LABEL_BIT_RIGHT_PERCENT},
+                        {LABEL_OVERLOAD, LABEL_BIT_OVERLOAD}
+                    }
+                },
+                {0x1A, {
+                        {LABEL_BATT_AGM, LABEL_BIT_BATT_AGM},
+                        {LABEL_BATT_FLD, LABEL_BIT_BATT_FLD},
+                        {LABEL_BATT_USER, LABEL_BIT_BATT_USER}
+                    }
+                },
+                {0x1C, {
+                        {LABEL_RIGHT_WATT_HOUR_SUFFIX, LABEL_BIT_RIGHT_WATT_HOUR_SUFFIX}
+                    }
+                },
+                {0x1E, {
+                        {LABEL_RIGHT_MEGA_PREFIX, LABEL_BIT_RIGHT_MEGA_PREFIX}
+                    }
+                },
+            };
+            count = sizeof(map) / sizeof(map[0]);
+            return map;
+        }
 
-        static constexpr AddressMapping SYMBOL_MAP[] = {
-            {0x00, {{SYMBOL_LEFT_ARROWS, SYMBOL_BIT_LEFT_ARROWS}}},
-            {0x0C, {{SYMBOL_CENTER_FRAME, SYMBOL_BIT_CENTER_FRAME}}},
-            {0x0E, {{SYMBOL_CLOCK, SYMBOL_BIT_CLOCK}, {SYMBOL_MAINTENANCE, SYMBOL_BIT_MAINTENANCE}, {SYMBOL_WARNING_TRIANGLE, SYMBOL_BIT_WARNING_TRIANGLE}}},
-            {0x16, {{SYMBOL_RIGHT_ARROWS, SYMBOL_BIT_RIGHT_ARROWS}, {SYMBOL_UNDERLINES, SYMBOL_BIT_UNDERLINES}, {SYMBOL_MUTE, SYMBOL_BIT_MUTE}}},
-            {0x18, {{SYMBOL_BULB, SYMBOL_BIT_BULB}, {SYMBOL_MIDDLE_CIRCLE, SYMBOL_BIT_MIDDLE_CIRCLE}, {SYMBOL_LINE_TO_BULB, SYMBOL_BIT_LINE_TO_BULB}}},
-            {0x1A, {{SYMBOL_DOWN_ARROW_FROM_MID, SYMBOL_BIT_DOWN_ARROW_FROM_MID}, {SYMBOL_UP_ARROW_TO_MID, SYMBOL_BIT_UP_ARROW_TO_MID}, {SYMBOL_DOWN_ARROW_TO_BATT, SYMBOL_BIT_DOWN_ARROW_TO_BATT}, {SYMBOL_UP_ARROW_FROM_BATT, SYMBOL_BIT_UP_ARROW_FROM_BATT}, {SYMBOL_AC_DC_CONVERT, SYMBOL_BIT_AC_DC_CONVERT}}},
-            {0x1C, {{SYMBOL_DC_DC_CONVERT, SYMBOL_BIT_DC_DC_CONVERT}, {SYMBOL_ARROW_FROM_DCDC_TO_ACDC, SYMBOL_BIT_ARROW_FROM_DCDC_TO_ACDC}}},
-            {0x1E, {{SYMBOL_AC_LINE, SYMBOL_BIT_AC_LINE}, {SYMBOL_AC_SYMBOL, SYMBOL_BIT_AC_SYMBOL}, {SYMBOL_PV2_SYMBOL, SYMBOL_BIT_PV2_SYMBOL}, {SYMBOL_PV1_SYMBOL, SYMBOL_BIT_PV1_SYMBOL}, {SYMBOL_LINE_DCDC_TO_BATT, SYMBOL_BIT_LINE_DCDC_TO_BATT}, {SYMBOL_LINE_PV2_TO_DCDC, SYMBOL_BIT_LINE_PV2_TO_DCDC}, {SYMBOL_LINE_PV1_TO_DCDC, SYMBOL_BIT_LINE_PV1_TO_DCDC}}},
-        };
+        static const AddressMapping* _getSymbolMap(size_t &count) {
+            static constexpr AddressMapping map[] = {
+                {0x00, {{SYMBOL_LEFT_ARROWS, SYMBOL_BIT_LEFT_ARROWS}}},
+                {0x0C, {{SYMBOL_CENTER_FRAME, SYMBOL_BIT_CENTER_FRAME}}},
+                {0x0E, {{SYMBOL_CLOCK, SYMBOL_BIT_CLOCK}, {SYMBOL_MAINTENANCE, SYMBOL_BIT_MAINTENANCE}, {SYMBOL_WARNING_TRIANGLE, SYMBOL_BIT_WARNING_TRIANGLE}}},
+                {0x16, {{SYMBOL_RIGHT_ARROWS, SYMBOL_BIT_RIGHT_ARROWS}, {SYMBOL_UNDERLINES, SYMBOL_BIT_UNDERLINES}, {SYMBOL_MUTE, SYMBOL_BIT_MUTE}}},
+                {0x18, {{SYMBOL_BULB, SYMBOL_BIT_BULB}, {SYMBOL_MIDDLE_CIRCLE, SYMBOL_BIT_MIDDLE_CIRCLE}, {SYMBOL_LINE_TO_BULB, SYMBOL_BIT_LINE_TO_BULB}}},
+                {0x1A, {{SYMBOL_DOWN_ARROW_FROM_MID, SYMBOL_BIT_DOWN_ARROW_FROM_MID}, {SYMBOL_UP_ARROW_TO_MID, SYMBOL_BIT_UP_ARROW_TO_MID}, {SYMBOL_DOWN_ARROW_TO_BATT, SYMBOL_BIT_DOWN_ARROW_TO_BATT}, {SYMBOL_UP_ARROW_FROM_BATT, SYMBOL_BIT_UP_ARROW_FROM_BATT}, {SYMBOL_AC_DC_CONVERT, SYMBOL_BIT_AC_DC_CONVERT}}},
+                {0x1C, {{SYMBOL_DC_DC_CONVERT, SYMBOL_BIT_DC_DC_CONVERT}, {SYMBOL_ARROW_FROM_DCDC_TO_ACDC, SYMBOL_BIT_ARROW_FROM_DCDC_TO_ACDC}}},
+                {0x1E, {{SYMBOL_AC_LINE, SYMBOL_BIT_AC_LINE}, {SYMBOL_AC_SYMBOL, SYMBOL_BIT_AC_SYMBOL}, {SYMBOL_PV2_SYMBOL, SYMBOL_BIT_PV2_SYMBOL}, {SYMBOL_PV1_SYMBOL, SYMBOL_BIT_PV1_SYMBOL}, {SYMBOL_LINE_DCDC_TO_BATT, SYMBOL_BIT_LINE_DCDC_TO_BATT}, {SYMBOL_LINE_PV2_TO_DCDC, SYMBOL_BIT_LINE_PV2_TO_DCDC}, {SYMBOL_LINE_PV1_TO_DCDC, SYMBOL_BIT_LINE_PV1_TO_DCDC}}},
+            };
+            count = sizeof(map) / sizeof(map[0]);
+            return map;
+        }
 
         void _setDecimal(uint8_t row, uint8_t col, bool state) override;
 

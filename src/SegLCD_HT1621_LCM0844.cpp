@@ -50,8 +50,10 @@ void SegLCD_HT1621_LCM0844::setLoadLevel(uint8_t level) {
 }
 
 void SegLCD_HT1621_LCM0844::_updateLabels(uint32_t labels, bool set) {
-    for (size_t i = 0; i < sizeof(LABEL_MAP) / sizeof(LABEL_MAP[0]); i++) {
-        const AddressMapping& entry = LABEL_MAP[i];
+    size_t count;
+    const AddressMapping* map = _getLabelMap(count);
+    for (size_t i = 0; i < count; i++) {
+        const AddressMapping& entry = map[i];
         uint8_t bits = 0;
         for (uint8_t j = 0; entry.bits[j].flag; j++) {
             if (labels & entry.bits[j].flag) {
@@ -65,8 +67,10 @@ void SegLCD_HT1621_LCM0844::_updateLabels(uint32_t labels, bool set) {
 }
 
 void SegLCD_HT1621_LCM0844::_updateSymbols(uint32_t symbols, bool set) {
-    for (size_t i = 0; i < sizeof(SYMBOL_MAP) / sizeof(SYMBOL_MAP[0]); i++) {
-        const AddressMapping& entry = SYMBOL_MAP[i];
+    size_t count;
+    const AddressMapping* map = _getSymbolMap(count);
+    for (size_t i = 0; i < count; i++) {
+        const AddressMapping& entry = map[i];
         uint8_t bits = 0;
         for (uint8_t j = 0; entry.bits[j].flag; j++) {
             if (symbols & entry.bits[j].flag) {
