@@ -27,9 +27,9 @@ bool mcTermAnsiEnabled();
 const char *mcAnsi(const char *code);
 
 // Helper functions
-static long parseNumber(const char *s) {
+static unsigned long parseNumber(const char *s) {
     if (!s) return 0;
-    return strtol(s, nullptr, 0);
+    return strtoul(s, nullptr, 0);
 }
 
 static inline bool parseDriveMode(const char *s, ModeDrive &out) {
