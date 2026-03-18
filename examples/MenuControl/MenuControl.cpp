@@ -3,6 +3,7 @@
 #include "VK0192Plugin.h"
 #include "HT1621_4SegDegreePlugin.h"
 #include "HT1621_6SegBatPlugin.h"
+#include "HT1621_RawPlugin.h"
 #include "HT1622_10Dig16SegPlugin.h"
 #include "PCF85176_4DR821BPlugin.h"
 #include "PCF85176_2Row4DigSigBatPwrPlugin.h"
@@ -21,6 +22,7 @@ static T1T2Plugin pluginT1T2;
 static VK0192Plugin pluginVK0192;
 static HT1621_4SegDegreePlugin plugin4deg;
 static HT1621_6SegBatPlugin plugin6bat;
+static HT1621_RawPlugin pluginHt1621Raw;
 static HT1622_10Dig16SegPlugin plugin16seg;
 static PCF85176_4DR821BPlugin plugin4dr821;
 static PCF85176_2Row4DigSigBatPwrPlugin plugin2row4dig;
@@ -32,7 +34,7 @@ static PCF8576_4Seg6SegMaintSegBatUnitsPlugin plugin4s6s;
 
 static LCDPlugin *plugins[] = {
     &pluginT1T2, &pluginVK0192,
-    &plugin4deg, &plugin6bat, &plugin16seg,
+    &plugin4deg, &plugin6bat, &pluginHt1621Raw, &plugin16seg,
     &plugin4dr821, &plugin2row4dig, &plugin6prog, &plugin1dig,
     &pluginTempHum, &pluginPcxRaw, &plugin4s6s
 };
@@ -364,6 +366,12 @@ static const char *biasModeName(ModeBias mode) {
     }
 }
 
+static bool isRawPlugin(const LCDPlugin *plugin) {
+    if (!plugin) return false;
+    const char *pluginName = plugin->name();
+    return strcmp(pluginName, "pcx85_raw") == 0 || strcmp(pluginName, "ht1621_raw") == 0;
+}
+
 static void initBacklightIfConfigured() {
     if (!activeLCD || config.backlight < 0) return;
     activeLCD->initBacklight(config.backlight, config.backlightMode);
@@ -407,7 +415,7 @@ static void printConfigSummary(Stream &out) {
             out.print("Power pin: ");
             out.println(config.power);
         }
-        if (strcmp(plugins[config.displayId]->name(), "pcx85_raw") == 0) {
+        if (isRawPlugin(plugins[config.displayId])) {
             out.print("Drive mode: ");
             out.println(driveModeName(config.rawDrive));
             out.print("Bias mode: ");

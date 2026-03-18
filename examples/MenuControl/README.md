@@ -15,6 +15,8 @@ Pluginable menu control system for SegLCDLib displays. Supports multiple LCD typ
 - **T1T2**: PCF85176 I2C controller with temperature/humidity labels
 - **VK0192**: 5-digit display with signal/battery/progress indicators
 - **2Row4DigSigBatPwr**: 2x4-digit display with signal/battery/power
+- **pcx85_raw**: Raw RAM access for PCF85176/PCF8576 prototyping
+- **ht1621_raw**: Raw RAM access for HT1621 prototyping
 
 ## Usage
 
