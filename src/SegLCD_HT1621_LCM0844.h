@@ -55,17 +55,38 @@ class SegLCD_HT1621_LCM0844 : public SegDriver_HT1621 {
             LABEL_BATT_USER              = (1UL << 30),
         } LabelFlags;
 
-        typedef enum : uint8_t {
-            SYMBOL_CLOCK            = (1U << 0),
-            SYMBOL_MAINTENANCE      = (1U << 1),
-            SYMBOL_WARNING_TRIANGLE = (1U << 2),
+        typedef enum : uint32_t {
+            SYMBOL_CLOCK                = (1UL << 0),
+            SYMBOL_MAINTENANCE          = (1UL << 1),
+            SYMBOL_WARNING_TRIANGLE     = (1UL << 2),
 
-            SYMBOL_LEFT_ARROWS      = (1U << 3),
-            SYMBOL_RIGHT_ARROWS     = (1U << 4),
-            SYMBOL_UNDERLINES       = (1U << 5),
-            SYMBOL_MUTE             = (1U << 6),
+            SYMBOL_LEFT_ARROWS          = (1UL << 3),
+            SYMBOL_RIGHT_ARROWS         = (1UL << 4),
+            SYMBOL_UNDERLINES           = (1UL << 5),
+            SYMBOL_MUTE                 = (1UL << 6),
 
-            SYMBOL_CENTER_FRAME     = (1U << 7),
+            SYMBOL_CENTER_FRAME         = (1UL << 7),
+
+            SYMBOL_BULB                 = (1UL << 8),
+            SYMBOL_MIDDLE_CIRCLE        = (1UL << 9),
+            SYMBOL_LINE_TO_BULB         = (1UL << 10),
+
+            SYMBOL_DOWN_ARROW_FROM_MID  = (1UL << 11),
+            SYMBOL_UP_ARROW_TO_MID      = (1UL << 12),
+            SYMBOL_DOWN_ARROW_TO_BATT   = (1UL << 13),
+            SYMBOL_UP_ARROW_FROM_BATT   = (1UL << 14),
+            SYMBOL_AC_DC_CONVERT        = (1UL << 15),
+
+            SYMBOL_DC_DC_CONVERT        = (1UL << 16),
+            SYMBOL_ARROW_FROM_DCDC_TO_ACDC = (1UL << 17),
+
+            SYMBOL_AC_LINE              = (1UL << 18),
+            SYMBOL_AC_SYMBOL            = (1UL << 19),
+            SYMBOL_PV2_SYMBOL           = (1UL << 20),
+            SYMBOL_PV1_SYMBOL           = (1UL << 21),
+            SYMBOL_LINE_DCDC_TO_BATT    = (1UL << 22),
+            SYMBOL_LINE_PV2_TO_DCDC     = (1UL << 23),
+            SYMBOL_LINE_PV1_TO_DCDC     = (1UL << 24),
         } SymbolFlags;
 
         SegLCD_HT1621_LCM0844(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read = -1);
@@ -74,8 +95,8 @@ class SegLCD_HT1621_LCM0844 : public SegDriver_HT1621 {
         void setLoadLevel(uint8_t level);
         void setLabels(uint32_t labels);
         void clearLabels(uint32_t labels);
-        void setSymbols(uint8_t symbols);
-        void clearSymbols(uint8_t symbols);
+        void setSymbols(uint32_t symbols);
+        void clearSymbols(uint32_t symbols);
         size_t write(uint8_t ch) override;
 
     private:
@@ -122,14 +143,31 @@ class SegLCD_HT1621_LCM0844 : public SegDriver_HT1621 {
         static constexpr uint8_t LABEL_BIT_RIGHT_MEGA_PREFIX     = 0x20;
 
         // Symbol bit constants
-        static constexpr uint8_t SYMBOL_BIT_LEFT_ARROWS      = 0x10;
-        static constexpr uint8_t SYMBOL_BIT_CENTER_FRAME     = 0x01;
-        static constexpr uint8_t SYMBOL_BIT_CLOCK            = 0x10;
-        static constexpr uint8_t SYMBOL_BIT_MAINTENANCE      = 0x20;
-        static constexpr uint8_t SYMBOL_BIT_WARNING_TRIANGLE = 0x80;
-        static constexpr uint8_t SYMBOL_BIT_RIGHT_ARROWS     = 0x02;
-        static constexpr uint8_t SYMBOL_BIT_UNDERLINES       = 0x01;
-        static constexpr uint8_t SYMBOL_BIT_MUTE             = 0x04;
+        static constexpr uint8_t SYMBOL_BIT_LEFT_ARROWS          = 0x10;
+        static constexpr uint8_t SYMBOL_BIT_CENTER_FRAME         = 0x01;
+        static constexpr uint8_t SYMBOL_BIT_CLOCK                = 0x10;
+        static constexpr uint8_t SYMBOL_BIT_MAINTENANCE          = 0x20;
+        static constexpr uint8_t SYMBOL_BIT_WARNING_TRIANGLE     = 0x80;
+        static constexpr uint8_t SYMBOL_BIT_RIGHT_ARROWS         = 0x02;
+        static constexpr uint8_t SYMBOL_BIT_UNDERLINES           = 0x01;
+        static constexpr uint8_t SYMBOL_BIT_MUTE                 = 0x04;
+        static constexpr uint8_t SYMBOL_BIT_BULB                 = 0x40;
+        static constexpr uint8_t SYMBOL_BIT_MIDDLE_CIRCLE        = 0x20;
+        static constexpr uint8_t SYMBOL_BIT_LINE_TO_BULB         = 0x10;
+        static constexpr uint8_t SYMBOL_BIT_DOWN_ARROW_FROM_MID  = 0x01;
+        static constexpr uint8_t SYMBOL_BIT_UP_ARROW_TO_MID      = 0x02;
+        static constexpr uint8_t SYMBOL_BIT_DOWN_ARROW_TO_BATT   = 0x04;
+        static constexpr uint8_t SYMBOL_BIT_UP_ARROW_FROM_BATT   = 0x08;
+        static constexpr uint8_t SYMBOL_BIT_AC_DC_CONVERT        = 0x10;
+        static constexpr uint8_t SYMBOL_BIT_DC_DC_CONVERT        = 0x10;
+        static constexpr uint8_t SYMBOL_BIT_ARROW_FROM_DCDC_TO_ACDC = 0x20;
+        static constexpr uint8_t SYMBOL_BIT_AC_LINE              = 0x01;
+        static constexpr uint8_t SYMBOL_BIT_AC_SYMBOL            = 0x02;
+        static constexpr uint8_t SYMBOL_BIT_PV2_SYMBOL           = 0x04;
+        static constexpr uint8_t SYMBOL_BIT_PV1_SYMBOL           = 0x08;
+        static constexpr uint8_t SYMBOL_BIT_LINE_DCDC_TO_BATT    = 0x10;
+        static constexpr uint8_t SYMBOL_BIT_LINE_PV2_TO_DCDC     = 0x40;
+        static constexpr uint8_t SYMBOL_BIT_LINE_PV1_TO_DCDC     = 0x80;
 
         static constexpr uint8_t RAM_SIZE = 16;
         static constexpr uint8_t DIGITS = 8;
@@ -225,12 +263,16 @@ class SegLCD_HT1621_LCM0844 : public SegDriver_HT1621 {
             {0x0C, {{SYMBOL_CENTER_FRAME, SYMBOL_BIT_CENTER_FRAME}}},
             {0x0E, {{SYMBOL_CLOCK, SYMBOL_BIT_CLOCK}, {SYMBOL_MAINTENANCE, SYMBOL_BIT_MAINTENANCE}, {SYMBOL_WARNING_TRIANGLE, SYMBOL_BIT_WARNING_TRIANGLE}}},
             {0x16, {{SYMBOL_RIGHT_ARROWS, SYMBOL_BIT_RIGHT_ARROWS}, {SYMBOL_UNDERLINES, SYMBOL_BIT_UNDERLINES}, {SYMBOL_MUTE, SYMBOL_BIT_MUTE}}},
+            {0x18, {{SYMBOL_BULB, SYMBOL_BIT_BULB}, {SYMBOL_MIDDLE_CIRCLE, SYMBOL_BIT_MIDDLE_CIRCLE}, {SYMBOL_LINE_TO_BULB, SYMBOL_BIT_LINE_TO_BULB}}},
+            {0x1A, {{SYMBOL_DOWN_ARROW_FROM_MID, SYMBOL_BIT_DOWN_ARROW_FROM_MID}, {SYMBOL_UP_ARROW_TO_MID, SYMBOL_BIT_UP_ARROW_TO_MID}, {SYMBOL_DOWN_ARROW_TO_BATT, SYMBOL_BIT_DOWN_ARROW_TO_BATT}, {SYMBOL_UP_ARROW_FROM_BATT, SYMBOL_BIT_UP_ARROW_FROM_BATT}, {SYMBOL_AC_DC_CONVERT, SYMBOL_BIT_AC_DC_CONVERT}}},
+            {0x1C, {{SYMBOL_DC_DC_CONVERT, SYMBOL_BIT_DC_DC_CONVERT}, {SYMBOL_ARROW_FROM_DCDC_TO_ACDC, SYMBOL_BIT_ARROW_FROM_DCDC_TO_ACDC}}},
+            {0x1E, {{SYMBOL_AC_LINE, SYMBOL_BIT_AC_LINE}, {SYMBOL_AC_SYMBOL, SYMBOL_BIT_AC_SYMBOL}, {SYMBOL_PV2_SYMBOL, SYMBOL_BIT_PV2_SYMBOL}, {SYMBOL_PV1_SYMBOL, SYMBOL_BIT_PV1_SYMBOL}, {SYMBOL_LINE_DCDC_TO_BATT, SYMBOL_BIT_LINE_DCDC_TO_BATT}, {SYMBOL_LINE_PV2_TO_DCDC, SYMBOL_BIT_LINE_PV2_TO_DCDC}, {SYMBOL_LINE_PV1_TO_DCDC, SYMBOL_BIT_LINE_PV1_TO_DCDC}}},
         };
 
         void _setDecimal(uint8_t row, uint8_t col, bool state) override;
 
         void _updateLabels(uint32_t labels, bool set);
-        void _updateSymbols(uint8_t symbols, bool set);
+        void _updateSymbols(uint32_t symbols, bool set);
 
         uint8_t _mapSegments(uint8_t val);
 };

@@ -46,11 +46,11 @@ public:
             return true;
         }
         if (strcmp(cmd, "ss") == 0) {
-            lcd->setSymbols((uint8_t)parseNumber(nextToken(&args)));
+            lcd->setSymbols((uint32_t)parseNumber(nextToken(&args)));
             return true;
         }
         if (strcmp(cmd, "sc") == 0) {
-            lcd->clearSymbols((uint8_t)parseNumber(nextToken(&args)));
+            lcd->clearSymbols((uint32_t)parseNumber(nextToken(&args)));
             return true;
         }
         if (strcmp(cmd, "raw") == 0) {

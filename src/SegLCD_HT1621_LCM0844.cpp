@@ -64,7 +64,7 @@ void SegLCD_HT1621_LCM0844::_updateLabels(uint32_t labels, bool set) {
     }
 }
 
-void SegLCD_HT1621_LCM0844::_updateSymbols(uint8_t symbols, bool set) {
+void SegLCD_HT1621_LCM0844::_updateSymbols(uint32_t symbols, bool set) {
     for (size_t i = 0; i < sizeof(SYMBOL_MAP) / sizeof(SYMBOL_MAP[0]); i++) {
         const AddressMapping& entry = SYMBOL_MAP[i];
         uint8_t bits = 0;
@@ -87,11 +87,11 @@ void SegLCD_HT1621_LCM0844::clearLabels(uint32_t labels) {
     _updateLabels(labels, false);
 }
 
-void SegLCD_HT1621_LCM0844::setSymbols(uint8_t symbols) {
+void SegLCD_HT1621_LCM0844::setSymbols(uint32_t symbols) {
     _updateSymbols(symbols, true);
 }
 
-void SegLCD_HT1621_LCM0844::clearSymbols(uint8_t symbols) {
+void SegLCD_HT1621_LCM0844::clearSymbols(uint32_t symbols) {
     _updateSymbols(symbols, false);
 }
 
