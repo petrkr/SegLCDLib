@@ -32,6 +32,23 @@ void SegLCD_HT1621_LCM0844::setBatteryLevel(uint8_t level) {
     _writeRamMasked(data, BATTERY_LEVEL_ADR, BATTERY_MASK);
 }
 
+void SegLCD_HT1621_LCM0844::setLoadLevel(uint8_t level) {
+
+    //if (level > MAX_LOAD_LEVEL)
+    //    level = MAX_LOAD_LEVEL;
+
+    uint8_t data = 0;
+
+    if (level >= 1) data |= 0x80; // outline
+    if (level >= 2) data |= 0x08; // line 1
+    if (level >= 3) data |= 0x04; // line 2
+    if (level >= 4) data |= 0x02; // line 3
+    if (level >= 5) data |= 0x01; // line 4
+
+    // Use masked write to preserve digit segments (only modify battery bit 0x80)
+    _writeRamMasked(data, LOAD_LEVEL_ADR, LOAD_MASK);
+}
+
 void SegLCD_HT1621_LCM0844::_setDecimal(uint8_t row, uint8_t col, bool state) {
 
     if (row != 0) {

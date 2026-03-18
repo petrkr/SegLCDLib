@@ -26,8 +26,8 @@ void setup() {
 
   for (int i=0; i<=5; i++)
   {
-    lcd.setBatteryLevel(i);
-    delay(1000);
+    lcd.setLoadLevel(i);
+    delay(500);
   }
 
   // Write at address 0 one byte

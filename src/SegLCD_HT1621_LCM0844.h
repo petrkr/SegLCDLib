@@ -19,6 +19,7 @@ class SegLCD_HT1621_LCM0844 : public SegDriver_HT1621 {
         SegLCD_HT1621_LCM0844(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read = -1);
         void init() override;
         void setBatteryLevel(uint8_t level);
+        void setLoadLevel(uint8_t level);
         size_t write(uint8_t ch) override;
 
     private:
@@ -56,10 +57,15 @@ class SegLCD_HT1621_LCM0844 : public SegDriver_HT1621 {
         static constexpr uint8_t DECIMAL_POINT_BIT = 0x01;
         static constexpr int8_t DECIMAL_COL_OFFSET = -1;  // -1: dot belongs to previous position
 
-        // Signal/Battery level constants
+        // Battery level constants
         static constexpr uint8_t MAX_BATTERY_LEVEL = 5;
         static constexpr uint8_t BATTERY_MASK = 0x4F;
         static constexpr uint8_t BATTERY_LEVEL_ADR = 0x1C;
+
+        // Load level constants
+        static constexpr uint8_t MAX_LOAD_LEVEL = 5;
+        static constexpr uint8_t LOAD_MASK = 0x8F;
+        static constexpr uint8_t LOAD_LEVEL_ADR = 0x18;
 
         uint8_t _mapSegments(uint8_t val);
 };
