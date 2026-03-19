@@ -37,6 +37,14 @@ public:
             lcd->setLoadLevel((uint8_t)parseNumber(nextToken(&args)));
             return true;
         }
+        if (strcmp(cmd, "us") == 0) {
+            lcd->setUnits((uint32_t)parseNumber(nextToken(&args)));
+            return true;
+        }
+        if (strcmp(cmd, "uc") == 0) {
+            lcd->clearUnits((uint32_t)parseNumber(nextToken(&args)));
+            return true;
+        }
         if (strcmp(cmd, "ls") == 0) {
             lcd->setLabels((uint32_t)parseNumber(nextToken(&args)));
             return true;
@@ -60,6 +68,7 @@ public:
         printMenuLine(out, "lcm0844 commands:");
         printMenuLine(out, "  b <0-5>            - battery level");
         printMenuLine(out, "  load <0-5>         - load level");
+        printMenuLine(out, "  us/uc <mask>       - set/clear units");
         printMenuLine(out, "  ls/lc <mask>       - set/clear labels");
         printMenuLine(out, "  ss/sc <mask>       - set/clear symbols");
     }
