@@ -74,11 +74,13 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::clearLabels(uint8_t labels) {
     _writeRamMasked(0x00, ADDR_LABELS, label_bits);
 }
 
-void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setDegree(bool state) {
+void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setDegreeSymbol(bool state, uint8_t index) {
+    if (index > 0) return;
     _writeRamMasked(state ? 0x10 : 0x00, 0x0B, 0x10);
 }
 
-void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setMaintenance(bool state) {
+void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setMaintenanceSymbol(bool state, uint8_t index) {
+    if (index > 0) return;
     _writeRamMasked(state ? 0x20 : 0x00, 0x08, 0x20);
 }
 

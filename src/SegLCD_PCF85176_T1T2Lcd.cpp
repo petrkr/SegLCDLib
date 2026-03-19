@@ -50,7 +50,8 @@ void SegLCD_PCF85176_T1T2Lcd::setSignalLevel(uint8_t level) {
     _writeRam(_ramBuffer[OFFSET_SIGCLK], ADDR_SIGNAL_CLOCK);
 }
 
-void SegLCD_PCF85176_T1T2Lcd::setClockSymbol(bool status) {
+void SegLCD_PCF85176_T1T2Lcd::setClockSymbol(bool status, uint8_t index) {
+    if (index > 0) return;
 
     if (status)
         _ramBuffer[OFFSET_SIGCLK] |= SYMBOL_CLOCK_MASK;

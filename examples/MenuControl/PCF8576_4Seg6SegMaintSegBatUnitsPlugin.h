@@ -51,11 +51,11 @@ public:
             return true;
         }
         if (strcmp(cmd, "deg") == 0) {
-            lcd->setDegree(parseBool(nextToken(&args)));
+            lcd->setDegreeSymbol(parseBool(nextToken(&args)));
             return true;
         }
         if (strcmp(cmd, "maint") == 0) {
-            lcd->setMaintenance(parseBool(nextToken(&args)));
+            lcd->setMaintenanceSymbol(parseBool(nextToken(&args)));
             return true;
         }
         return false;

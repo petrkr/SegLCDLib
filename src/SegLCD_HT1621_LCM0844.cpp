@@ -124,6 +124,26 @@ void SegLCD_HT1621_LCM0844::clearSymbols(uint32_t symbols) {
     _updateSymbols(symbols, false);
 }
 
+void SegLCD_HT1621_LCM0844::setClockSymbol(bool state, uint8_t index) {
+    if (index > 0) return;
+    _writeRamMasked(state ? SYMBOL_BIT_CLOCK : 0x00, 0x0E, SYMBOL_BIT_CLOCK);
+}
+
+void SegLCD_HT1621_LCM0844::setMaintenanceSymbol(bool state, uint8_t index) {
+    if (index > 0) return;
+    _writeRamMasked(state ? SYMBOL_BIT_MAINTENANCE : 0x00, 0x0E, SYMBOL_BIT_MAINTENANCE);
+}
+
+void SegLCD_HT1621_LCM0844::setWarningSymbol(bool state, uint8_t index) {
+    if (index > 0) return;
+    _writeRamMasked(state ? SYMBOL_BIT_WARNING_TRIANGLE : 0x00, 0x0E, SYMBOL_BIT_WARNING_TRIANGLE);
+}
+
+void SegLCD_HT1621_LCM0844::setMuteSymbol(bool state, uint8_t index) {
+    if (index > 0) return;
+    _writeRamMasked(state ? SYMBOL_BIT_MUTE : 0x00, 0x16, SYMBOL_BIT_MUTE);
+}
+
 void SegLCD_HT1621_LCM0844::_setDecimal(uint8_t row, uint8_t col, bool state) {
     if (row != 0) {
         return;

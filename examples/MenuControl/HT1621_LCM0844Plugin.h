@@ -61,6 +61,22 @@ public:
             lcd->clearSymbols((uint32_t)parseNumber(nextToken(&args)));
             return true;
         }
+        if (strcmp(cmd, "clock") == 0) {
+            lcd->setClockSymbol(parseBool(nextToken(&args)));
+            return true;
+        }
+        if (strcmp(cmd, "maint") == 0) {
+            lcd->setMaintenanceSymbol(parseBool(nextToken(&args)));
+            return true;
+        }
+        if (strcmp(cmd, "warn") == 0) {
+            lcd->setWarningSymbol(parseBool(nextToken(&args)));
+            return true;
+        }
+        if (strcmp(cmd, "mute") == 0) {
+            lcd->setMuteSymbol(parseBool(nextToken(&args)));
+            return true;
+        }
         return false;
     }
 
@@ -71,6 +87,10 @@ public:
         printMenuLine(out, "  us/uc <mask>       - set/clear units");
         printMenuLine(out, "  ls/lc <mask>       - set/clear labels");
         printMenuLine(out, "  ss/sc <mask>       - set/clear symbols");
+        printMenuLine(out, "  clock <0|1>        - clock symbol");
+        printMenuLine(out, "  maint <0|1>        - maintenance symbol");
+        printMenuLine(out, "  warn <0|1>         - warning symbol");
+        printMenuLine(out, "  mute <0|1>         - mute symbol");
     }
 };
 

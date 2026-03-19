@@ -80,7 +80,7 @@ void setup() {
   lcd.print("34"); // Should remove dot at digit 1
 
   delay(2000);
-  lcd.setDegree(true);
+  lcd.setDegreeSymbol(true);
 
   lcd.setCursor(2, 0);
   lcd.print("H.e.l.l.o");

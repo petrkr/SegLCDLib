@@ -22,7 +22,7 @@ class SegLCD_HT1621_4SegDegree : public SegDriver_HT1621 {
         void init() override;
         void clear() override;
         void setCursor(uint8_t row, uint8_t col) override;
-        void setDegree(bool state);
+        void setDegreeSymbol(bool state, uint8_t index = 0);
         size_t write(uint8_t ch) override;
 
     private:

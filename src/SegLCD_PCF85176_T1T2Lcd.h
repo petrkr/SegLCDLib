@@ -35,7 +35,7 @@ class SegLCD_PCF85176_T1T2Lcd : public SegDriver_PCF85176 {
         void init() override;
         void setBatteryLevel(uint8_t value);
         void setSignalLevel(uint8_t value);
-        void setClockSymbol(bool status);
+        void setClockSymbol(bool status, uint8_t index = 0);
         void setLabels(uint8_t labels);
         void setT1T2Labels(uint8_t t1t2);
         void clearLabels(uint8_t labels);

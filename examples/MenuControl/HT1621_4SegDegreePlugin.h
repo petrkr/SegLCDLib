@@ -31,7 +31,7 @@ public:
         auto *lcd = static_cast<SegLCD_HT1621_4SegDegree*>(lcdBase);
 
         if (strcmp(cmd, "deg") == 0) {
-            lcd->setDegree(parseBool(nextToken(&args)));
+            lcd->setDegreeSymbol(parseBool(nextToken(&args)));
             return true;
         }
 

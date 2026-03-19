@@ -38,8 +38,8 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
         void setSignalLevel(uint8_t value);
         void setLabels(uint8_t labels);
         void clearLabels(uint8_t labels);
-        void setDegree(bool state);
-        void setMaintenance(bool state);
+        void setDegreeSymbol(bool state, uint8_t index = 0);
+        void setMaintenanceSymbol(bool state, uint8_t index = 0);
         void setCursor(uint8_t row, uint8_t col) override;
         size_t write(uint8_t ch) override;
 

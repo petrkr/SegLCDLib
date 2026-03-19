@@ -116,6 +116,10 @@ class SegLCD_HT1621_LCM0844 : public SegDriver_HT1621 {
         void clearLabels(uint32_t labels);
         void setSymbols(uint32_t symbols);
         void clearSymbols(uint32_t symbols);
+        void setClockSymbol(bool state, uint8_t index = 0);
+        void setMaintenanceSymbol(bool state, uint8_t index = 0);
+        void setWarningSymbol(bool state, uint8_t index = 0);
+        void setMuteSymbol(bool state, uint8_t index = 0);
         size_t write(uint8_t ch) override;
 
     private:

@@ -38,12 +38,12 @@ void setup() {
 
 void loop() {
   lcd.home();
-  lcd.setDegree(true);
+  lcd.setDegreeSymbol(true);
   lcd.print("3.17C");
   delay(5000);
 
   lcd.home();
-  lcd.setDegree(false);
+  lcd.setDegreeSymbol(false);
   lcd.print("00:56");
   delay(5000);
 }

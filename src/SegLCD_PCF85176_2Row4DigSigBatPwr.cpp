@@ -42,7 +42,8 @@ void SegLCD_PCF85176_2Row4DigSigBatPwr::setSignalLevel(uint8_t level) {
     _writeRam(_ramBuffer[OFFSET_SIGNAL], ADDR_SIGNAL);
 }
 
-void SegLCD_PCF85176_2Row4DigSigBatPwr::setPowerSymbol(bool state) {
+void SegLCD_PCF85176_2Row4DigSigBatPwr::setPowerSymbol(bool state, uint8_t index) {
+    if (index > 0) return;
     if (state) {
         _ramBuffer[OFFSET_POWER] |= POWER_BIT; // Set the decimal point bit
     } else {

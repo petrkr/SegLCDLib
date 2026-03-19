@@ -122,7 +122,8 @@ void SegLCD_VK0192_5DigSigBattProgress::clearLabels(uint16_t labels) {
     _updateLabels(labels & ~LABEL_DEGREE_C, false);
 }
 
-void SegLCD_VK0192_5DigSigBattProgress::setDegree(bool state) {
+void SegLCD_VK0192_5DigSigBattProgress::setDegreeSymbol(bool state, uint8_t index) {
+    if (index > 0) return;
     _updateLabels(LABEL_DEGREE_C, state);
 }
 

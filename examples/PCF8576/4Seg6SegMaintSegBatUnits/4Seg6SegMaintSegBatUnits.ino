@@ -26,8 +26,8 @@ void setup() {
   Serial.println("Demo");
   lcd.setSignalLevel(3);
   lcd.setBatteryLevel(2);
-  lcd.setMaintenance(true);
-  lcd.setDegree(true);
+  lcd.setMaintenanceSymbol(true);
+  lcd.setDegreeSymbol(true);
 
   lcd.setCursor(0, 0);
   lcd.print("17:37");

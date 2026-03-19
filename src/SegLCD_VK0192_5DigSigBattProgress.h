@@ -36,7 +36,7 @@ class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
         void setBatteryLevel(uint8_t value);
         void setSignalLevel(uint8_t value);
         void setProgress(uint8_t value);
-        void setDegree(bool state);
+        void setDegreeSymbol(bool state, uint8_t index = 0);
         void setLabels(uint16_t labels);
         void clearLabels(uint16_t labels);
         void setCursor(uint8_t row, uint8_t col) override;

@@ -23,7 +23,8 @@ void SegLCD_HT1621_4SegDegree::setCursor(uint8_t row, uint8_t col) {
     SegLCDLib::setCursor(row, col);
 }
 
-void SegLCD_HT1621_4SegDegree::setDegree(bool state) {
+void SegLCD_HT1621_4SegDegree::setDegreeSymbol(bool state, uint8_t index) {
+    if (index > 0) return;
     _writeSymbols(0, state); // Bit 0 is degree
 }
 
