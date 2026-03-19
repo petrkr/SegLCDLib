@@ -1,0 +1,82 @@
+#ifndef HT1621_LCM59011_PLUGIN_H
+#define HT1621_LCM59011_PLUGIN_H
+
+#include "LCDPlugin.h"
+#include "SegLCD_HT1621_LCM59011.h"
+
+class HT1621_LCM59011Plugin : public LCDPlugin {
+public:
+    const char *name() const override { return "lcm59011"; }
+
+    SegLCDLib* create(const DisplayConfig &cfg) override {
+        if (cfg.cs < 0 || cfg.wr < 0 || cfg.data < 0) {
+            Serial.println("Error: CS/WR/DATA pins required");
+            return nullptr;
+        }
+
+        auto *lcd = new SegLCD_HT1621_LCM59011(cfg.cs, cfg.data, cfg.wr);
+        initPowerPin(cfg.power);
+        lcd->init();
+        lcd->setAutoFlush(true);
+        lcd->clear();
+        return lcd;
+    }
+
+    void destroy(SegLCDLib *lcd) override {
+        delete static_cast<SegLCD_HT1621_LCM59011*>(lcd);
+    }
+
+    bool handleCommand(SegLCDLib *lcdBase, const char *cmd, char *args, Stream &out) override {
+        auto *lcd = static_cast<SegLCD_HT1621_LCM59011*>(lcdBase);
+
+        if (strcmp(cmd, "b") == 0) {
+            lcd->setBatteryLevel((uint8_t)parseNumber(nextToken(&args)));
+            return true;
+        }
+        if (strcmp(cmd, "g") == 0) {
+            lcd->setSignalLevel((uint8_t)parseNumber(nextToken(&args)));
+            return true;
+        }
+        if (strcmp(cmd, "us") == 0) {
+            lcd->setUnits((uint8_t)parseNumber(nextToken(&args)));
+            return true;
+        }
+        if (strcmp(cmd, "uc") == 0) {
+            lcd->clearUnits((uint8_t)parseNumber(nextToken(&args)));
+            return true;
+        }
+        if (strcmp(cmd, "ls") == 0) {
+            lcd->setLabels((uint8_t)parseNumber(nextToken(&args)));
+            return true;
+        }
+        if (strcmp(cmd, "lc") == 0) {
+            lcd->clearLabels((uint8_t)parseNumber(nextToken(&args)));
+            return true;
+        }
+        if (strcmp(cmd, "ss") == 0) {
+            lcd->setSymbols((uint32_t)parseNumber(nextToken(&args)));
+            return true;
+        }
+        if (strcmp(cmd, "sc") == 0) {
+            lcd->clearSymbols((uint32_t)parseNumber(nextToken(&args)));
+            return true;
+        }
+        if (strcmp(cmd, "warn") == 0) {
+            lcd->setWarningSymbol(parseBool(nextToken(&args)));
+            return true;
+        }
+        return false;
+    }
+
+    void printMenu(Stream &out) override {
+        printMenuLine(out, "lcm59011 commands:");
+        printMenuLine(out, "  b <0-6>            - battery level");
+        printMenuLine(out, "  g <0-4>            - signal level");
+        printMenuLine(out, "  us/uc <mask>       - set/clear units");
+        printMenuLine(out, "  ls/lc <mask>       - set/clear labels");
+        printMenuLine(out, "  ss/sc <mask>       - set/clear symbols");
+        printMenuLine(out, "  warn <0|1>         - warning symbol");
+    }
+};
+
+#endif
