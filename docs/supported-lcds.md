@@ -244,6 +244,36 @@ lcd.setLoadLevel(3);
 
 ---
 
+### LCM88128
+
+**Specifications:**
+- **Digits:** 8 7-segment digits
+- **Features:** Left/right units, status labels, battery/load/PV indicators, power-flow symbols
+- **Wiring:** 3 pins (CLK, DATA, CS) + Power + GND
+- **Protocol:** 3-wire serial
+- **Controller:** HT1621 (integrated)
+- **Image:** ![LCM88128](images/LCM88128.webp)
+- **Example:** `examples/HT1621/LCM88128/`
+- **Purchase:** https://www.aliexpress.com/item/1005010569015863.html
+
+**Code Example:**
+```cpp
+#include "SegLCD_HT1621_LCM88128.h"
+
+const int CLK = 5, DATA = 6, CS = 7;
+SegLCD_HT1621_LCM88128 lcd(CLK, DATA, CS);
+
+lcd.init();
+lcd.print("12.34");
+lcd.setPVLevel(4);
+lcd.setBatteryLevel(3);
+lcd.setLoadLevel(2);
+lcd.setUnits(SegLCD_HT1621_LCM88128::UNIT_RIGHT_VOLT);
+lcd.setSymbols(SegLCD_HT1621_LCM88128::SYMBOL_LINE_WIND_TO_ACDC);
+```
+
+---
+
 ### RAW LCD (HT1621)
 
 **Purpose:** Testing and prototyping with HT1621
