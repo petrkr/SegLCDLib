@@ -149,6 +149,9 @@ void SegLCD_HT1621_LCM88128::_setDecimal(uint8_t row, uint8_t col, bool state) {
         }
 
         uint8_t digit_offset = 2;
+        if (col > 2) {
+            digit_offset = 4;
+        }
         if (col > 4) {
             digit_offset = 6;
         }
