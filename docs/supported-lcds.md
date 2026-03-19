@@ -274,6 +274,35 @@ lcd.setSymbols(SegLCD_HT1621_LCM88128::SYMBOL_LINE_WIND_TO_ACDC);
 
 ---
 
+### LCM59011
+
+**Specifications:**
+- **Digits:** 4 7-segment digits
+- **Features:** Colon, wifi signal, battery indicator, MCB label, units, status symbols
+- **Wiring:** 3 pins (CLK, DATA, CS) + Power + GND
+- **Protocol:** 3-wire serial
+- **Controller:** HT1621 (integrated)
+- **Image:** ![LCM59011](images/LCM59011.webp)
+- **Example:** `examples/HT1621/LCM59011/`
+
+**Code Example:**
+```cpp
+#include "SegLCD_HT1621_LCM59011.h"
+
+const int CLK = 5, DATA = 6, CS = 7;
+SegLCD_HT1621_LCM59011 lcd(CLK, DATA, CS);
+
+lcd.init();
+lcd.print("12:3");
+lcd.setSignalLevel(4);
+lcd.setBatteryLevel(5);
+lcd.setLabels(SegLCD_HT1621_LCM59011::LABEL_MCB);
+lcd.setUnits(SegLCD_HT1621_LCM59011::UNIT_PERCENT);
+lcd.setSymbols(SegLCD_HT1621_LCM59011::SYMBOL_ECO | SegLCD_HT1621_LCM59011::SYMBOL_BLUETOOTH);
+```
+
+---
+
 ### RAW LCD (HT1621)
 
 **Purpose:** Testing and prototyping with HT1621
