@@ -105,8 +105,10 @@ class SegDriver_PCx85 : public SegLCDLib {
     uint8_t _address;      // 0x38 (SA0=0) or 0x39 (SA0=1)
     uint8_t _subaddress;   // A0-A2 bits (protocol subaddress)
 
-    // RAM buffering (minimize I2C transactions)
-    uint8_t _ramBuffer[40];  // PCF85176 has 39 bytes RAM
+    // RAM buffering is inherited from SegLCDLib
+    // Concrete LCD class allocates required size via _allocateBuffer()
+    uint8_t* _ramBuffer;
+    size_t _ramBufferSize;
 
     // Control methods
     void _writeRam();     // Send buffer to controller
@@ -116,7 +118,7 @@ class SegDriver_PCx85 : public SegLCDLib {
 
 **Features:**
 - I2C protocol (2 pins: SDA, SCL)
-- 40-byte RAM for segment data
+- Uses shared dynamic RAM buffer from `SegLCDLib`
 - I2C address set by SA0 pin (0x38 or 0x39)
 - A0-A2 are protocol subaddresses (not I2C address pins)
 - Multiplexed display support (1/3 or 1/4 duty)
@@ -139,8 +141,10 @@ class SegDriver_HT1621 : public SegLCDLib {
     uint8_t _pinDATA;   // Data pin (GPIO)
     uint8_t _pinCS;     // Chip select pin (GPIO)
 
-    // RAM buffering
-    uint8_t _ramBuffer[16];  // HT1621 has 16 bytes RAM
+    // RAM buffering is inherited from SegLCDLib
+    // Concrete LCD class allocates required size via _allocateBuffer()
+    uint8_t* _ramBuffer;
+    size_t _ramBufferSize;
 
     // 3-wire serial protocol methods
     void _writeCommand(uint8_t cmd);
@@ -151,7 +155,8 @@ class SegDriver_HT1621 : public SegLCDLib {
 
 **Features:**
 - 3-wire serial protocol: Clock, Data, Chip Select
-- 16-byte RAM (HT1621) or 32-byte RAM (HT1622)
+- Uses shared dynamic RAM buffer from `SegLCDLib`
+- Typical controller RAM capacity is 16 bytes (HT1621) or 32 bytes (HT1622), but concrete LCD classes may allocate only the used portion
 - Configurable BIAS and DRIVE modes
 - Integrated into LCD module (no separate IC on board)
 - GPIO-based (no special hardware needed)
@@ -173,8 +178,10 @@ class SegDriver_VK0192 : public SegLCDLib {
     // Same 3-wire pins as HT1621
     uint8_t _pinCLK, _pinDATA, _pinCS;
 
-    // 24 bytes × 8 bits RAM (48 4-bit addresses)
-    uint8_t _ramBuffer[24];
+    // RAM buffering is inherited from SegLCDLib
+    // Concrete LCD class allocates required size via _allocateBuffer()
+    uint8_t* _ramBuffer;
+    size_t _ramBufferSize;
 
     // Irregular addressing (non-sequential segment mapping)
     void _mapSegmentToAddress(uint8_t digit, uint8_t segment,
@@ -183,7 +190,8 @@ class SegDriver_VK0192 : public SegLCDLib {
 ```
 
 **Features:**
-- 24×8 bit RAM (48 4-bit addresses 0-47)
+- Uses shared dynamic RAM buffer from `SegLCDLib`
+- VK0192 address space is 24×8 bit RAM (48 4-bit addresses 0-47)
 - Irregular segment mapping (digits/segments not sequential in memory)
 - 4μs minimum pulse width timing
 - More complex segment addressing than HT1621/HT1622
@@ -280,11 +288,15 @@ For multi-row displays (e.g., T1T2 LCD):
 All drivers maintain an in-memory buffer mirroring controller RAM:
 
 ```cpp
-uint8_t _ramBuffer[40];  // PCF85176 has 39 bytes
+uint8_t* _ramBuffer = nullptr;
+size_t _ramBufferSize = 0;
 
-// Update display: modify buffer, then write to hardware
-_ramBuffer[0] |= 0x01;    // Set segment bit
-_writeRam();              // Send entire buffer to controller
+// Concrete LCD class allocates exact size it needs
+_allocateBuffer(RAM_SIZE);
+
+// Update display: modify cached RAM, then sync affected byte(s)
+_ramBuffer[0] |= 0x01;
+_writeRam(_ramBuffer[0], 0);
 ```
 
 **Benefits:**
@@ -302,7 +314,7 @@ Each LCD class implements `_mapSegments()` to convert logical segments to physic
 
 // Internal mapping:
 _ramBuffer[addressForDigit0] |= bitsFor5;
-_writeRam();
+_writeRam(_ramBuffer[addressForDigit0], hwAddressForDigit0);
 ```
 
 Mapping varies by:

@@ -111,7 +111,7 @@ void loop() {
 
         // Write raw segment data
         lcd._ramBuffer[addr] = value;
-        lcd._writeRam();
+        lcd._writeRam(lcd._ramBuffer[addr], addr * 2);
 
         Serial.print("Address 0x");
         Serial.print(addr, HEX);
@@ -152,10 +152,10 @@ void loop() {
         uint8_t addr = Serial.parseInt();
         uint8_t value = Serial.parseInt();
 
-        // Write to HT1621 at address
-        // (Raw class provides _writeData method)
+        // Write to controller RAM at byte index addr
+        // 3-wire drivers use nibble-oriented HW addresses
         lcd._ramBuffer[addr] = value;
-        lcd._writeRam();
+        lcd._writeRam(lcd._ramBuffer[addr], addr * 2);
 
         Serial.print("Address ");
         Serial.print(addr, HEX);
@@ -339,6 +339,7 @@ void SegLCD_PCF85176_MyDisplay::_mapSegments(uint8_t digit, uint8_t segments) {
     uint8_t addr = digit;  // Simple linear mapping (yours may differ)
 
     _ramBuffer[addr] = segments;
+    _writeRam(_ramBuffer[addr], addr * 2);
 }
 
 void SegLCD_PCF85176_MyDisplay::setBattery(uint8_t level) {
@@ -348,7 +349,7 @@ void SegLCD_PCF85176_MyDisplay::setBattery(uint8_t level) {
     _ramBuffer[_batteryAddr] &= 0xF8;  // Clear bits 0-2
     _ramBuffer[_batteryAddr] |= _batteryBits[level];
 
-    _writeRam();
+    _writeRam(_ramBuffer[_batteryAddr], _batteryAddr * 2);
 }
 
 void SegLCD_PCF85176_MyDisplay::setSignal(uint8_t bars) {
@@ -365,7 +366,7 @@ void SegLCD_PCF85176_MyDisplay::setSignal(uint8_t bars) {
 2. **Character Map:** Populate `_charMap[]` array with 7-segment patterns for each character
 3. **Segment Mapping:** Implement `_mapSegments()` based on your RAW LCD testing
 4. **Feature Methods:** Add `setBattery()`, `setSignal()`, etc. for display-specific features
-5. **RAM Buffering:** Always write to `_ramBuffer[]`, then call `_writeRam()`
+5. **RAM Buffering:** Update `_ramBuffer[]`, then sync affected byte(s) with `_writeRam(...)` or `flush(...)`
 
 ---
 
