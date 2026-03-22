@@ -15,6 +15,10 @@
  * Display-specific commands available per LCD type.
  */
 
+#if defined(ARDUINO_ARCH_AVR)
+  #error "MenuControl is not supported on AVR targets because it does not fit into available flash/RAM. Use ESP32 or another larger target."
+#endif
+
 #include "MenuControl.h"
 
 void setup() {

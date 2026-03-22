@@ -69,6 +69,10 @@ jobs:
         run: |
           while IFS= read -r sketch; do
             sketch_dir="$(dirname "$sketch")"
+            if [ "${{ matrix.fqbn }}" = "arduino:avr:uno" ] && [ "$sketch_dir" = "examples/MenuControl" ]; then
+              echo "==> $sketch_dir (skipped on AVR: does not fit into Uno flash/RAM)"
+              continue
+            fi
             echo "==> $sketch_dir"
             if [ -n "${{ matrix.additional_urls }}" ]; then
               arduino-cli compile \

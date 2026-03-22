@@ -2,6 +2,11 @@
 
 Pluginable menu control system for SegLCDLib displays. Supports multiple LCD types with configurable pins and persistent settings on ESP32.
 
+## AVR Status
+
+`MenuControl` is not intended for AVR targets such as Arduino Uno.
+It currently exceeds available flash and RAM, so use ESP32 or another larger MCU.
+
 ## Features
 
 - **Plugin-based architecture**: Easy to add new LCD types
