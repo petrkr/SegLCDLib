@@ -10,16 +10,13 @@
  * and stricter timing requirements.
  */
 class SegDriver_VK0192 : public SegDriver_3Wire {
-    #undef MAX_HW_ADDRESS
-    #undef MAX_ADDRESS
-    #define MAX_HW_ADDRESS  47
-    #define MAX_ADDRESS     47
-
     // VK0192 specific commands (not in base class)
     #define CMD_RC_32K   0b00011000  ///< System clock source, internal RC oscillator (default)
     #define CMD_EXT_32K  0b00011100  ///< System clock source, external RC oscillator
 
     public:
+        static constexpr uint8_t MAX_ADDRESS = 46; ///< Last valid start HW nibble address for byte write
+
         /**
          * @brief Constructor for VK0192 segment driver
          *

@@ -3,9 +3,7 @@
 
 
 SegDriver_VK0192::SegDriver_VK0192(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read)
-    : SegDriver_3Wire(chipselect, data, write, read) {
-    _maxAddress = 47;
-}
+    : SegDriver_3Wire(chipselect, data, write, read) {}
 
 void SegDriver_VK0192::flush(uint8_t startAddr, uint8_t length) {
     if (!_ramBuffer || startAddr >= _ramBufferSize) return;

@@ -10,11 +10,6 @@
  * including TONE commands and configurable BIAS/DRIVE modes.
  */
 class SegDriver_HT1621 : public SegDriver_3Wire {
-    #undef MAX_HW_ADDRESS
-    #undef MAX_ADDRESS
-    #define MAX_HW_ADDRESS  30
-    #define MAX_ADDRESS     30
-
     // HT1621 specific commands
     #define CMD_TONE_OFF 0b00001000  ///< Tone off command (default)
     #define CMD_TONE_ON  0b00001001  ///< Tone on command
@@ -56,6 +51,8 @@ class SegDriver_HT1621 : public SegDriver_3Wire {
         using SegLCDLib::flush;  // Inherit base flush() without parameters
 
     protected:
+        static constexpr uint8_t MAX_ADDRESS = 30; ///< Last valid start HW nibble address for byte write
+
         /**
          * @brief Set the mode of the display.
          *

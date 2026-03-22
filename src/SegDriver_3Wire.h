@@ -85,8 +85,6 @@ class SegDriver_3Wire : public SegLCDLib {
         uint8_t _data; ///< Data pin for the display
         uint8_t _cs;   ///< Chip select pin for the display
 
-        uint8_t _maxAddress; ///< Maximum address for this controller
-
         /**
          * @brief Write multiple bytes to RAM starting at specified address.
          *

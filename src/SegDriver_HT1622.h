@@ -10,11 +10,6 @@
  * and stricter timing requirements.
  */
 class SegDriver_HT1622 : public SegDriver_3Wire {
-    #undef MAX_HW_ADDRESS
-    #undef MAX_ADDRESS
-    #define MAX_HW_ADDRESS  62
-    #define MAX_ADDRESS     62
-
     // HT1622 specific commands (not in base class)
     #define CMD_TONE_OFF 0b00001000  ///< Tone off command (default)
 
@@ -25,6 +20,8 @@ class SegDriver_HT1622 : public SegDriver_3Wire {
     #define CMD_TONE_2K  0b01100000  ///< Tone frequency 2kHz
 
     public:
+        static constexpr uint8_t MAX_ADDRESS = 62; ///< Last valid start HW nibble address for byte write
+
         /**
          * @brief Constructor for HT1622 segment driver
          *

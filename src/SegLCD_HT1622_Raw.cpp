@@ -2,7 +2,7 @@
 
 
 SegLCD_HT1622_Raw::SegLCD_HT1622_Raw(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read) : SegDriver_HT1622(chipselect, data, write, read) {
-        _allocateBuffer(RAM_SIZE);
+        _allocateBuffer((MAX_ADDRESS / 2) + 1);
 }
 
 // For generic class allow access to low level functions

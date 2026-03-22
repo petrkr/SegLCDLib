@@ -3,9 +3,7 @@
 
 
 SegDriver_HT1621::SegDriver_HT1621(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read)
-    : SegDriver_3Wire(chipselect, data, write, read) {
-    _maxAddress = 30;
-}
+    : SegDriver_3Wire(chipselect, data, write, read) {}
 
 void SegDriver_HT1621::_setMode(ModeDrive drive, ModeBias bias) {
     _drive = drive; // Store the current drive mode

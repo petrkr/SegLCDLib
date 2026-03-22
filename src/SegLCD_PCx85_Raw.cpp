@@ -1,7 +1,9 @@
 #include <SegLCD_PCx85_Raw.h>
 
 
-SegLCD_PCx85_Raw::SegLCD_PCx85_Raw(TwoWire& i2c, uint8_t address, uint8_t subaddress) : SegDriver_PCx85(i2c, address, subaddress) {}
+SegLCD_PCx85_Raw::SegLCD_PCx85_Raw(TwoWire& i2c, uint8_t address, uint8_t subaddress) : SegDriver_PCx85(i2c, address, subaddress) {
+    _allocateBuffer((MAX_ADDRESS / 2) + 1);
+}
 
 void SegLCD_PCx85_Raw::init(ModeDrive drive, ModeBias bias) {
     SegDriver_PCx85::init();

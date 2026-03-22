@@ -2,7 +2,7 @@
 
 
 SegLCD_HT1621_Raw::SegLCD_HT1621_Raw(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read) : SegDriver_HT1621(chipselect, data, write, read) {
-    _allocateBuffer(RAM_SIZE);
+    _allocateBuffer((MAX_ADDRESS / 2) + 1);
 }
 
 void SegLCD_HT1621_Raw::init(ModeDrive drive, ModeBias bias) {

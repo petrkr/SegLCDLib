@@ -10,9 +10,6 @@
  * Implementation of the PCF85176 and similar I2C controllers.
  */
 class SegDriver_PCx85 : public SegLCDLib {
-    #define MAX_HW_ADDRESS  0
-    #define MAX_ADDRESS     0
-
     // Define commands
     #define CMD_LOAD_POINTER    0x00
     #define CMD_MODE            0x40
@@ -25,6 +22,7 @@ class SegDriver_PCx85 : public SegLCDLib {
     protected:
         static constexpr uint8_t DEFAULT_PCF85176_I2C_ADDRESS = 0x38;  // 56 decimal
         static constexpr uint8_t DEFAULT_SUBADDRESS = 0x00;
+        static constexpr uint8_t MAX_ADDRESS = 39; ///< Last valid start HW nibble address for byte write on a single PCx85 device
 
     public:
         /**
@@ -141,12 +139,6 @@ class SegDriver_PCx85 : public SegLCDLib {
  * @brief Implementation of the PCF85176 controllers.
  */
 class SegDriver_PCF85176 : public SegDriver_PCx85 {
-    // TODO: make this somehow better?
-    #undef MAX_HW_ADDRESS
-    #undef MAX_ADDRESS
-    #define MAX_HW_ADDRESS  39              ///< Maximum hardware address for PCF85176
-    #define MAX_ADDRESS     MAX_HW_ADDRESS  ///< Maximum usable address for LCD implementation
-
     public:
         /**
          * @brief Constructor for PCF85176 segment driver
