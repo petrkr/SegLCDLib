@@ -1,0 +1,68 @@
+name: Bug report
+description: Report a defect in an existing LCD or driver implementation
+title: "[bug] "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What is wrong?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - LCD implementation
+        - Controller driver
+        - Example sketch
+        - Documentation
+        - Build/CI
+    validations:
+      required: true
+
+  - type: input
+    id: component
+    attributes:
+      label: Affected class or example
+      placeholder: SegLCD_HT1621_LCM0844, examples/HT1621/LCM0844/LCM0844.ino
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Hardware and environment
+      description: MCU board, controller, LCD module, wiring, IDE/core version
+      placeholder: ESP32-C3, HT1621, custom 4-digit LCD, Arduino IDE 2.x
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction
+      description: Minimal steps or sketch
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation details
+      description: Mention whether this was seen on real hardware, in example output, or by inspecting buffered RAM state
+

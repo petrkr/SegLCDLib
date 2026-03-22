@@ -1,0 +1,6 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://github.com/petrkr/SegLCDLib/blob/master/docs/adding-new-lcd.md
+    about: Read the guide for adding a new LCD before opening a support request
+

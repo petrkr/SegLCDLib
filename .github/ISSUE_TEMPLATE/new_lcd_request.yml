@@ -1,0 +1,61 @@
+name: New LCD support
+description: Request support for a new LCD module or contribute mapping details
+title: "[lcd] "
+labels:
+  - enhancement
+  - lcd
+body:
+  - type: input
+    id: display_name
+    attributes:
+      label: LCD/module name
+      placeholder: LCM12345 or custom thermostat display
+    validations:
+      required: true
+
+  - type: dropdown
+    id: controller
+    attributes:
+      label: Controller
+      options:
+        - PCF85176
+        - PCF8576
+        - HT1621
+        - HT1622
+        - VK0192
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: module_details
+    attributes:
+      label: Module details
+      description: Pinout, markings, photos, datasheet links, known symbols/digits
+    validations:
+      required: true
+
+  - type: textarea
+    id: mapping
+    attributes:
+      label: Segment mapping progress
+      description: Share any RAW LCD findings or RAM address observations
+
+  - type: textarea
+    id: example_api
+    attributes:
+      label: Expected API
+      description: Which methods or indicators should the final class support?
+      placeholder: 4 digits, colon, battery, degree symbol, setBatteryLevel()
+
+  - type: dropdown
+    id: hardware_access
+    attributes:
+      label: Hardware access
+      options:
+        - I can test on real hardware
+        - I can provide mapping data only
+        - I currently cannot test
+    validations:
+      required: true
+
