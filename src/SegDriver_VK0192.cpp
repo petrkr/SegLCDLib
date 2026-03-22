@@ -14,38 +14,6 @@ void SegDriver_VK0192::clear() {
     SegLCDLib::clear();
 }
 
-void SegDriver_VK0192::_writeRam(uint8_t *data, size_t length, uint8_t address) {
-    if (!_autoFlush) {
-        return;
-    }
-    digitalWrite(_cs, LOW);
-    delayMicroseconds(1);     // CS setup time (100ns required, 1μs safe)
-
-    _sendBits(OP_WRITE, 3);
-
-    // Send 6 bit address
-    _sendBits(address, 6);
-
-    // Send data
-    for (size_t i = 0; i < length; i++) {
-        _sendBits(data[i], 8);
-    }
-
-    delayMicroseconds(1);     // CS hold time (100ns required, 1μs safe)
-    digitalWrite(_cs, HIGH);
-}
-
-void SegDriver_VK0192::_sendBits(uint16_t data, uint8_t bitCount) {
-    for (int8_t i = bitCount - 1; i >= 0; i--) {
-        digitalWrite(_data, (data >> i) & 1);
-        delayMicroseconds(1);     // Data setup time (120ns required, 1μs safe)
-        digitalWrite(_wr, LOW);
-        delayMicroseconds(4);     // Write pulse LOW: 3.34μs @ 3V (4μs safe)
-        digitalWrite(_wr, HIGH);
-        delayMicroseconds(4);     // Write pulse HIGH: 3.34μs @ 3V (4μs safe)
-    }
-}
-
 void SegDriver_VK0192::flush(uint8_t startAddr, uint8_t length) {
     if (!_ramBuffer || startAddr >= _ramBufferSize) return;
 

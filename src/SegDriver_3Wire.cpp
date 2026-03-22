@@ -50,6 +50,7 @@ void SegDriver_3Wire::_writeRam(uint8_t *data, size_t length, uint8_t address) {
         return;
     }
     digitalWrite(_cs, LOW);
+    delayMicroseconds(1);     // Satisfies the stricter CS setup timing used by supported 3-wire drivers
 
     _sendBits(OP_WRITE, 3);
 
@@ -61,6 +62,7 @@ void SegDriver_3Wire::_writeRam(uint8_t *data, size_t length, uint8_t address) {
         _sendBits(data[i], 8);
     }
 
+    delayMicroseconds(1);     // Satisfies the stricter CS hold timing used by supported 3-wire drivers
     digitalWrite(_cs, HIGH);
 }
 

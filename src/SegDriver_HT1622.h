@@ -46,18 +46,6 @@ class SegDriver_HT1622 : public SegDriver_3Wire {
          */
         void flush(uint8_t startAddr, uint8_t length) override;
         using SegLCDLib::flush;  // Inherit base flush() without parameters
-
-    protected:
-        /**
-         * @brief Override _writeRam to implement HT1622-specific timing requirements.
-         */
-        using SegDriver_3Wire::_writeRam;
-        void _writeRam(uint8_t *data, size_t length, uint8_t address = 0) override;
-
-        /**
-         * @brief Override _sendBits to implement HT1622-specific timing requirements.
-         */
-        void _sendBits(uint16_t data, uint8_t bitCount = 8) override;
 };
 
 #endif
