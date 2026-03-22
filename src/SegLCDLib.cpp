@@ -61,6 +61,7 @@ void SegLCDLib::clear() {
     if (_ramBuffer) {
         memset(_ramBuffer, 0x00, _ramBufferSize);
     }
+    flush();
     home();
 }
 

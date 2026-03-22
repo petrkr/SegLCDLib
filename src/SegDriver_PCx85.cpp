@@ -37,29 +37,6 @@ void SegDriver_PCx85::blink(BlinkFrequency frequency, BlinkMode mode) {
     _i2c.endTransmission();
 }
 
-void SegDriver_PCx85::clear() {
-    // TODO: Make this more generic or dynamic
-    uint8_t tmps[(MAX_ADDRESS / 8)+1] = { 0 };
-    uint8_t tmp14[(MAX_ADDRESS / 2)+1] = { 0 };
-
-    switch (_drive) {
-        case MODE_DRIVE_STATIC:
-            _writeRam(tmps, sizeof(tmps), 0);
-            break;
-        //TODO: Get riht size values here
-        case MODE_DRIVE_12:
-        case MODE_DRIVE_13:
-            break;
-        case MODE_DRIVE_14:
-            _writeRam(tmp14, sizeof(tmp14), 0);
-            break;
-        default:
-            break;
-    }
-
-    SegLCDLib::clear();
-}
-
 void SegDriver_PCx85::on() {
     _setMode(MODE_STATUS_ENABLED, _drive, _bias);
 }

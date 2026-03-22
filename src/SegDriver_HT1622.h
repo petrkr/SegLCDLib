@@ -33,8 +33,6 @@ class SegDriver_HT1622 : public SegDriver_3Wire {
          */
         SegDriver_HT1622(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read = -1);
 
-        void clear() override;
-
         /**
          * @brief Flush specific range of buffered changes to the display.
          *

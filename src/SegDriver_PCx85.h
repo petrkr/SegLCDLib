@@ -87,7 +87,6 @@ class SegDriver_PCx85 : public SegLCDLib {
          * @param mode Blink mode to set (default is BLINK_MODE_NORMAL)
          */
         void blink(BlinkFrequency blink = BLINK_FREQUENCY_OFF, BlinkMode mode = BLINK_MODE_NORMAL);
-        void clear() override;
         void on() override;
         void off() override;
 

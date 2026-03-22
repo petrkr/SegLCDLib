@@ -7,28 +7,6 @@ SegDriver_HT1621::SegDriver_HT1621(uint8_t chipselect, uint8_t data, uint8_t wri
     _maxAddress = 30;
 }
 
-void SegDriver_HT1621::clear() {
-    // TODO: Make this more generic or dynamic
-    uint8_t tmp[(MAX_ADDRESS / 2)+1] = { 0 };
-
-    switch (_drive) {
-        case MODE_DRIVE_STATIC:
-            break;
-        //TODO: Get right size values here
-        case MODE_DRIVE_12:
-        case MODE_DRIVE_13:
-            break;
-        case MODE_DRIVE_14:
-            _writeRam(tmp, sizeof(tmp), 0);
-            break;
-        default:
-            break;
-    }
-
-    SegLCDLib::clear();  // Always clear _ramBuffer for all drive modes
-}
-
-
 void SegDriver_HT1621::_setMode(ModeDrive drive, ModeBias bias) {
     _drive = drive; // Store the current drive mode
     uint8_t data;
