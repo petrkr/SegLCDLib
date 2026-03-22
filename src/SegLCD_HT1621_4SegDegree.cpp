@@ -49,7 +49,7 @@ void SegLCD_HT1621_4SegDegree::_setDecimal(uint8_t row, uint8_t col, bool state)
         return; // Invalid digit
     }
 
-    if (col > 1 || col < 0) {
+    if (col > 1) {
         return; // Invalid digit
     }
 
@@ -75,7 +75,7 @@ size_t SegLCD_HT1621_4SegDegree::write(uint8_t ch) {
         return 0;
     }
 
-    if (_cursorCol < 0 || _cursorCol >= DIGITS) {
+    if (_cursorCol >= DIGITS) {
         return 0;  // Invalid digit
     }
 

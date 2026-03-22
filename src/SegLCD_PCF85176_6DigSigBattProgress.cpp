@@ -166,7 +166,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::_setDecimal(uint8_t row, uint8
     uint8_t offset = 0;
     switch (row) {
         case 0:
-            if (col < 0 || col > 2) {
+            if (col > 2) {
                 return; // Invalid digit
             }
 
@@ -174,7 +174,7 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::_setDecimal(uint8_t row, uint8
             offset = OFFSET_TOP;
             break;
         case 1:
-            if (col < 0 || col > 4) {
+            if (col > 4) {
                 return; // Invalid digit
             }
 

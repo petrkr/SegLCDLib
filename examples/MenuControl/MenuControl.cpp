@@ -430,22 +430,6 @@ static void printConfigSummary(Stream &out) {
     }
 }
 
-static void selectDisplay() {
-    printPluginList(Serial);
-    Serial.print("Select display ID (0-");
-    Serial.print(pluginCount - 1);
-    Serial.print("): ");
-
-    while (!Serial.available()) delay(10);
-    int id = Serial.parseInt();
-    if (id >= 0 && id < pluginCount) {
-        config.displayId = (uint8_t)id;
-        Serial.println("OK");
-    } else {
-        Serial.println("Invalid");
-    }
-}
-
 static String readLine() {
     String line;
     while (true) {

@@ -10,6 +10,8 @@
  * including TONE commands and configurable BIAS/DRIVE modes.
  */
 class SegDriver_HT1621 : public SegDriver_3Wire {
+    #undef MAX_HW_ADDRESS
+    #undef MAX_ADDRESS
     #define MAX_HW_ADDRESS  30
     #define MAX_ADDRESS     30
 

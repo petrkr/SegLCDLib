@@ -28,7 +28,7 @@ bool mcTermAnsiEnabled();
 const char *mcAnsi(const char *code);
 
 // Helper functions
-static unsigned long parseNumber(const char *s) {
+inline unsigned long parseNumber(const char *s) {
     if (!s) return 0;
     return strtoul(s, nullptr, 0);
 }
@@ -88,8 +88,6 @@ static inline void printMenuLine(Stream &out, const char *text) {
     bool in_param = false;
     for (size_t i = 0; i < len; ++i) {
         char ch = text[i];
-        bool in_cmd = (cmd_start != SIZE_MAX && i >= cmd_start && i < cmd_end);
-
         if (!header) {
             if (ch == '<') { out.print(c_param); in_param = true; }
             if (!in_param && cmd_start != SIZE_MAX && i == cmd_start) {
@@ -172,7 +170,7 @@ static inline void initI2CBus(const DisplayConfig &cfg) {
     #endif
 }
 
-static bool parseBool(const char *s) {
+inline bool parseBool(const char *s) {
     if (!s) return false;
     if (strcmp(s, "1") == 0) return true;
     if (strcasecmp(s, "on") == 0) return true;
@@ -180,7 +178,7 @@ static bool parseBool(const char *s) {
     return false;
 }
 
-static char *nextToken(char **args) {
+inline char *nextToken(char **args) {
     if (!args || !*args) return nullptr;
     char *s = *args;
     while (*s == ' ' || *s == '\t') s++;
@@ -192,7 +190,7 @@ static char *nextToken(char **args) {
     return tok;
 }
 
-static void dumpBuffer(const SegLCDLib &lcd, Stream &out) {
+inline void dumpBuffer(const SegLCDLib &lcd, Stream &out) {
     const uint8_t *ram = lcd.getRamBuffer();
     size_t ramSize = lcd.getRamBufferSize();
     if (!ram || ramSize == 0) {

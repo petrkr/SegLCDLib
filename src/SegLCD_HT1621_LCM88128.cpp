@@ -189,7 +189,7 @@ void SegLCD_HT1621_LCM88128::_setDecimal(uint8_t row, uint8_t col, bool state) {
 }
 
 size_t SegLCD_HT1621_LCM88128::write(uint8_t ch) {
-    if (_cursorCol < 0 || _cursorCol >= DIGITS) {
+    if (_cursorCol >= DIGITS) {
         return 0;
     }
 

@@ -210,11 +210,11 @@ size_t SegLCD_VK0192_5DigSigBattProgress::write(uint8_t ch) {
     }
 
     // Clear decimal on current column when writing regular character
-    if (_cursorRow == 0 && _cursorCol >= DECIMAL_TOP_MIN_COL && _cursorCol <= DECIMAL_TOP_MAX_COL) {
+    if (_cursorRow == 0 && _cursorCol <= DECIMAL_TOP_MAX_COL) {
         _setDecimal(_cursorRow, _cursorCol, false);
-    } else if (_cursorRow == 1 && _cursorCol >= DECIMAL_BOTTOM_MIN_COL && _cursorCol <= DECIMAL_BOTTOM_MAX_COL) {
+    } else if (_cursorRow == 1 && _cursorCol <= DECIMAL_BOTTOM_MAX_COL) {
         _setDecimal(_cursorRow, _cursorCol, false);
-    } else if (_cursorRow == 2 && _cursorCol >= DECIMAL_16SEG_MIN_COL && _cursorCol <= DECIMAL_16SEG_MAX_COL) {
+    } else if (_cursorRow == 2 && _cursorCol <= DECIMAL_16SEG_MAX_COL) {
         _setDecimal(_cursorRow, _cursorCol, false);
     }
 
@@ -308,7 +308,7 @@ int8_t SegLCD_VK0192_5DigSigBattProgress::_get7SegmentsAddress(uint8_t row, uint
     uint8_t addr;
     uint8_t digitIndex = col;
 
-    if (row < 0 || row > 1) {
+    if (row > 1) {
         return -1; // Invalid row
     }
 

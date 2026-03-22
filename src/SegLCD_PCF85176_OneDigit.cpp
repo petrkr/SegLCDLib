@@ -48,7 +48,7 @@ void SegLCD_PCF85176_OneDigit::_setDecimal(uint8_t row, uint8_t col, bool state)
 
 size_t SegLCD_PCF85176_OneDigit::write(uint8_t ch) {
 
-    if (_cursorCol < 0 || _cursorCol >= DIGITS) {
+    if (_cursorCol >= DIGITS) {
         return 0;  // Invalid digit
     }
 

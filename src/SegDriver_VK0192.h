@@ -10,6 +10,8 @@
  * and stricter timing requirements.
  */
 class SegDriver_VK0192 : public SegDriver_3Wire {
+    #undef MAX_HW_ADDRESS
+    #undef MAX_ADDRESS
     #define MAX_HW_ADDRESS  47
     #define MAX_ADDRESS     47
 

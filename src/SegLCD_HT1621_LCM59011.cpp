@@ -124,7 +124,7 @@ void SegLCD_HT1621_LCM59011::_setColon(uint8_t row, uint8_t col, bool state) {
 }
 
 size_t SegLCD_HT1621_LCM59011::write(uint8_t ch) {
-    if (_cursorCol < 0 || _cursorCol >= DIGITS) {
+    if (_cursorCol >= DIGITS) {
         return 0;
     }
 

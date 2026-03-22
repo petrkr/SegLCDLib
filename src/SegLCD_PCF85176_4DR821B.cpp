@@ -96,7 +96,7 @@ void SegLCD_PCF85176_4DR821B::setCursor(uint8_t row, uint8_t col) {
 
 size_t SegLCD_PCF85176_4DR821B::write(uint8_t ch) {
 
-    if (_cursorCol < 0 || _cursorCol > DIGITS - 1) {
+    if (_cursorCol > DIGITS - 1) {
         return 0; //Invalid digit
     }
 
