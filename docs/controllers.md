@@ -349,12 +349,12 @@ Same as HT1621 (3 GPIO pins: CLK, DATA, CS).
 | Property | Value |
 |----------|-------|
 | **Protocol** | 3-wire serial (irregular addressing) |
-| **RAM** | 24 bytes (48 4-bit addresses) |
-| **Max Segments** | 192 (24 × 8, but addressed as 4-bit) |
+| **RAM** | 24 bytes (24 × 8 bit RAM) |
+| **Max Segments** | 192 (24 × 8) |
 | **Clock Speed** | 250 kHz (faster than HT1621) |
 | **Min Pulse Width** | 4μs (critical timing) |
 | **Power** | 3.3V typical |
-| **Address Mode** | 4-bit addressing (vs 8-bit for HT1621) |
+| **Address Mode** | Internal driver uses nibble-style HW write addresses over 24 × 8 bit RAM |
 
 ### Key Difference: Irregular Addressing
 
@@ -500,9 +500,9 @@ Bit-banged protocol, address then data.
 
 ### VK0192 (3-Wire)
 ```
-CS ↓ → CMD(9b) → NIBBLE_ADDR(4b) | DATA(4b) → CS ↑
+CS ↓ → CMD(9b) → HW_ADDR → DATA(8b) → CS ↑
 ```
-4-bit addressing, must repeat for each nibble.
+24 × 8 bit RAM with irregular mapping. SegLCDLib uses internal HW write addresses that advance in half-byte steps for compatibility with the existing driver model.
 
 ---
 
