@@ -58,7 +58,7 @@ void setup() {
   lcd.clear();
 }
 
-int counter = 0;
+int32_t counter = 0;
 void loop() {
   lcd.setBatteryLevel(counter % 4);
 
