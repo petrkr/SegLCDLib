@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - develop
+
+jobs:
+  compile-examples:
+    name: Compile examples (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: arduino-uno
+            fqbn: arduino:avr:uno
+            core: arduino:avr
+            core_version: ""
+            additional_urls: ""
+          - name: esp32-2.x
+            fqbn: esp32:esp32:esp32
+            core: esp32:esp32
+            core_version: 2.0.17
+            additional_urls: https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          - name: esp32-3.x
+            fqbn: esp32:esp32:esp32
+            core: esp32:esp32
+            core_version: 3.3.7
+            additional_urls: https://espressif.github.io/arduino-esp32/package_esp32_index.json
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Init Arduino CLI config
+        run: arduino-cli config init --overwrite
+
+      - name: Update core index
+        run: |
+          if [ -n "${{ matrix.additional_urls }}" ]; then
+            arduino-cli core update-index --additional-urls "${{ matrix.additional_urls }}"
+          else
+            arduino-cli core update-index
+          fi
+
+      - name: Install core
+        run: |
+          if [ -n "${{ matrix.additional_urls }}" ]; then
+            if [ -n "${{ matrix.core_version }}" ]; then
+              arduino-cli core install "${{ matrix.core }}@${{ matrix.core_version }}" --additional-urls "${{ matrix.additional_urls }}"
+            else
+              arduino-cli core install "${{ matrix.core }}" --additional-urls "${{ matrix.additional_urls }}"
+            fi
+          else
+            if [ -n "${{ matrix.core_version }}" ]; then
+              arduino-cli core install "${{ matrix.core }}@${{ matrix.core_version }}"
+            else
+              arduino-cli core install "${{ matrix.core }}"
+            fi
+          fi
+
+      - name: Compile all examples
+        run: |
+          while IFS= read -r sketch; do
+            sketch_dir="$(dirname "$sketch")"
+            echo "==> $sketch_dir"
+            if [ -n "${{ matrix.additional_urls }}" ]; then
+              arduino-cli compile \
+                --fqbn "${{ matrix.fqbn }}" \
+                --library . \
+                --warnings all \
+                --additional-urls "${{ matrix.additional_urls }}" \
+                "$sketch_dir"
+            else
+              arduino-cli compile \
+                --fqbn "${{ matrix.fqbn }}" \
+                --library . \
+                --warnings all \
+                "$sketch_dir"
+            fi
+          done < <(find examples -name '*.ino' | sort)
