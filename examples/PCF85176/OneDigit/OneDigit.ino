@@ -13,7 +13,11 @@ void setup() {
   Serial.begin(115200);
   delay(1000);
   Serial.println("Initilalize I2C...");
-  Wire.begin(0, 1);
+  #if defined(ARDUINO_ARCH_AVR)
+    Wire.begin();
+  #else
+    Wire.begin(0, 1);
+  #endif
 
   Serial.println("Initialize LCD...");
   lcd.init(true, true); // Example display has reversed digits and it  is version 1, so it need fix

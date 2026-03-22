@@ -2,6 +2,7 @@
 #define LCD_PLUGIN_H
 
 #include <Arduino.h>
+#include <Wire.h>
 #include <ctype.h>
 #include "SegLCDLib.h"
 
@@ -160,6 +161,15 @@ static inline void initPowerPin(int8_t pin) {
     if (pin < 0) return;
     pinMode(pin, OUTPUT);
     digitalWrite(pin, HIGH);
+}
+
+static inline void initI2CBus(const DisplayConfig &cfg) {
+    #if defined(ARDUINO_ARCH_AVR)
+        (void)cfg;
+        Wire.begin();
+    #else
+        Wire.begin(cfg.sda, cfg.scl);
+    #endif
 }
 
 static bool parseBool(const char *s) {

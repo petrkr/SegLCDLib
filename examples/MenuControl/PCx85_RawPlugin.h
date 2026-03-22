@@ -17,7 +17,7 @@ public:
         if (cfg.sda < 0 && cfg.scl < 0) {
             Wire.begin();
         } else if (cfg.sda >= 0 && cfg.scl >= 0) {
-            Wire.begin(cfg.sda, cfg.scl);
+            initI2CBus(cfg);
         } else {
             Serial.println("Error: set both SDA and SCL or leave both default");
             return nullptr;

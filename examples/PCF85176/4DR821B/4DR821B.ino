@@ -13,7 +13,11 @@ void setup() {
   Serial.begin(115200);
   delay(1000);
   Serial.println("Initilalize I2C...");
-  Wire.begin(1, 2);
+  #if defined(ARDUINO_ARCH_AVR)
+    Wire.begin();
+  #else
+    Wire.begin(1, 2);
+  #endif
 
   Serial.println("Initialize LCD...");
 

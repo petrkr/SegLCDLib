@@ -13,7 +13,11 @@ void setup() {
   delay(500);
 
   Serial.println("Initialize i2c");
-  Wire.begin(1, 2);
+  #if defined(ARDUINO_ARCH_AVR)
+    Wire.begin();
+  #else
+    Wire.begin(1, 2);
+  #endif
 
   Serial.println("Initialize backlight");
   lcd.initBacklight(10);
