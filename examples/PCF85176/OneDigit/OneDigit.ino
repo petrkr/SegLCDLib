@@ -66,8 +66,8 @@ void loop() {
   lcd.print("2   5.");
   delay(2000);
 
-  lcd.setDecimal(0, 4, false);
-  lcd.setDecimal(0, 0, true);
+  lcd.clear();
+  lcd.print("2.  5");
   delay(2000);
 
   lcd.clear();
