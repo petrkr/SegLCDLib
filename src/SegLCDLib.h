@@ -385,7 +385,7 @@ class SegLCDLib : public Print {
          * @param data Data byte
          * @param address RAM address
          */
-        virtual void _writeRam(uint8_t data, uint8_t address) = 0;
+        void _writeRam(uint8_t data, uint8_t address = 0);
 
         /**
          * @brief Low-level method to write a data buffer to display RAM.

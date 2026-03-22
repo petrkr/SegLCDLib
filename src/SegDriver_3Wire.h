@@ -88,20 +88,13 @@ class SegDriver_3Wire : public SegLCDLib {
         uint8_t _maxAddress; ///< Maximum address for this controller
 
         /**
-         * @brief Write single byte to RAM at specified address.
-         *
-         * @param data Data byte to write
-         * @param address RAM address (0-based)
-         */
-        void _writeRam(uint8_t data, uint8_t address);
-
-        /**
          * @brief Write multiple bytes to RAM starting at specified address.
          *
          * @param data Pointer to data array
          * @param length Number of bytes to write
          * @param address Starting RAM address (0-based)
          */
+        using SegLCDLib::_writeRam;
         virtual void _writeRam(uint8_t *data, size_t length, uint8_t address);
 
         /**

@@ -46,7 +46,7 @@ class SegDriver_VK0192 : public SegDriver_3Wire {
         /**
          * @brief Override _writeRam to implement VK0192-specific timing requirements.
          */
-        void _writeRam(uint8_t data, uint8_t address = 0);
+        using SegDriver_3Wire::_writeRam;
         void _writeRam(uint8_t *data, size_t length, uint8_t address = 0) override;
 
         /**

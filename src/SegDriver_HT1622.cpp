@@ -14,11 +14,6 @@ void SegDriver_HT1622::clear() {
     SegLCDLib::clear();
 }
 
-
-void SegDriver_HT1622::_writeRam(uint8_t data, uint8_t address) {
-    _writeRam(&data, 1, address);
-}
-
 void SegDriver_HT1622::_writeRam(uint8_t *data, size_t length, uint8_t address) {
     if (!_autoFlush) {
         return;

@@ -395,3 +395,7 @@ void SegLCDLib::_colonClearIfNotFlagged(uint8_t ch, uint8_t colonCol, uint8_t co
         _setColon(_cursorRow, colonCol, false);
     }
 }
+
+void SegLCDLib::_writeRam(uint8_t data, uint8_t address) {
+    _writeRam(&data, 1, address);
+}
