@@ -86,7 +86,7 @@ class SegLCDLib : public Print {
          */
         virtual void setCursor(uint8_t row, uint8_t col);
 
-        virtual size_t write(uint8_t ch) { };
+        virtual size_t write(uint8_t ch) { return 0; };
 
         /**
          * @brief Send RAW command to controller
