@@ -30,7 +30,7 @@ void SegLCDLib::_writeRamMasked(uint8_t data, uint8_t address, uint8_t mask) {
             // Odd address: nibble split across two bytes
             uint8_t high = _ramBuffer[byteIndex] & 0x0F;
             uint8_t low = 0;
-            if (byteIndex + 1 < _ramBufferSize) {
+            if (static_cast<size_t>(byteIndex + 1) < _ramBufferSize) {
                 low = (_ramBuffer[byteIndex + 1] >> 4) & 0x0F;
             }
             current = low | (high << 4);
@@ -45,7 +45,7 @@ void SegLCDLib::_writeRamMasked(uint8_t data, uint8_t address, uint8_t mask) {
         uint8_t low = data & 0x0F;
         uint8_t high = (data >> 4) & 0x0F;
         _ramBuffer[byteIndex] = (_ramBuffer[byteIndex] & 0xF0) | high;
-        if (byteIndex + 1 < _ramBufferSize) {
+        if (static_cast<size_t>(byteIndex + 1) < _ramBufferSize) {
             _ramBuffer[byteIndex + 1] = (_ramBuffer[byteIndex + 1] & 0x0F) | (low << 4);
         }
     }

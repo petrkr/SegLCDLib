@@ -58,7 +58,7 @@ size_t SegLCD_HT1622_10Dig16Seg::write(uint8_t ch) {
     }
 
     // Clear decimal on current column when writing regular character
-    if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
+    if (_cursorCol <= DECIMAL_MAX_COL) {
         _setDecimal(0, _cursorCol, false);
     }
 

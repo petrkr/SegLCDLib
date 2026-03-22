@@ -12,7 +12,7 @@ void SegDriver_3Wire::init() {
     pinMode(_cs, OUTPUT);
     pinMode(_data, OUTPUT);
     pinMode(_wr, OUTPUT);
-    if (_rd > -1) {
+    if (_rd >= 0) {
         pinMode(_rd, OUTPUT);
     }
 

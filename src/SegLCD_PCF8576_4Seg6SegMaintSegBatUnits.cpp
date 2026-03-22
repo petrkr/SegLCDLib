@@ -207,7 +207,7 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow0(uint8_t ch) {
     }
 
     // Clear decimal on current column when writing regular character
-    if (_cursorCol >= DECIMAL_TOP_MIN_COL && _cursorCol <= DECIMAL_TOP_MAX_COL) {
+    if (_cursorCol <= DECIMAL_TOP_MAX_COL) {
         _setDecimal(_cursorRow, _cursorCol, false);
     }
 
@@ -265,7 +265,7 @@ size_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_writeRow1(uint8_t ch) {
     }
 
     // Clear decimal on current column when writing regular character
-    if (_cursorCol >= DECIMAL_BOTTOM_MIN_COL && _cursorCol <= DECIMAL_BOTTOM_MAX_COL) {
+    if (_cursorCol <= DECIMAL_BOTTOM_MAX_COL) {
         _setDecimal(_cursorRow, _cursorCol, false);
     }
 

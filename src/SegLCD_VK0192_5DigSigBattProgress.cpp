@@ -136,16 +136,16 @@ void SegLCD_VK0192_5DigSigBattProgress::_setDecimal(uint8_t row, uint8_t col, bo
         return; // invalid digit
     }
 
-    if (row == 0 && (col < DECIMAL_TOP_MIN_COL || col > DECIMAL_TOP_MAX_COL)) {
+    if (row == 0 && col > DECIMAL_TOP_MAX_COL) {
         return; // Invalid digit
     }
 
-    if (row == 1 && (col < DECIMAL_BOTTOM_MIN_COL || col > DECIMAL_BOTTOM_MAX_COL)) {
+    if (row == 1 && col > DECIMAL_BOTTOM_MAX_COL) {
         return; // Invalid digit
     }
 
     if (row == 2) {
-        if (col < DECIMAL_16SEG_MIN_COL || col > DECIMAL_16SEG_MAX_COL) {
+        if (col > DECIMAL_16SEG_MAX_COL) {
             return; // Invalid digit
         }
 

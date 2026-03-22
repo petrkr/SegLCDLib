@@ -41,7 +41,7 @@ void SegLCD_PCF85176_4DR821B::_setCol0Symbol(uint8_t ch) {
     _writeRam(_ramBuffer[ADDR_SYMBOLS], ADDR_SYMBOLS);
 }
 
-void SegLCD_PCF85176_4DR821B::_setColon(uint8_t row, uint8_t col, bool state) {
+void SegLCD_PCF85176_4DR821B::_setColon(uint8_t, uint8_t col, bool state) {
     if (col == 0) {
         if (state) {
             _ramBuffer[ADDR_SYMBOLS] &= ~MINUS_BIT;
@@ -68,7 +68,7 @@ void SegLCD_PCF85176_4DR821B::_setDecimal(uint8_t row, uint8_t col, bool state) 
         return; // invalid digit
     }
 
-    if (col < DECIMAL_MIN_COL || col > DECIMAL_MAX_COL) {
+    if (col > DECIMAL_MAX_COL) {
         return; // Invalid digit
     }
 
@@ -131,7 +131,7 @@ size_t SegLCD_PCF85176_4DR821B::write(uint8_t ch) {
     }
 
     // Clear decimal on current column when writing regular character
-    if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
+    if (_cursorCol <= DECIMAL_MAX_COL) {
         _setDecimal(_cursorRow, _cursorCol, false);
     }
 

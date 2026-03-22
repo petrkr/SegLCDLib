@@ -91,7 +91,7 @@ class SegDriver_PCx85 : public SegLCDLib {
         void off() override;
 
         // TODO: Implement calling commands
-        void command(uint8_t command) override { };
+        void command(uint8_t) override { };
 
         /**
          * @brief Flush specific range of buffered changes to the display.
@@ -142,6 +142,8 @@ class SegDriver_PCx85 : public SegLCDLib {
  */
 class SegDriver_PCF85176 : public SegDriver_PCx85 {
     // TODO: make this somehow better?
+    #undef MAX_HW_ADDRESS
+    #undef MAX_ADDRESS
     #define MAX_HW_ADDRESS  39              ///< Maximum hardware address for PCF85176
     #define MAX_ADDRESS     MAX_HW_ADDRESS  ///< Maximum usable address for LCD implementation
 

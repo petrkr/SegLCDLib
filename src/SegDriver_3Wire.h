@@ -81,7 +81,7 @@ class SegDriver_3Wire : public SegLCDLib {
 
     protected:
         uint8_t _wr;   ///< Write clock pin for the display
-        uint8_t _rd;   ///< Read clock pin for the display
+        int8_t _rd;    ///< Read clock pin for the display (-1 if unused)
         uint8_t _data; ///< Data pin for the display
         uint8_t _cs;   ///< Chip select pin for the display
 

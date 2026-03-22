@@ -86,7 +86,7 @@ class SegLCDLib : public Print {
          */
         virtual void setCursor(uint8_t row, uint8_t col);
 
-        virtual size_t write(uint8_t ch) { return 0; };
+        virtual size_t write(uint8_t) { return 0; };
 
         /**
          * @brief Send RAW command to controller
@@ -341,14 +341,14 @@ class SegLCDLib : public Print {
          * Each LCD has its own implementation with HW specifics.
          * Default implementation is empty (no-op).
          */
-        virtual void _setDecimal(uint8_t row, uint8_t col, bool state) { }
+        virtual void _setDecimal(uint8_t, uint8_t, bool) { }
 
         /**
          * @brief Virtual method for setting colon.
          *
          * Default implementation is empty (no-op).
          */
-        virtual void _setColon(uint8_t row, uint8_t col, bool state) { }
+        virtual void _setColon(uint8_t, uint8_t, bool) { }
 
         /**
          * @brief Dynamic RAM buffer for display data (allocated by derived classes).

@@ -112,7 +112,7 @@ void SegLCD_PCF85176_T1T2Lcd::_setDecimal(uint8_t row, uint8_t col, bool state) 
         return; // Invalid digit
     }
 
-    if (col < DECIMAL_MIN_COL || col > DECIMAL_MAX_COL) {
+    if (col > DECIMAL_MAX_COL) {
         return; // Invalid digit
     }
 
@@ -182,7 +182,7 @@ size_t SegLCD_PCF85176_T1T2Lcd::write(uint8_t ch) {
                 _clearFlag(FLAG_COLON_CLOCK);
             }
 
-            if (_cursorCol >=0 && _cursorCol < 4) {
+            if (_cursorCol < 4) {
                 _ramBuffer[OFFSET_CLOCK + _cursorCol] &= ~0b11111110;
                 _ramBuffer[OFFSET_CLOCK + _cursorCol] |= segment_data & 0b11111110;
                 _writeRam(_ramBuffer[OFFSET_CLOCK + _cursorCol], ADDR_CLOCK_T1T2_LABELS_SEGS + (_cursorCol * 2));
@@ -201,7 +201,7 @@ size_t SegLCD_PCF85176_T1T2Lcd::write(uint8_t ch) {
             if (_isFlagSet(FLAG_PENDING_DOT)) {
                 _clearFlag(FLAG_PENDING_DOT);
             }
-            if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
+            if (_cursorCol <= DECIMAL_MAX_COL) {
                 _setDecimal(_cursorRow, _cursorCol, false);
             }
 
@@ -216,7 +216,7 @@ size_t SegLCD_PCF85176_T1T2Lcd::write(uint8_t ch) {
             if (_isFlagSet(FLAG_PENDING_DOT)) {
                 _clearFlag(FLAG_PENDING_DOT);
             }
-            if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
+            if (_cursorCol <= DECIMAL_MAX_COL) {
                 _setDecimal(_cursorRow, _cursorCol, false);
             }
 

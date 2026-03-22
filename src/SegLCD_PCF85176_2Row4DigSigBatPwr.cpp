@@ -68,11 +68,11 @@ bool SegLCD_PCF85176_2Row4DigSigBatPwr::_handleDotNoPrevClear(uint8_t ch) {
 
 void SegLCD_PCF85176_2Row4DigSigBatPwr::_setDecimal(uint8_t row, uint8_t col, bool state) {
 
-    if (row < DECIMAL_MIN_ROW || row > DECIMAL_MAX_ROW) {
+    if (row > DECIMAL_MAX_ROW) {
         return; // Invalid digit
     }
 
-    if (col < DECIMAL_MIN_COL || col > DECIMAL_MAX_COL) {
+    if (col > DECIMAL_MAX_COL) {
         return; // Invalid digit
     }
 

@@ -25,7 +25,7 @@ void SegLCD_PCF85176_OneDigit::_setDecimal(uint8_t row, uint8_t col, bool state)
         return; // invalid digit
     }
 
-    if (col < DECIMAL_MIN_COL || col > DECIMAL_MAX_COL) {
+    if (col > DECIMAL_MAX_COL) {
         return; // Invalid digit
     }
 

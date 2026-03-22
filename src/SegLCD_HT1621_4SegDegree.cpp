@@ -107,7 +107,7 @@ size_t SegLCD_HT1621_4SegDegree::write(uint8_t ch) {
     }
 
     // Clear decimal on current column unless it's part of a colon
-    if (_cursorCol >= DECIMAL_MIN_COL && _cursorCol <= DECIMAL_MAX_COL) {
+    if (_cursorCol <= DECIMAL_MAX_COL) {
         if (!(_cursorCol == 1 && _isFlagSet(FLAG_COLON_DISPLAYED))) {
             _setDecimal(0, _cursorCol, false);
         }
