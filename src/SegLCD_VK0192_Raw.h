@@ -19,5 +19,7 @@ class SegLCD_VK0192_Raw : public SegDriver_VK0192 {
         SegLCD_VK0192_Raw(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read = -1);
         void writeRam(uint8_t data, uint8_t address = 0);
         void writeRam(uint8_t *data, size_t length, uint8_t address = 0);
+    private:
+        static constexpr uint8_t RAM_SIZE = 47;
 };
 #endif

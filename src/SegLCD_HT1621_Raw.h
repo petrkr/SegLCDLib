@@ -20,5 +20,7 @@ class SegLCD_HT1621_Raw : public SegDriver_HT1621 {
         void init(ModeDrive drive, ModeBias bias);
         void writeRam(uint8_t data, uint8_t address = 0);
         void writeRam(uint8_t *data, size_t length, uint8_t address = 0);
+    private:
+        static constexpr uint8_t RAM_SIZE = 30;
 };
 #endif
