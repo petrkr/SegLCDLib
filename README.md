@@ -59,6 +59,10 @@ See [Supported LCDs](docs/supported-lcds.md) for full catalog.
 
 ## Installation
 
+## Versioning
+
+Versions `0.0.x` are preview releases. API and behavior may still change, including breaking changes, without a major or minor version bump.
+
 ### Arduino Library Manager
 1. **Sketch** → **Include Library** → **Manage Libraries**
 2. Search `SegLCDLib`
