@@ -5,7 +5,7 @@ SegDriver_3Wire::SegDriver_3Wire(SegTransport3Wire& transport, uint8_t chipselec
 
 void SegDriver_3Wire::init() {
     pinMode(_cs, OUTPUT);
-    digitalWrite(_cs, HIGH);
+    _transport.set_cs(_cs, HIGH);
 }
 
 void SegDriver_3Wire::on() {
@@ -19,7 +19,7 @@ void SegDriver_3Wire::off() {
 }
 
 void SegDriver_3Wire::command(uint8_t command) {
-    digitalWrite(_cs, LOW);
+    _transport.set_cs(_cs, LOW);
 
     // send CMD prefix 100 (command mode)
     _transport.write(OP_CMD, 3);
@@ -30,14 +30,14 @@ void SegDriver_3Wire::command(uint8_t command) {
     // Suffix, in command mode, we always write 0
     _transport.write(0, 1);
 
-    digitalWrite(_cs, HIGH);
+    _transport.set_cs(_cs, HIGH);
 }
 
 void SegDriver_3Wire::_writeRam(uint8_t *data, size_t length, uint8_t address) {
     if (!_autoFlush) {
         return;
     }
-    digitalWrite(_cs, LOW);
+    _transport.set_cs(_cs, LOW);
 
     _transport.write(OP_WRITE, 3);
 
@@ -49,5 +49,5 @@ void SegDriver_3Wire::_writeRam(uint8_t *data, size_t length, uint8_t address) {
         _transport.write(data[i], 8);
     }
 
-    digitalWrite(_cs, HIGH);
+    _transport.set_cs(_cs, HIGH);
 }

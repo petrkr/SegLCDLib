@@ -10,8 +10,10 @@ SegTransport3WireArduino::SegTransport3WireArduino(uint8_t data, uint8_t write, 
     }
 }
 
-void SegTransport3WireArduino::set_cs(bool state) {
-    (void)state;
+void SegTransport3WireArduino::set_cs(uint8_t chipselect, bool state) {
+    delayMicroseconds(1);
+    digitalWrite(chipselect, state);
+    delayMicroseconds(1);
 }
 
 void SegTransport3WireArduino::write(uint16_t data, uint8_t bitCount) {
