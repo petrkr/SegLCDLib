@@ -2,7 +2,7 @@
 
 ## Overview
 
-SegLCDLib uses a layered architecture separating concerns between abstract interface, controller protocol handling, and display-specific implementations.
+SegLCDLib uses a layered architecture separating concerns between abstract interface, transport, controller protocol handling, and display-specific implementations.
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -10,32 +10,38 @@ SegLCDLib uses a layered architecture separating concerns between abstract inter
 └──────────────────┬──────────────────────────────────┘
                    │
 ┌──────────────────▼──────────────────────────────────┐
+│  LCD Implementation Layer                           │
+│  ├─ SegLCD_PCF85176_TempHumidity                    │
+│  ├─ SegLCD_PCF85176_6DigitSignalBatteryProgress     │
+│  ├─ SegLCD_HT1621_4SegDegree                        │
+│  └─ ... (one class per display variant)             │
+└──────────────────┬──────────────────────────────────┘
+                   │ inherits
+┌──────────────────▼──────────────────────────────────┐
 │  SegLCDLib Base Class (SegLCDLib : public Print)    │
 │  - Abstract interface (pure virtual methods)        │
 │  - LCD API 1.0 spec compliance                      │
 │  - Cursor positioning (row, col)                    │
 └──────────────────┬──────────────────────────────────┘
-                   │
+                   │ base of drivers
 ┌──────────────────▼──────────────────────────────────┐
 │  Controller Driver Layer                            │
-│  ├─ SegDriver_PCx85  (I2C)                          │
-│  ├─ SegDriver_HT1621 (3-wire serial)                │
-│  ├─ SegDriver_HT1622 (3-wire serial)                │
-│  └─ SegDriver_VK0192 (3-wire serial)                │
+│  ├─ SegDriver_PCx85  (I2C via transport)            │
+│  ├─ SegDriver_HT1621 (3-wire via transport)         │
+│  ├─ SegDriver_HT1622 (3-wire via transport)         │
+│  └─ SegDriver_VK0192 (3-wire via transport)         │
 └──────────────────┬──────────────────────────────────┘
-                   │
+                   │ uses
 ┌──────────────────▼──────────────────────────────────┐
-│  LCD Implementation Layer                           │
-│  ├─ SegLCD_PCF85176_TempHum                         │
-│  ├─ SegLCD_PCF85176_6DigSigBattProgress             │
-│  ├─ SegLCD_HT1621_4SegDegree                        │
-│  └─ ... (one class per display variant)             │
+│  Transport Layer                                    │
+│  ├─ SegTransportI2C / SegTransportI2CArduino        │
+│  └─ SegTransport3Wire / SegTransport3WireArduino    │
 └──────────────────┬──────────────────────────────────┘
-                   │
+                   │ wraps
 ┌──────────────────▼──────────────────────────────────┐
 │  Hardware Communication                             │
-│  ├─ I2C Bus (Wire library for PCF85176)             │
-│  └─ 3-Wire Serial (GPIO for HT1621/1622/VK0192)     │
+│  ├─ Wire / TwoWire bus                              │
+│  └─ GPIO pins for DATA / WR / CS                    │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -91,7 +97,43 @@ enum BacklightMode {    // GPIO backlight control
 
 ---
 
-## Layer 2: Controller Drivers
+## Layer 2: Transport Layer
+
+Transports encapsulate low-level bus access and are injected into controller drivers.
+
+### I2C Transport
+
+**File:** `src/SegTransport.h`
+
+```cpp
+class SegTransportI2C : public SegTransport {
+    virtual void write(uint8_t address, uint8_t data) = 0;
+    virtual void write(uint8_t address, uint8_t* data, size_t length) = 0;
+};
+
+class SegTransportI2CArduino : public SegTransportI2C {
+    SegTransportI2CArduino(TwoWire& i2c);
+};
+```
+
+### 3-Wire Transport
+
+**File:** `src/SegTransport.h`
+
+```cpp
+class SegTransport3Wire : public SegTransport {
+    virtual void set_cs(uint8_t chipselect, bool state) = 0;
+    virtual void write(uint16_t data, uint8_t bitCount) = 0;
+};
+
+class SegTransport3WireArduino : public SegTransport3Wire {
+    SegTransport3WireArduino(uint8_t data, uint8_t write, uint8_t read = -1);
+};
+```
+
+---
+
+## Layer 3: Controller Drivers
 
 Controllers handle protocol-level communication with LCD hardware. Each driver abstracts a specific protocol.
 
@@ -101,6 +143,8 @@ Controllers handle protocol-level communication with LCD hardware. Each driver a
 
 ```cpp
 class SegDriver_PCx85 : public SegLCDLib {
+    SegTransportI2C& _transport;
+
     // I2C address configuration
     uint8_t _address;      // 0x38 (SA0=0) or 0x39 (SA0=1)
     uint8_t _subaddress;   // A0-A2 bits (protocol subaddress)
@@ -119,6 +163,7 @@ class SegDriver_PCx85 : public SegLCDLib {
 **Features:**
 - I2C protocol (2 pins: SDA, SCL)
 - Uses shared dynamic RAM buffer from `SegLCDLib`
+- Sends I2C transactions through `SegTransportI2C`
 - I2C address set by SA0 pin (0x38 or 0x39)
 - A0-A2 are protocol subaddresses (not I2C address pins)
 - Multiplexed display support (1/3 or 1/4 duty)
@@ -154,16 +199,17 @@ class SegDriver_HT1621 : public SegLCDLib {
 **Features:**
 - 3-wire serial protocol: Clock, Data, Chip Select
 - Uses shared dynamic RAM buffer from `SegLCDLib`
+- Sends DATA/WR/CS signaling through `SegTransport3Wire`
 - Typical controller RAM capacity is 16 bytes (HT1621) or 32 bytes (HT1622), but concrete LCD classes may allocate only the used portion
 - Configurable BIAS and DRIVE modes
 - Integrated into LCD module (no separate IC on board)
-- GPIO-based (no special hardware needed)
+- No hardware peripheral required beyond GPIO pins
 
 **Protocol:**
-1. Set CS low
-2. Send 9-bit command/address
-3. Send data bits MSB first
-4. Set CS high
+1. Assert CS through transport
+2. Send command/address prefix
+3. Send data bits MSB first through transport
+4. Release CS through transport
 
 ---
 
@@ -182,14 +228,13 @@ class SegDriver_VK0192 : public SegLCDLib {
     uint8_t* _ramBuffer;
     size_t _ramBufferSize;
 
-    // Irregular addressing (non-sequential segment mapping)
-    void _mapSegmentToAddress(uint8_t digit, uint8_t segment,
-                              uint8_t& addr, uint8_t& bit);
+    // Same transport and RAM write model as HT1621/HT1622
 };
 ```
 
 **Features:**
 - Uses shared dynamic RAM buffer from `SegLCDLib`
+- Sends 3-wire signaling through `SegTransport3Wire`
 - VK0192 address space is 24×8 bit RAM (48 4-bit addresses 0-47)
 - Irregular segment mapping (digits/segments not sequential in memory)
 - 4μs minimum pulse width timing
@@ -197,7 +242,7 @@ class SegDriver_VK0192 : public SegLCDLib {
 
 ---
 
-## Layer 3: LCD Implementations
+## Layer 4: LCD Implementations
 
 LCD classes combine a controller driver with display-specific segment mapping and symbols.
 
@@ -206,17 +251,9 @@ LCD classes combine a controller driver with display-specific segment mapping an
 Unlike typical composition patterns, LCD classes inherit directly from controller drivers:
 
 ```cpp
-class SegLCD_PCF85176_TempHum : public SegDriver_PCF85176 {
+class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
     // Display-specific methods
     virtual size_t write(uint8_t ch);  // Output digit
-
-    // Symbol control
-    void setTempSymbol(bool on);
-    void setHumiditySymbol(bool on);
-
-private:
-    // Segment-to-RAM address mapping
-    void _mapSegments(uint8_t digit, uint8_t segments);
 };
 ```
 
@@ -229,18 +266,18 @@ private:
 ### Structure of LCD Class
 
 ```cpp
-class SegLCD_PCF85176_6DigSigBattProgress : public SegDriver_PCF85176 {
+class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
 public:
     // Constructor
-    SegLCD_PCF85176_6DigSigBattProgress(TwoWire& i2c, uint8_t address = 0x38, uint8_t subaddress = 0);
+    SegLCD_PCF85176_6DigitSignalBatteryProgress(SegTransportI2C& transport, uint8_t address = 0x38, uint8_t subaddress = 0);
 
     // Base methods (pure virtual implementations)
     void init();                              // Init controller + clear
     size_t write(uint8_t ch);                 // Output 7-segment char
 
     // Feature methods (display-specific)
-    void setSignal(uint8_t bars);             // 0-4 bars
-    void setBattery(uint8_t level);           // 0-3 levels
+    void setSignalLevel(uint8_t bars);        // 0-4 bars
+    void setBatteryLevel(uint8_t level);      // 0-3 levels
     void setProgress(uint8_t percent);        // 0-100%
 
 private:
@@ -251,7 +288,7 @@ private:
     static const uint8_t _charMap[256];
 
     // Display layout constants
-    static const uint8_t MAX_DIGITS = 6;
+    static const uint8_t DIGITS = 6;
 };
 ```
 
@@ -309,7 +346,7 @@ Each LCD class implements `_mapSegments()` to convert logical segments to physic
 
 ```cpp
 // Example: Turn on segments for digit '5'
-// _mapSegments(0, 0b0110111);  // RAM address 0, bits 0-6
+// _mapSegments(0b0110111);  // logical segment set for one digit
 
 // Internal mapping:
 _ramBuffer[addressForDigit0] |= bitsFor5;
@@ -339,8 +376,8 @@ When user calls `lcd.init()`:
 ## Adding New Displays
 
 ### Step 1: Identify Controller
-- **I2C?** → Use PCF85176/PCF8576 driver
-- **3-wire?** → Use HT1621/HT1622/VK0192 driver
+- **I2C?** → Use PCF85176/PCF8576 driver with `SegTransportI2C`
+- **3-wire?** → Use HT1621/HT1622/VK0192 driver with `SegTransport3Wire`
 
 ### Step 2: Create LCD Class
 ```cpp
@@ -349,6 +386,20 @@ class SegLCD_PCF85176_MyDisplay : public SegDriver_PCF85176 {
     virtual size_t write(uint8_t ch);
     void _mapSegments(uint8_t digit, uint8_t segments);
 };
+```
+
+Instantiate with transport from user code:
+
+```cpp
+SegTransportI2CArduino transport(Wire);
+SegLCD_PCF85176_MyDisplay lcd(transport);
+```
+
+For 3-wire displays:
+
+```cpp
+SegTransport3WireArduino transport(dataPin, wrPin);
+SegLCD_HT1621_MyDisplay lcd(transport, csPin);
 ```
 
 ### Step 3: Implement Segment Mapping
@@ -377,6 +428,7 @@ See [Adding New LCD](adding-new-lcd.md) for detailed tutorial.
 | Decision | Rationale |
 |----------|-----------|
 | **LCD inherits controller** | Controllers integrated in LCD modules, not external |
+| **Transport injected into drivers** | Separate bus access from controller protocol and ease Arduino/non-Arduino backends |
 | **RAM buffering** | Minimize I2C/serial transactions, batch updates |
 | **Row/column addressing** | Follow Arduino LCD API standard for consistency |
 | **Print inheritance** | Enable standard `print()` and `println()` operations |
