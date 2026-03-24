@@ -8,6 +8,7 @@ class HT1621_RawPlugin : public LCDPlugin {
 private:
     ModeDrive _drive = MODE_DRIVE_14;
     ModeBias _bias = MODE_BIAS_13;
+    SegTransport3WireArduino *_transport = nullptr;
 
 public:
     const char *name() const override { return "ht1621_raw"; }
@@ -18,7 +19,8 @@ public:
             return nullptr;
         }
 
-        auto *lcd = new SegLCD_HT1621_Raw(cfg.cs, cfg.data, cfg.wr);
+        _transport = new SegTransport3WireArduino(cfg.data, cfg.wr);
+        auto *lcd = new SegLCD_HT1621_Raw(*_transport, cfg.cs);
         initPowerPin(cfg.power);
         _drive = cfg.rawDrive;
         _bias = cfg.rawBias;
@@ -30,6 +32,8 @@ public:
 
     void destroy(SegLCDLib *lcd) override {
         delete static_cast<SegLCD_HT1621_Raw*>(lcd);
+        delete _transport;
+        _transport = nullptr;
     }
 
     bool handleCommand(SegLCDLib *lcdBase, const char *cmd, char *args, Stream &out) override {

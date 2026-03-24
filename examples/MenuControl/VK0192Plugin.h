@@ -11,6 +11,9 @@
 #include "SegLCD_VK0192_5DigSigBattProgress.h"
 
 class VK0192Plugin : public LCDPlugin {
+private:
+    SegTransport3WireArduino *_transport = nullptr;
+
 public:
     const char *name() const override { return "VK0192"; }
 
@@ -20,7 +23,8 @@ public:
             return nullptr;
         }
 
-        auto *lcd = new SegLCD_VK0192_5DigSigBattProgress(cfg.cs, cfg.data, cfg.wr);
+        _transport = new SegTransport3WireArduino(cfg.data, cfg.wr);
+        auto *lcd = new SegLCD_VK0192_5DigSigBattProgress(*_transport, cfg.cs);
         initPowerPin(cfg.power);
         lcd->init();
         lcd->setAutoFlush(true);
@@ -30,6 +34,8 @@ public:
 
     void destroy(SegLCDLib *lcd) override {
         delete static_cast<SegLCD_VK0192_5DigSigBattProgress*>(lcd);
+        delete _transport;
+        _transport = nullptr;
     }
 
     bool handleCommand(SegLCDLib *lcdBase, const char *cmd, char *args, Stream &out) override {

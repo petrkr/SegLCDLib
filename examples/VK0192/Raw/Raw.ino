@@ -6,7 +6,8 @@
 #define PIN_DATA 21
 #define PIN_PWR 15 // If you have connected Vcc on GPIO instead power line else -1
 
-SegLCD_VK0192_Raw raw(PIN_CS, PIN_DATA, PIN_WR);
+SegTransport3WireArduino transport(PIN_DATA, PIN_WR);
+SegLCD_VK0192_Raw raw(transport, PIN_CS);
 
 void setup() {
   if (PIN_PWR > -1) {

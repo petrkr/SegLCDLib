@@ -10,7 +10,8 @@
 #define PIN_DATA 14
 #define PIN_PWR 12 // If you have connected Vcc on GPIO instead power line else -1
 
-SegLCD_HT1621_4SegDegree lcd(PIN_CS, PIN_DATA, PIN_WR);
+SegTransport3WireArduino transport(PIN_DATA, PIN_WR);
+SegLCD_HT1621_4SegDegree lcd(transport, PIN_CS);
 
 void setup() {
   Serial.begin(115200);

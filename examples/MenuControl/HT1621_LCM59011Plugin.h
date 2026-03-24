@@ -5,6 +5,9 @@
 #include "SegLCD_HT1621_LCM59011.h"
 
 class HT1621_LCM59011Plugin : public LCDPlugin {
+private:
+    SegTransport3WireArduino *_transport = nullptr;
+
 public:
     const char *name() const override { return "lcm59011"; }
 
@@ -14,7 +17,8 @@ public:
             return nullptr;
         }
 
-        auto *lcd = new SegLCD_HT1621_LCM59011(cfg.cs, cfg.data, cfg.wr);
+        _transport = new SegTransport3WireArduino(cfg.data, cfg.wr);
+        auto *lcd = new SegLCD_HT1621_LCM59011(*_transport, cfg.cs);
         initPowerPin(cfg.power);
         lcd->init();
         lcd->setAutoFlush(true);
@@ -24,6 +28,8 @@ public:
 
     void destroy(SegLCDLib *lcd) override {
         delete static_cast<SegLCD_HT1621_LCM59011*>(lcd);
+        delete _transport;
+        _transport = nullptr;
     }
 
     bool handleCommand(SegLCDLib *lcdBase, const char *cmd, char *args, Stream &out) override {

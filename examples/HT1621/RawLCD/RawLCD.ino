@@ -9,7 +9,8 @@
 #define PIN_WR 4
 #define PIN_DATA 7
 
-SegLCD_HT1621_Raw lcd(PIN_CS, PIN_DATA, PIN_WR);
+SegTransport3WireArduino transport(PIN_DATA, PIN_WR);
+SegLCD_HT1621_Raw lcd(transport, PIN_CS);
 
 void setup() {
   Serial.begin(115200);
