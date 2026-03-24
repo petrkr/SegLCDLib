@@ -7,6 +7,26 @@ class SegTransport {
 
 };
 
+class SegTransport3Wire : public SegTransport {
+    public:
+        virtual ~SegTransport3Wire() = default;
+        virtual void set_cs(bool state) = 0;
+        virtual void write(uint16_t data, uint8_t bitCount) = 0;
+};
+
+class SegTransport3WireArduino : public SegTransport3Wire {
+    public:
+        SegTransport3WireArduino(uint8_t data, uint8_t write, uint8_t read = -1);
+
+        void set_cs(bool state) override;
+        void write(uint16_t data, uint8_t bitCount) override;
+
+    private:
+        uint8_t _data;
+        uint8_t _write;
+        uint8_t _read;
+};
+
 /**
  * @brief Implementation of the PCF85176 controllers.
  */
