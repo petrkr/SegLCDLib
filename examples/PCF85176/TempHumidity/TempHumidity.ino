@@ -4,9 +4,11 @@
  */
 
 #include "SegLCD_PCF85176_TempHum.h"
+#include "SegTransport.h"
 #include <Wire.h>
 
-SegLCD_PCF85176_TempHumidity lcd(Wire);
+SegTransportI2CArduino bus(Wire);
+SegLCD_PCF85176_TempHumidity lcd(bus);
 
 void setup() {
   Serial.begin(115200);
@@ -15,7 +17,7 @@ void setup() {
   #if defined(ARDUINO_ARCH_AVR)
     Wire.begin();
   #else
-    Wire.begin(0, 1);
+    Wire.begin(1,2);
   #endif
 
   Serial.println("Initialize LCD...");

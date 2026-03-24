@@ -4,10 +4,12 @@
  */
 
 #include "SegLCD_PCx85_Raw.h"
+#include "SegTransport.h"
 
 #include <Wire.h>
 
-SegLCD_PCx85_Raw lcd(Wire);
+SegTransportI2CArduino bus(Wire);
+SegLCD_PCx85_Raw lcd(bus);
 
 void setup() {
   Serial.begin(115200);

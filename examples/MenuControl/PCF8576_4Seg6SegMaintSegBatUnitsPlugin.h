@@ -3,10 +3,13 @@
 
 #include "LCDPlugin.h"
 #include "SegLCD_PCF8576_4Seg6SegMaintSegBatUnits.h"
+#include "SegTransport.h"
 #include <Wire.h>
 
 class PCF8576_4Seg6SegMaintSegBatUnitsPlugin : public LCDPlugin {
 public:
+    PCF8576_4Seg6SegMaintSegBatUnitsPlugin() : _bus(Wire) {}
+
     const char *name() const override { return "4s6s"; }
 
     SegLCDLib* create(const DisplayConfig &cfg) override {
@@ -18,7 +21,7 @@ public:
             Serial.println("Error: set both SDA and SCL or leave both default");
             return nullptr;
         }
-        auto *lcd = new SegLCD_PCF8576_4Seg6SegMaintSegBatUnits(Wire, cfg.i2cAddr, cfg.subAddr);
+        auto *lcd = new SegLCD_PCF8576_4Seg6SegMaintSegBatUnits(_bus, cfg.i2cAddr, cfg.subAddr);
         initPowerPin(cfg.power);
         lcd->init();
         lcd->setAutoFlush(true);
@@ -69,6 +72,9 @@ public:
         printMenuLine(out, "  deg <0|1>          - degree symbol");
         printMenuLine(out, "  maint <0|1>        - maintenance");
     }
+
+private:
+    SegTransportI2CArduino _bus;
 };
 
 #endif

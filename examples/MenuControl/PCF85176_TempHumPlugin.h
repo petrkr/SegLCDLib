@@ -3,10 +3,13 @@
 
 #include "LCDPlugin.h"
 #include "SegLCD_PCF85176_TempHum.h"
+#include "SegTransport.h"
 #include <Wire.h>
 
 class PCF85176_TempHumPlugin : public LCDPlugin {
 public:
+    PCF85176_TempHumPlugin() : _bus(Wire) {}
+
     const char *name() const override { return "temphum"; }
 
     SegLCDLib* create(const DisplayConfig &cfg) override {
@@ -18,7 +21,7 @@ public:
             Serial.println("Error: set both SDA and SCL or leave both default");
             return nullptr;
         }
-        auto *lcd = new SegLCD_PCF85176_TempHumidity(Wire, cfg.i2cAddr, cfg.subAddr);
+        auto *lcd = new SegLCD_PCF85176_TempHumidity(_bus, cfg.i2cAddr, cfg.subAddr);
         initPowerPin(cfg.power);
         lcd->init();
         lcd->setAutoFlush(true);
@@ -60,6 +63,9 @@ public:
         printMenuLine(out, "  g <0-4>         - signal level");
         printMenuLine(out, "  ls/lc <mask>    - set/clear labels");
     }
+
+private:
+    SegTransportI2CArduino _bus;
 };
 
 #endif

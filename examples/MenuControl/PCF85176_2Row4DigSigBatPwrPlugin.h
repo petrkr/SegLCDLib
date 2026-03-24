@@ -3,10 +3,13 @@
 
 #include "LCDPlugin.h"
 #include "SegLCD_PCF85176_2Row4DigSigBatPwr.h"
+#include "SegTransport.h"
 #include <Wire.h>
 
 class PCF85176_2Row4DigSigBatPwrPlugin : public LCDPlugin {
 public:
+    PCF85176_2Row4DigSigBatPwrPlugin() : _bus(Wire) {}
+
     const char *name() const override { return "2row4dig"; }
 
     SegLCDLib* create(const DisplayConfig &cfg) override {
@@ -18,7 +21,7 @@ public:
             Serial.println("Error: set both SDA and SCL or leave both default");
             return nullptr;
         }
-        auto *lcd = new SegLCD_PCF85176_2Row4DigSigBatPwr(Wire, cfg.i2cAddr, cfg.subAddr);
+        auto *lcd = new SegLCD_PCF85176_2Row4DigSigBatPwr(_bus, cfg.i2cAddr, cfg.subAddr);
         initPowerPin(cfg.power);
         lcd->init();
         lcd->setAutoFlush(true);
@@ -55,6 +58,9 @@ public:
         printMenuLine(out, "  g <0-1>            - signal level");
         printMenuLine(out, "  pwr <0|1>          - power symbol");
     }
+
+private:
+    SegTransportI2CArduino _bus;
 };
 
 #endif

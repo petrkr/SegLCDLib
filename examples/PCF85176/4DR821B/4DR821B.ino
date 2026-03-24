@@ -4,10 +4,12 @@
  */
 
 #include "SegLCD_PCF85176_4DR821B.h"
+#include "SegTransport.h"
 
 #include <Wire.h>
 
-SegLCD_PCF85176_4DR821B lcd(Wire);
+SegTransportI2CArduino bus(Wire);
+SegLCD_PCF85176_4DR821B lcd(bus);
 
 void setup() {
   Serial.begin(115200);

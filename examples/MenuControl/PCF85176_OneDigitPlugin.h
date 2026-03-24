@@ -3,15 +3,19 @@
 
 #include "LCDPlugin.h"
 #include "SegLCD_PCF85176_OneDigit.h"
+#include "SegTransport.h"
 #include <Wire.h>
 
 class PCF85176_OneDigitPlugin : public LCDPlugin {
 private:
+    SegTransportI2CArduino _bus;
     bool _reverse = false;
     bool _v1fix = false;
     int8_t _power = -1;
 
 public:
+    PCF85176_OneDigitPlugin() : _bus(Wire) {}
+
     const char *name() const override { return "1dig"; }
 
     SegLCDLib* create(const DisplayConfig &cfg) override {
@@ -23,7 +27,7 @@ public:
             Serial.println("Error: set both SDA and SCL or leave both default");
             return nullptr;
         }
-        auto *lcd = new SegLCD_PCF85176_OneDigit(Wire, cfg.i2cAddr, cfg.subAddr);
+        auto *lcd = new SegLCD_PCF85176_OneDigit(_bus, cfg.i2cAddr, cfg.subAddr);
         _power = cfg.power;
         initPowerPin(_power);
         lcd->init(_reverse, _v1fix);

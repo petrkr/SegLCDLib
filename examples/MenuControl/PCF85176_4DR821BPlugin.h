@@ -3,10 +3,13 @@
 
 #include "LCDPlugin.h"
 #include "SegLCD_PCF85176_4DR821B.h"
+#include "SegTransport.h"
 #include <Wire.h>
 
 class PCF85176_4DR821BPlugin : public LCDPlugin {
 public:
+    PCF85176_4DR821BPlugin() : _bus(Wire) {}
+
     const char *name() const override { return "4dr821"; }
 
     SegLCDLib* create(const DisplayConfig &cfg) override {
@@ -18,7 +21,7 @@ public:
             Serial.println("Error: set both SDA and SCL or leave both default");
             return nullptr;
         }
-        auto *lcd = new SegLCD_PCF85176_4DR821B(Wire, cfg.i2cAddr, cfg.subAddr);
+        auto *lcd = new SegLCD_PCF85176_4DR821B(_bus, cfg.i2cAddr, cfg.subAddr);
         initPowerPin(cfg.power);
         lcd->init();
         lcd->setAutoFlush(true);
@@ -45,6 +48,9 @@ public:
         printMenuLine(out, "4dr821 commands:");
         printMenuLine(out, "  sym <mask> <0|1>  - symbol");
     }
+
+private:
+    SegTransportI2CArduino _bus;
 };
 
 #endif

@@ -4,9 +4,11 @@
  */
 
 #include "SegLCD_PCF85176_6DigSigBattProgress.h"
+#include "SegTransport.h"
 #include <Wire.h>
 
-SegLCD_PCF85176_6DigitSignalBatteryProgress lcd(Wire);
+SegTransportI2CArduino bus(Wire);
+SegLCD_PCF85176_6DigitSignalBatteryProgress lcd(bus);
 
 
 void setup() {

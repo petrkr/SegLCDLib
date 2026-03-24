@@ -3,10 +3,13 @@
 
 #include "LCDPlugin.h"
 #include "SegLCD_PCF85176_6DigSigBattProgress.h"
+#include "SegTransport.h"
 #include <Wire.h>
 
 class PCF85176_6DigSigBattProgressPlugin : public LCDPlugin {
 public:
+    PCF85176_6DigSigBattProgressPlugin() : _bus(Wire) {}
+
     const char *name() const override { return "6prog"; }
 
     SegLCDLib* create(const DisplayConfig &cfg) override {
@@ -18,7 +21,7 @@ public:
             Serial.println("Error: set both SDA and SCL or leave both default");
             return nullptr;
         }
-        auto *lcd = new SegLCD_PCF85176_6DigitSignalBatteryProgress(Wire, cfg.i2cAddr, cfg.subAddr);
+        auto *lcd = new SegLCD_PCF85176_6DigitSignalBatteryProgress(_bus, cfg.i2cAddr, cfg.subAddr);
         initPowerPin(cfg.power);
         lcd->init();
         lcd->setAutoFlush(true);
@@ -69,6 +72,9 @@ public:
         printMenuLine(out, "  wheel <value>      - wheel");
         printMenuLine(out, "  ls/lc <mask>       - set/clear labels");
     }
+
+private:
+    SegTransportI2CArduino _bus;
 };
 
 #endif

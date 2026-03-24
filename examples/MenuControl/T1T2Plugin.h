@@ -3,10 +3,13 @@
 
 #include "LCDPlugin.h"
 #include "SegLCD_PCF85176_T1T2Lcd.h"
+#include "SegTransport.h"
 #include <Wire.h>
 
 class T1T2Plugin : public LCDPlugin {
 public:
+    T1T2Plugin() : _bus(Wire) {}
+
     const char *name() const override { return "T1T2"; }
 
     SegLCDLib* create(const DisplayConfig &cfg) override {
@@ -18,7 +21,7 @@ public:
             Serial.println("Error: set both SDA and SCL or leave both default");
             return nullptr;
         }
-        auto *lcd = new SegLCD_PCF85176_T1T2Lcd(Wire, cfg.i2cAddr, cfg.subAddr);
+        auto *lcd = new SegLCD_PCF85176_T1T2Lcd(_bus, cfg.i2cAddr, cfg.subAddr);
         initPowerPin(cfg.power);
         lcd->init();
         lcd->setAutoFlush(true);
@@ -73,6 +76,9 @@ public:
         printMenuLine(out, "  t1t2s/c <mask>  - set/clear T1/T2");
         printMenuLine(out, "  clk <0|1>       - clock symbol");
     }
+
+private:
+    SegTransportI2CArduino _bus;
 };
 
 #endif

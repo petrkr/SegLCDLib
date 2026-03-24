@@ -3,14 +3,18 @@
 
 #include "LCDPlugin.h"
 #include "SegLCD_PCx85_Raw.h"
+#include "SegTransport.h"
 #include <Wire.h>
 
 class PCx85_RawPlugin : public LCDPlugin {
 private:
+    SegTransportI2CArduino _bus;
     ModeDrive _drive = MODE_DRIVE_14;
     ModeBias _bias = MODE_BIAS_13;
 
 public:
+    PCx85_RawPlugin() : _bus(Wire) {}
+
     const char *name() const override { return "pcx85_raw"; }
 
     SegLCDLib* create(const DisplayConfig &cfg) override {
@@ -22,7 +26,7 @@ public:
             Serial.println("Error: set both SDA and SCL or leave both default");
             return nullptr;
         }
-        auto *lcd = new SegLCD_PCx85_Raw(Wire, cfg.i2cAddr, cfg.subAddr);
+        auto *lcd = new SegLCD_PCx85_Raw(_bus, cfg.i2cAddr, cfg.subAddr);
         initPowerPin(cfg.power);
         _drive = cfg.rawDrive;
         _bias = cfg.rawBias;

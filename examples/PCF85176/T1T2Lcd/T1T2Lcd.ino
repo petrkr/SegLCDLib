@@ -4,10 +4,12 @@
  */
 
 #include "SegLCD_PCF85176_T1T2Lcd.h"
+#include "SegTransport.h"
 
 #include <Wire.h>
 
-SegLCD_PCF85176_T1T2Lcd lcd(Wire);
+SegTransportI2CArduino bus(Wire);
+SegLCD_PCF85176_T1T2Lcd lcd(bus);
 
 void setup() {
   Serial.begin(115200);

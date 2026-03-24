@@ -4,9 +4,11 @@
  */
 
 #include "SegLCD_PCF8576_4Seg6SegMaintSegBatUnits.h"
+#include "SegTransport.h"
 #include <Wire.h>
 
-SegLCD_PCF8576_4Seg6SegMaintSegBatUnits lcd(Wire);
+SegTransportI2CArduino bus(Wire);
+SegLCD_PCF8576_4Seg6SegMaintSegBatUnits lcd(bus);
 
 void setup() {
   Serial.begin(115200);
