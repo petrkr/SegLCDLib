@@ -15,6 +15,10 @@ void SegLCDLib::_allocateBuffer(size_t size) {
     _ramBufferSize = size;
 }
 
+void SegLCDLib::init() {
+    clear();
+}
+
 void SegLCDLib::_writeRamMasked(uint8_t data, uint8_t address, uint8_t mask) {
     uint8_t byteIndex = address >> 1;
 

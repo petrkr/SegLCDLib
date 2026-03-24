@@ -6,6 +6,7 @@ SegDriver_3Wire::SegDriver_3Wire(SegTransport3Wire& transport, uint8_t chipselec
 void SegDriver_3Wire::init() {
     pinMode(_cs, OUTPUT);
     _transport.set_cs(_cs, HIGH);
+    SegLCDLib::init();
 }
 
 void SegDriver_3Wire::on() {

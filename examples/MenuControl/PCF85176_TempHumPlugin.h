@@ -25,7 +25,6 @@ public:
         initPowerPin(cfg.power);
         lcd->init();
         lcd->setAutoFlush(true);
-        lcd->clear();
         return lcd;
     }
 

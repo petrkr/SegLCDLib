@@ -23,9 +23,6 @@ void setup() {
   Serial.println("Initialize LCD...");
 
   lcd.init();
-
-  // Clear LCD
-  lcd.clear();
   delay(500);
 
   lcd.setCursor(0, 0);

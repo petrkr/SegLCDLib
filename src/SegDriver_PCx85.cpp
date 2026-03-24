@@ -9,6 +9,7 @@ SegDriver_PCx85::SegDriver_PCx85(SegTransportI2C& transport, uint8_t address, ui
 
 void SegDriver_PCx85::init() {
     _deviceSelect();
+    SegLCDLib::init();
 }
 
 void SegDriver_PCx85::bankSelect(uint8_t input, uint8_t output) {

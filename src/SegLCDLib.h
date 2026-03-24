@@ -60,7 +60,7 @@ class SegLCDLib : public Print {
         /**
          * @brief Initialize the display driver, clear display and set position to 0,0.
          */
-        virtual void init() = 0;
+        virtual void init();
 
         /**
          * @brief Clear all visible segments on the display.
