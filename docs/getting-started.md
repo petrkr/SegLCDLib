@@ -46,8 +46,9 @@ Connect 3 GPIO pins and power to your Arduino:
 ```cpp
 #include "SegLCD_HT1621_4SegDegree.h"
 
-// Create LCD instance (pins: CLK, DATA, CS)
-SegLCD_HT1621_4SegDegree lcd(5, 6, 7);
+// Create 3-wire transport (DATA, WR) and LCD (CS)
+SegTransport3WireArduino transport(6, 5);
+SegLCD_HT1621_4SegDegree lcd(transport, 7);
 
 void setup() {
   lcd.init();           // Initialize display
@@ -111,9 +112,9 @@ lcd.write(byte);          // Output single character/segment byte
 ### Features (display-dependent)
 
 ```cpp
-lcd.setBattery(level);    // Set battery indicator (0-3)
-lcd.setSignal(bars);      // Set signal strength (0-4)
-lcd.showDegree();         // Show degree symbol
+lcd.setBatteryLevel(level);  // If supported by the display
+lcd.setSignalLevel(bars);    // If supported by the display
+lcd.setDegreeSymbol(true);   // If supported by the display
 ```
 
 See [Architecture](architecture.md) for class hierarchy and full [API Reference](https://petrkr.github.io/SegLCDLib/) for complete method documentation.
@@ -122,7 +123,7 @@ See [Architecture](architecture.md) for class hierarchy and full [API Reference]
 
 **Display not showing:**
 - Verify I2C address: Use example sketch `PCF85176/RawLCD` to scan addresses
-- Check wiring: SDA, SCL, VCC, GND connections
+- Check wiring: SDA/SCL for I2C or DATA/WR/CS for 3-wire, plus VCC/GND
 - Confirm board selection and COM port in Arduino IDE
 
 **Wrong I2C address:**

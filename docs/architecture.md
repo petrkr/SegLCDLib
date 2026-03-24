@@ -137,19 +137,17 @@ class SegDriver_PCx85 : public SegLCDLib {
 
 ```cpp
 class SegDriver_HT1621 : public SegLCDLib {
-    uint8_t _pinCLK;    // Clock pin (GPIO)
-    uint8_t _pinDATA;   // Data pin (GPIO)
-    uint8_t _pinCS;     // Chip select pin (GPIO)
+    SegTransport3Wire& _transport;  // 3-wire bus transport
+    uint8_t _cs;                    // Chip select pin (GPIO)
 
     // RAM buffering is inherited from SegLCDLib
     // Concrete LCD class allocates required size via _allocateBuffer()
     uint8_t* _ramBuffer;
     size_t _ramBufferSize;
 
-    // 3-wire serial protocol methods
-    void _writeCommand(uint8_t cmd);
-    void _writeData(uint16_t addr, uint8_t data);
-    void _writeBit(uint8_t bit);
+    // 3-wire serial protocol methods via transport
+    void command(uint8_t cmd);
+    void _writeRam(uint8_t* data, size_t length, uint8_t address);
 };
 ```
 
@@ -175,8 +173,9 @@ class SegDriver_HT1621 : public SegLCDLib {
 
 ```cpp
 class SegDriver_VK0192 : public SegLCDLib {
-    // Same 3-wire pins as HT1621
-    uint8_t _pinCLK, _pinDATA, _pinCS;
+    // Same 3-wire transport model as HT1621
+    SegTransport3Wire& _transport;
+    uint8_t _cs;
 
     // RAM buffering is inherited from SegLCDLib
     // Concrete LCD class allocates required size via _allocateBuffer()

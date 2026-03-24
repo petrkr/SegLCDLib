@@ -135,12 +135,10 @@ void loop() {
 #include "SegLCD_VK0192_Raw.h"  // Use for VK0192 (different addressing)
 
 const int CLK = 5, DATA = 6, CS = 7;
-SegLCD_HT1621_Raw lcd(CLK, DATA, CS);
+SegTransport3WireArduino transport(DATA, CLK);
+SegLCD_HT1621_Raw lcd(transport, CS);
 
 void setup() {
-    pinMode(CLK, OUTPUT);
-    pinMode(DATA, OUTPUT);
-    pinMode(CS, OUTPUT);
     Serial.begin(9600);
     lcd.init();
     Serial.println("RAW LCD ready");

@@ -38,8 +38,8 @@ SegLCD_PCF85176_6DigSigBattProgress lcd(Wire);
 lcd.init();
 lcd.setCursor(0, 0);
 lcd.print(123456);
-lcd.setSignal(3);   // 3 of 4 bars
-lcd.setBattery(2);  // Medium battery
+lcd.setSignalLevel(3);   // 3 of 4 bars
+lcd.setBatteryLevel(2);  // Medium battery
 ```
 
 ---
@@ -170,9 +170,9 @@ lcd.print(45);        // 45%
 ```cpp
 #include "SegLCD_HT1621_4SegDegree.h"
 
-// Pin configuration
 const int CLK = 5, DATA = 6, CS = 7;
-SegLCD_HT1621_4SegDegree lcd(CLK, DATA, CS);
+SegTransport3WireArduino transport(DATA, CLK);
+SegLCD_HT1621_4SegDegree lcd(transport, CS);
 
 lcd.init();
 lcd.setCursor(0, 0);
@@ -208,11 +208,12 @@ GND            →  GND
 #include "SegLCD_HT1621_6SegBat.h"
 
 const int CLK = 5, DATA = 6, CS = 7;
-SegLCD_HT1621_6SegBat lcd(CLK, DATA, CS);
+SegTransport3WireArduino transport(DATA, CLK);
+SegLCD_HT1621_6SegBat lcd(transport, CS);
 
 lcd.init();
 lcd.print(123456);
-lcd.setBattery(2);  // Medium battery
+lcd.setBatteryLevel(2);  // Medium battery
 ```
 
 ---
@@ -234,7 +235,8 @@ lcd.setBattery(2);  // Medium battery
 #include "SegLCD_HT1621_LCM0844.h"
 
 const int CLK = 5, DATA = 6, CS = 7;
-SegLCD_HT1621_LCM0844 lcd(CLK, DATA, CS);
+SegTransport3WireArduino transport(DATA, CLK);
+SegLCD_HT1621_LCM0844 lcd(transport, CS);
 
 lcd.init();
 lcd.print("12.34");
@@ -261,7 +263,8 @@ lcd.setLoadLevel(3);
 #include "SegLCD_HT1621_LCM88128.h"
 
 const int CLK = 5, DATA = 6, CS = 7;
-SegLCD_HT1621_LCM88128 lcd(CLK, DATA, CS);
+SegTransport3WireArduino transport(DATA, CLK);
+SegLCD_HT1621_LCM88128 lcd(transport, CS);
 
 lcd.init();
 lcd.print("12.34");
@@ -290,7 +293,8 @@ lcd.setSymbols(SegLCD_HT1621_LCM88128::SYMBOL_LINE_WIND_TO_ACDC);
 #include "SegLCD_HT1621_LCM59011.h"
 
 const int CLK = 5, DATA = 6, CS = 7;
-SegLCD_HT1621_LCM59011 lcd(CLK, DATA, CS);
+SegTransport3WireArduino transport(DATA, CLK);
+SegLCD_HT1621_LCM59011 lcd(transport, CS);
 
 lcd.init();
 lcd.print("12:3");
@@ -358,15 +362,16 @@ lcd.setSymbols(SegLCD_HT1621_LCM59011::SYMBOL_ECO | SegLCD_HT1621_LCM59011::SYMB
 
 **Code Example:**
 ```cpp
-#include "SegLCD_VK0192_5SegSigBatProg.h"
+#include "SegLCD_VK0192_5DigSigBattProgress.h"
 
 const int CLK = 5, DATA = 6, CS = 7;
-SegLCD_VK0192_5SegSigBatProg lcd(CLK, DATA, CS);
+SegTransport3WireArduino transport(DATA, CLK);
+SegLCD_VK0192_5DigSigBattProgress lcd(transport, CS);
 
 lcd.init();
 lcd.print(12345);
-lcd.setSignal(3);    // 3 of 4 bars
-lcd.setBattery(1);   // Low battery
+lcd.setSignalLevel(3);    // 3 of 4 bars
+lcd.setBatteryLevel(1);   // Low battery
 ```
 
 ---

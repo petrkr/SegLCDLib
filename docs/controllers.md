@@ -263,14 +263,10 @@ GND    →   GND
 
 ```cpp
 const int CLK = 5, DATA = 6, CS = 7;
-SegLCD_HT1621_4SegDegree lcd(CLK, DATA, CS);
+SegTransport3WireArduino transport(DATA, CLK);
+SegLCD_HT1621_4SegDegree lcd(transport, CS);
 
 void setup() {
-    // Set GPIO pins to outputs
-    pinMode(CLK, OUTPUT);
-    pinMode(DATA, OUTPUT);
-    pinMode(CS, OUTPUT);
-
     lcd.init();  // Initialize controller and clear display
 }
 ```
@@ -426,7 +422,7 @@ Same as HT1621/HT1622 (3 GPIO pins).
 VK0192 requires careful address mapping because digits don't occupy sequential RAM:
 
 ```cpp
-class SegLCD_VK0192_5SegSigBatProg : public SegDriver_VK0192 {
+class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
     void _mapSegmentToAddress(uint8_t digit, uint8_t segment,
                               uint8_t& addr, uint8_t& bit) {
         // Complex mapping: digit 0 spans addresses 0, 1, 8, 9

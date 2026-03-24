@@ -7,7 +7,8 @@ Arduino library for segment LCD displays. Provides abstract interface, controlle
 ```cpp
 #include "SegLCD_HT1621_4SegDegree.h"
 
-SegLCD_HT1621_4SegDegree lcd(5, 6, 7);  // CLK, DATA, CS pins
+SegTransport3WireArduino transport(6, 5);  // DATA, WR pins
+SegLCD_HT1621_4SegDegree lcd(transport, 7);  // CS pin
 
 void setup() {
     lcd.init();
