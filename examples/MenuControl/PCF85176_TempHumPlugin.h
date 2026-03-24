@@ -46,12 +46,12 @@ public:
             lcd->setSignalLevel((uint8_t)parseNumber(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "ls") == 0) {
-            lcd->setLabels((uint8_t)parseNumber(nextToken(&args)));
+        if (strcmp(cmd, "us") == 0) {
+            lcd->setUnits((uint8_t)parseNumber(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "lc") == 0) {
-            lcd->clearLabels((uint8_t)parseNumber(nextToken(&args)));
+        if (strcmp(cmd, "uc") == 0) {
+            lcd->clearUnits((uint8_t)parseNumber(nextToken(&args)));
             return true;
         }
         return false;
@@ -61,7 +61,7 @@ public:
         printMenuLine(out, "temphum commands:");
         printMenuLine(out, "  b <0-4>         - battery level");
         printMenuLine(out, "  g <0-4>         - signal level");
-        printMenuLine(out, "  ls/lc <mask>    - set/clear labels");
+        printMenuLine(out, "  us/uc <mask>    - set/clear units");
     }
 
 private:
