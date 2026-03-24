@@ -1,7 +1,8 @@
 #include <SegLCD_HT1621_LCM0844.h>
 
 
-SegLCD_HT1621_LCM0844::SegLCD_HT1621_LCM0844(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read) : SegDriver_HT1621(chipselect, data, write, read) {
+SegLCD_HT1621_LCM0844::SegLCD_HT1621_LCM0844(SegTransport3Wire& transport, uint8_t chipselect)
+    : SegDriver_HT1621(transport, chipselect) {
     _allocateBuffer(RAM_SIZE);
 }
 

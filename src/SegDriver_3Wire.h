@@ -2,6 +2,7 @@
 #define SEGDRIVER_3WIRE_H
 
 #include <SegLCDLib.h>
+#include <SegTransport.h>
 
 /**
  * @brief Base class for 3-wire serial LCD segment display drivers.
@@ -55,7 +56,7 @@ class SegDriver_3Wire : public SegLCDLib {
          * @param write Write clock pin
          * @param read Read clock pin (optional, default -1)
          */
-        SegDriver_3Wire(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read = -1);
+        SegDriver_3Wire(SegTransport3Wire& transport, uint8_t chipselect);
 
         /**
          * @brief Initialize GPIO pins for communication.
@@ -80,9 +81,7 @@ class SegDriver_3Wire : public SegLCDLib {
         void command(uint8_t command) override;
 
     protected:
-        uint8_t _wr;   ///< Write clock pin for the display
-        int8_t _rd;    ///< Read clock pin for the display (-1 if unused)
-        uint8_t _data; ///< Data pin for the display
+        SegTransport3Wire& _transport;
         uint8_t _cs;   ///< Chip select pin for the display
 
         /**
@@ -94,17 +93,6 @@ class SegDriver_3Wire : public SegLCDLib {
          */
         using SegLCDLib::_writeRam;
         virtual void _writeRam(uint8_t *data, size_t length, uint8_t address);
-
-        /**
-         * @brief Send bits to the controller.
-         *
-         * This method can be overridden by derived classes to implement
-         * controller-specific timing requirements.
-         *
-         * @param data Data to send
-         * @param bitCount Number of bits to send (default 8)
-         */
-        virtual void _sendBits(uint16_t data, uint8_t bitCount = 8);
 };
 
 #endif

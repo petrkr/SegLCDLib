@@ -36,7 +36,7 @@ class SegDriver_HT1621 : public SegDriver_3Wire {
          * @param write Write clock pin for the display
          * @param read Read clock pin for the display (optional, default is -1)
          */
-        SegDriver_HT1621(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read = -1);
+        SegDriver_HT1621(SegTransport3Wire& transport, uint8_t chipselect);
 
         /**
          * @brief Flush specific range of buffered changes to the display.

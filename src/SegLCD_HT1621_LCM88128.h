@@ -115,7 +115,7 @@ class SegLCD_HT1621_LCM88128 : public SegDriver_HT1621 {
             SYMBOL_WIND                    = (1UL << 18),  // 0x1E:0x40
         } SymbolFlags;
 
-        SegLCD_HT1621_LCM88128(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read = -1);
+        SegLCD_HT1621_LCM88128(SegTransport3Wire& transport, uint8_t chipselect);
         void init() override;
         void setBatteryLevel(uint8_t level);
         void setLoadLevel(uint8_t level);

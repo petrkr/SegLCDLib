@@ -2,8 +2,8 @@
 #include <SegDriver_VK0192.h>
 
 
-SegDriver_VK0192::SegDriver_VK0192(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read)
-    : SegDriver_3Wire(chipselect, data, write, read) {}
+SegDriver_VK0192::SegDriver_VK0192(SegTransport3Wire& transport, uint8_t chipselect)
+    : SegDriver_3Wire(transport, chipselect) {}
 
 void SegDriver_VK0192::flush(uint8_t startAddr, uint8_t length) {
     if (!_ramBuffer || startAddr >= _ramBufferSize) return;

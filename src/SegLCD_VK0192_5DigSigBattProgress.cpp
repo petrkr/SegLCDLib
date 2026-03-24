@@ -1,7 +1,8 @@
 #include <SegLCD_VK0192_5DigSigBattProgress.h>
 
 
-SegLCD_VK0192_5DigSigBattProgress::SegLCD_VK0192_5DigSigBattProgress(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read) : SegDriver_VK0192(chipselect, data, write, read) {
+SegLCD_VK0192_5DigSigBattProgress::SegLCD_VK0192_5DigSigBattProgress(SegTransport3Wire& transport, uint8_t chipselect)
+    : SegDriver_VK0192(transport, chipselect) {
     _allocateBuffer(RAM_SIZE);
 }
 

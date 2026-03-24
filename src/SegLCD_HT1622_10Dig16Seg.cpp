@@ -1,7 +1,8 @@
 #include <SegLCD_HT1622_10Dig16Seg.h>
 
 
-SegLCD_HT1622_10Dig16Seg::SegLCD_HT1622_10Dig16Seg(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read) : SegDriver_HT1622(chipselect, data, write, read) {
+SegLCD_HT1622_10Dig16Seg::SegLCD_HT1622_10Dig16Seg(SegTransport3Wire& transport, uint8_t chipselect)
+    : SegDriver_HT1622(transport, chipselect) {
     _allocateBuffer(RAM_SIZE);
 }
 

@@ -1,7 +1,8 @@
 #include <SegLCD_VK0192_Raw.h>
 
 
-SegLCD_VK0192_Raw::SegLCD_VK0192_Raw(uint8_t chipselect, uint8_t data, uint8_t write, uint8_t read) : SegDriver_VK0192(chipselect, data, write, read) {
+SegLCD_VK0192_Raw::SegLCD_VK0192_Raw(SegTransport3Wire& transport, uint8_t chipselect)
+    : SegDriver_VK0192(transport, chipselect) {
     _allocateBuffer((MAX_ADDRESS / 2) + 1);
 }
 
