@@ -1,7 +1,6 @@
 #ifndef SEGLCD_PCF85176_6DIGSIGBATTPROGRESS_H
 #define SEGLCD_PCF85176_6DIGSIGBATTPROGRESS_H
 
-#include <Wire.h>
 #include <SegDriver_PCx85.h>
 
 /**
@@ -31,7 +30,7 @@ class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
             LABEL_ALL = 0xFF
         } LabelFlags;
 
-        SegLCD_PCF85176_6DigitSignalBatteryProgress(TwoWire& i2c, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
+        SegLCD_PCF85176_6DigitSignalBatteryProgress(SegTransportI2C& transport, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
         void init() override;
         void setBatteryLevel(uint8_t value);
         void setSignalLevel(uint8_t value);

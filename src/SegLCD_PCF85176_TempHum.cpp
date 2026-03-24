@@ -1,7 +1,7 @@
 #include <SegLCD_PCF85176_TempHum.h>
 
 
-SegLCD_PCF85176_TempHumidity::SegLCD_PCF85176_TempHumidity(TwoWire& i2c, uint8_t address, uint8_t subaddress) :  SegDriver_PCF85176(i2c, address, subaddress) {
+SegLCD_PCF85176_TempHumidity::SegLCD_PCF85176_TempHumidity(SegTransportI2C& transport, uint8_t address, uint8_t subaddress) :  SegDriver_PCF85176(transport, address, subaddress) {
     _allocateBuffer(RAM_SIZE);
 }
 

@@ -1,7 +1,6 @@
 #ifndef SEGLCD_PCF85176_4DR821B_H
 #define SEGLCD_PCF85176_4DR821B_H
 
-#include <Wire.h>
 #include <SegDriver_PCx85.h>
 
 /**
@@ -24,7 +23,7 @@ class SegLCD_PCF85176_4DR821B : public SegDriver_PCF85176 {
             SYMBOL_TILDA = 0x80
         } SymbolFlags;
 
-        SegLCD_PCF85176_4DR821B(TwoWire& i2c, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
+        SegLCD_PCF85176_4DR821B(SegTransportI2C& transport, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
         void init() override;
         void setSymbol(uint8_t symbol, bool state);
         void setCursor(uint8_t row, uint8_t col) override;

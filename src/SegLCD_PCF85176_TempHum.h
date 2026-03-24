@@ -1,7 +1,6 @@
 #ifndef SEGLCD_PCF85176_TEMPHUM_H
 #define SEGLCD_PCF85176_TEMPHUM_H
 
-#include <Wire.h>
 #include <SegDriver_PCx85.h>
 
 /**
@@ -24,7 +23,7 @@ class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
             LABEL_PROC = 0x02,
         } LabelFlags;
 
-        SegLCD_PCF85176_TempHumidity(TwoWire& i2c, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
+        SegLCD_PCF85176_TempHumidity(SegTransportI2C& transport, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
         void init() override;
         void clear() override;
         void setBatteryLevel(uint8_t value);

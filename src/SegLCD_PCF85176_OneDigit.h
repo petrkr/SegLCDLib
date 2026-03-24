@@ -1,7 +1,6 @@
 #ifndef SEGLCD_PCF85176_ONEDIGIT_H
 #define SEGLCD_PCF85176_ONEDIGIT_H
 
-#include <Wire.h>
 #include <SegDriver_PCx85.h>
 
 /**
@@ -18,7 +17,7 @@
  */
 class SegLCD_PCF85176_OneDigit : public SegDriver_PCF85176 {
     public:
-        SegLCD_PCF85176_OneDigit(TwoWire& i2c, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
+        SegLCD_PCF85176_OneDigit(SegTransportI2C& transport, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
         void init() override;
         void init(bool reverse);
         void init(bool reverse, bool v1fix);

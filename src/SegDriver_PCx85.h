@@ -1,8 +1,8 @@
 #ifndef SEGDRIVER_PCx85_H
 #define SEGDRIVER_PCx85_H
 
-#include <Wire.h>
 #include <SegLCDLib.h>
+#include <SegTransport.h>
 
 /**
  * @brief Base class for PCx85 LCD segment display drivers.
@@ -60,11 +60,11 @@ class SegDriver_PCx85 : public SegLCDLib {
          * Address is selected by SA0 pins on the device.
          * Subaddress is selected by A0 to A2 pins on the device
          *
-         * @param i2c Reference to the TwoWire object for I2C communication
+         * @param transport I2C transport implementation
          * @param address I2C address of the PCx85 device
          * @param subaddress Subaddress for the device
          */
-        SegDriver_PCx85(TwoWire& i2c, uint8_t address, uint8_t subaddress);
+        SegDriver_PCx85(SegTransportI2C& transport, uint8_t address, uint8_t subaddress);
         virtual void init() override;
 
         /**
@@ -118,7 +118,7 @@ class SegDriver_PCx85 : public SegLCDLib {
         void _writeRam(uint8_t *data, size_t length, uint8_t address = 0) override;
 
     private:
-        TwoWire& _i2c;
+        SegTransportI2C& _transport;
         uint8_t _address;
         uint8_t _subaddress;
         ModeDrive _drive;
@@ -143,11 +143,11 @@ class SegDriver_PCF85176 : public SegDriver_PCx85 {
         /**
          * @brief Constructor for PCF85176 segment driver
          *
-         * @param i2c Reference to the TwoWire object for I2C communication
+         * @param transport I2C transport implementation
          * @param address I2C address of the PCF85176 device (default is 0x38)
          * @param subaddress Subaddress for the device (default is 0)
          */
-        SegDriver_PCF85176(TwoWire& i2c, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS) : SegDriver_PCx85(i2c, address, subaddress) {}
+        SegDriver_PCF85176(SegTransportI2C& transport, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS) : SegDriver_PCx85(transport, address, subaddress) {}
 };
 
 /**

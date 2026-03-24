@@ -2,7 +2,7 @@
 #include <SegDriver_PCx85.h>
 
 
-SegDriver_PCx85::SegDriver_PCx85(TwoWire& i2c, uint8_t address, uint8_t subaddress) : _i2c(i2c) {
+SegDriver_PCx85::SegDriver_PCx85(SegTransportI2C& transport, uint8_t address, uint8_t subaddress) : _transport(transport) {
     _address = address;
     _subaddress = subaddress;
 }
@@ -19,9 +19,7 @@ void SegDriver_PCx85::bankSelect(uint8_t input, uint8_t output) {
     data |= output;
     data |= CMD_LAST_COMMAND;
 
-    _i2c.beginTransmission(_address);
-    _i2c.write(data);
-    _i2c.endTransmission();
+    _transport.write(_address, data);
 }
 
 void SegDriver_PCx85::blink(BlinkFrequency frequency, BlinkMode mode) {
@@ -32,9 +30,7 @@ void SegDriver_PCx85::blink(BlinkFrequency frequency, BlinkMode mode) {
     data |= frequency;
     data |= CMD_LAST_COMMAND;
 
-    _i2c.beginTransmission(_address);
-    _i2c.write(data);
-    _i2c.endTransmission();
+    _transport.write(_address, data);
 }
 
 void SegDriver_PCx85::on() {
@@ -49,10 +45,10 @@ void SegDriver_PCx85::_writeRam(uint8_t *data, size_t length, uint8_t address) {
     if (!_autoFlush) {
         return;
     }
-    _i2c.beginTransmission(_address);
-    _i2c.write(address);
-    _i2c.write(data, length);
-    _i2c.endTransmission();
+    uint8_t buffer[(MAX_ADDRESS / 2) + 2];
+    buffer[0] = address;
+    memcpy(buffer + 1, data, length);
+    _transport.write(_address, buffer, length + 1);
 
     // if we write to last address, we need to select the device again
     // because PCF support chaining, but we do not support it yet
@@ -70,9 +66,7 @@ void SegDriver_PCx85::_deviceSelect() {
     data |= _subaddress;
     data |= CMD_LAST_COMMAND;
 
-    _i2c.beginTransmission(_address);
-    _i2c.write(data);
-    _i2c.endTransmission();
+    _transport.write(_address, data);
 }
 
 void SegDriver_PCx85::_setMode(ModeStatus status, ModeDrive drive, ModeBias bias) {
@@ -87,9 +81,7 @@ void SegDriver_PCx85::_setMode(ModeStatus status, ModeDrive drive, ModeBias bias
     data |= _drive;
     data |= CMD_LAST_COMMAND;
 
-    _i2c.beginTransmission(_address);
-    _i2c.write(data);
-    _i2c.endTransmission();
+    _transport.write(_address, data);
 }
 
 void SegDriver_PCx85::flush(uint8_t startAddr, uint8_t length) {

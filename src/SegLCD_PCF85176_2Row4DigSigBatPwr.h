@@ -1,7 +1,6 @@
 #ifndef SEGLCD_PCx85_2Row4DigSigBatPwr_H
 #define SEGLCD_PCx85_2Row4DigSigBatPwr_H
 
-#include <Wire.h>
 #include <SegDriver_PCx85.h>
 
 /**
@@ -12,7 +11,7 @@
  */
 class SegLCD_PCF85176_2Row4DigSigBatPwr : public SegDriver_PCF85176 {
     public:
-        SegLCD_PCF85176_2Row4DigSigBatPwr(TwoWire& i2c, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
+        SegLCD_PCF85176_2Row4DigSigBatPwr(SegTransportI2C& transport, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
         void init() override;
         void setBatteryLevel(uint8_t value);
         void setSignalLevel(uint8_t value);
