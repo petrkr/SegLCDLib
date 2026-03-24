@@ -53,36 +53,27 @@ void SegLCD_PCF85176_TempHumidity::setSignalLevel(uint8_t level) {
     _writeRam(_ramBuffer[OFFSET_SIGBATT], ADDR_SIGNAL_BATT);
 }
 
-void SegLCD_PCF85176_TempHumidity::setLabels(uint8_t labels) {
-
-    if (labels & LABEL_DEGREE_C) {
-        _ramBuffer[OFFSET_TEMP + LABEL_TEMP_COL] |= LABEL_BIT; // Set the C label
-        _writeRam(_ramBuffer[OFFSET_TEMP + LABEL_TEMP_COL], ADDR_TEMP_SEGS + TEMP_LABEL_OFFSET);
+void SegLCD_PCF85176_TempHumidity::_updateUnits(uint8_t units, bool set) {
+    if (units & UNIT_DEGREE_C) {
+        _writeRamMasked(set ? LABEL_BIT : 0x00, ADDR_TEMP_SEGS + TEMP_LABEL_OFFSET, LABEL_BIT);
     }
 
-    if (labels & LABEL_PROC) {
-        _ramBuffer[OFFSET_HUM + LABEL_HUM_COL] |= LABEL_BIT; // Set the proc symbol
-        _writeRam(_ramBuffer[OFFSET_HUM + LABEL_HUM_COL], ADDR_HUM_SEGS + HUM_LABEL_OFFSET);
+    if (units & UNIT_PERCENT) {
+        _writeRamMasked(set ? LABEL_BIT : 0x00, ADDR_HUM_SEGS + HUM_LABEL_OFFSET, LABEL_BIT);
     }
 }
 
-void SegLCD_PCF85176_TempHumidity::clearLabels(uint8_t labels) {
+void SegLCD_PCF85176_TempHumidity::setUnits(uint8_t units) {
+    _updateUnits(units, true);
+}
 
-    if (labels & LABEL_DEGREE_C) {
-        _ramBuffer[OFFSET_TEMP + LABEL_TEMP_COL] &= ~LABEL_BIT; // Clear the C label
-        _writeRam(_ramBuffer[OFFSET_TEMP + LABEL_TEMP_COL], ADDR_TEMP_SEGS + TEMP_LABEL_OFFSET);
-    }
-
-    if (labels & LABEL_PROC) {
-        _ramBuffer[OFFSET_HUM + LABEL_HUM_COL] &= ~LABEL_BIT; // Clear the proc symbol
-        _writeRam(_ramBuffer[OFFSET_HUM + LABEL_HUM_COL], ADDR_HUM_SEGS + HUM_LABEL_OFFSET);
-    }
+void SegLCD_PCF85176_TempHumidity::clearUnits(uint8_t units) {
+    _updateUnits(units, false);
 }
 
 void SegLCD_PCF85176_TempHumidity::_setDecimal(uint8_t row, uint8_t col, bool state) {
 
     uint8_t address = 0;
-    uint8_t offset = 0;
 
     switch (row) {
     case TEMP_ROW: // Temp segments
@@ -91,7 +82,6 @@ void SegLCD_PCF85176_TempHumidity::_setDecimal(uint8_t row, uint8_t col, bool st
         }
 
         address = ADDR_TEMP_SEGS + (col * 2);
-        offset = OFFSET_TEMP;
         break;
 
 
@@ -101,20 +91,13 @@ void SegLCD_PCF85176_TempHumidity::_setDecimal(uint8_t row, uint8_t col, bool st
         }
 
         address = ADDR_HUM_SEGS + (col * 2);
-        offset = OFFSET_HUM;
         break;
 
     default:
         return; // Invalid selection
     }
 
-    if (state) {
-        _ramBuffer[offset + col] |= DECIMAL_POINT_BIT; // Set the decimal point bit
-    } else {
-        _ramBuffer[offset + col] &= ~DECIMAL_POINT_BIT; // Clear the decimal point bit
-    }
-
-    _writeRam(_ramBuffer[offset + col], address);
+    _writeRamMasked(state ? DECIMAL_POINT_BIT : 0x00, address, DECIMAL_POINT_BIT);
 }
 
 void SegLCD_PCF85176_TempHumidity::setCursor(uint8_t row, uint8_t col) {
@@ -167,13 +150,8 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
 
         // Regular character
         uint8_t c = _mapSegments(_get_char_value(ch));
-        if (_cursorCol == LABEL_TEMP_COL) {
-            // Preserve C label bit - keep bit 3, write other bits from c
-            _ramBuffer[OFFSET_TEMP + _cursorCol] = (_ramBuffer[OFFSET_TEMP + _cursorCol] & 0x08) | (c & ~0x08);
-        } else {
-            _ramBuffer[OFFSET_TEMP + _cursorCol] = c;
-        }
-        _writeRam(_ramBuffer[OFFSET_TEMP + _cursorCol], ADDR_TEMP_SEGS + _cursorCol * 2);
+        uint8_t temp_mask = (_cursorCol == LABEL_TEMP_COL) ? static_cast<uint8_t>(~LABEL_BIT) : 0xFF;
+        _writeRamMasked(c, ADDR_TEMP_SEGS + _cursorCol * 2, temp_mask);
         _cursorCol++;
         return 1;
 
@@ -195,16 +173,11 @@ size_t SegLCD_PCF85176_TempHumidity::write(uint8_t ch) {
 
         // Regular character
         uint8_t c = _mapSegments(_get_char_value(ch));
-        if (_cursorCol == 0) {
-            // Preserve minus sign bit at position 0
-            _ramBuffer[OFFSET_HUM + _cursorCol] = (_ramBuffer[OFFSET_HUM + _cursorCol] & MINUS_SIGN_BIT) | (c & ~MINUS_SIGN_BIT);
-        } else if (_cursorCol == LABEL_HUM_COL) {
-            // Preserve % label bit - keep bit 3, write other bits from c
-            _ramBuffer[OFFSET_HUM + _cursorCol] = (_ramBuffer[OFFSET_HUM + _cursorCol] & 0x08) | (c & ~0x08);
-        } else {
-            _ramBuffer[OFFSET_HUM + _cursorCol] = c;
+        uint8_t hum_mask = 0xFF;
+        if (_cursorCol == 0 || _cursorCol == LABEL_HUM_COL) {
+            hum_mask = static_cast<uint8_t>(~LABEL_BIT);
         }
-        _writeRam(_ramBuffer[OFFSET_HUM + _cursorCol], ADDR_HUM_SEGS + _cursorCol * 2);
+        _writeRamMasked(c, ADDR_HUM_SEGS + _cursorCol * 2, hum_mask);
         _cursorCol++;
         return 1;
     }

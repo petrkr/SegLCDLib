@@ -19,21 +19,22 @@
 class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
     public:
         typedef enum {
-            LABEL_DEGREE_C = 0x01,
-            LABEL_PROC = 0x02,
-        } LabelFlags;
+            UNIT_DEGREE_C = 0x01,
+            UNIT_PERCENT = 0x02,
+        } UnitFlags;
 
         SegLCD_PCF85176_TempHumidity(SegTransportI2C& transport, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
         void init() override;
         void clear() override;
         void setBatteryLevel(uint8_t value);
         void setSignalLevel(uint8_t value);
-        void setLabels(uint8_t labels);
-        void clearLabels(uint8_t labels);
+        void setUnits(uint8_t units);
+        void clearUnits(uint8_t units);
         void setCursor(uint8_t row, uint8_t col) override;
         size_t write(uint8_t ch) override;
 
     private:
+        void _updateUnits(uint8_t units, bool set);
         void _setDecimal(uint8_t row, uint8_t col, bool state) override;
         static constexpr uint8_t ADDR_SIGNAL_BATT = 14;
         static constexpr uint8_t ADDR_TEMP_SEGS = 0;
