@@ -46,18 +46,13 @@ void SegDriver_PCx85::_writeRam(uint8_t *data, size_t length, uint8_t address) {
     if (!_autoFlush) {
         return;
     }
+
+    _deviceSelect();
+
     uint8_t buffer[(MAX_ADDRESS / 2) + 2];
     buffer[0] = address;
     memcpy(buffer + 1, data, length);
     _transport.write(_address, buffer, length + 1);
-
-    // if we write to last address, we need to select the device again
-    // because PCF support chaining, but we do not support it yet
-    if (address + (length * 8) >= MAX_ADDRESS - 8)
-    {
-        // TODO: Count how this will be on different modes than static
-        _deviceSelect();
-    }
 }
 
 void SegDriver_PCx85::_deviceSelect() {
