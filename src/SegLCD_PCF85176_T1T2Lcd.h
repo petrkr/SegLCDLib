@@ -19,11 +19,11 @@
 class SegLCD_PCF85176_T1T2Lcd : public SegDriver_PCF85176 {
     public:
         typedef enum {
-            LABEL_T1_C_UP = 0x80,
-            LABEL_T1_C_DOWN = 0x40,
-            LABEL_T2_C = 0x20,
-            LABEL_T2_HUM = 0x10,
-        } LabelFlags;
+            UNIT_T1_C_UP = 0x80,
+            UNIT_T1_C_DOWN = 0x40,
+            UNIT_T2_C = 0x20,
+            UNIT_T2_HUM = 0x10,
+        } UnitFlags;
 
         typedef enum {
             LABEL_T1 = 0x01,
@@ -35,9 +35,9 @@ class SegLCD_PCF85176_T1T2Lcd : public SegDriver_PCF85176 {
         void setBatteryLevel(uint8_t value);
         void setSignalLevel(uint8_t value);
         void setClockSymbol(bool status, uint8_t index = 0);
-        void setLabels(uint8_t labels);
+        void setUnits(uint8_t units);
         void setT1T2Labels(uint8_t t1t2);
-        void clearLabels(uint8_t labels);
+        void clearUnits(uint8_t units);
         void clearT1T2Labels(uint8_t t1t2);
         void setCursor(uint8_t row, uint8_t col) override;
         size_t write(uint8_t ch) override;

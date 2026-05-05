@@ -51,27 +51,33 @@ void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setSignalLevel(uint8_t level) {
     _writeRamMasked(data, ADDR_SIGNAL, 0xF0);
 }
 
-uint8_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_convertLabelFlags(uint8_t labels) {
-    uint8_t label_bits = 0;
-    if (labels & LABEL_MPA)  label_bits |= 0x01;
-    if (labels & LABEL_KPA)  label_bits |= 0x02;
-    if (labels & LABEL_UEPS) label_bits |= 0x04;
-    if (labels & LABEL_MM)   label_bits |= 0x08;
-    if (labels & LABEL_MV)   label_bits |= 0x10;
-    if (labels & LABEL_NM)   label_bits |= 0x20;
-    if (labels & LABEL_KG)   label_bits |= 0x40;
-    if (labels & LABEL_G)    label_bits |= 0x80;
-    return label_bits;
+uint8_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_convertUnitFlags(uint16_t units) {
+    uint8_t unit_bits = 0;
+    if (units & UNIT_MPA)  unit_bits |= 0x01;
+    if (units & UNIT_KPA)  unit_bits |= 0x02;
+    if (units & UNIT_UEPS) unit_bits |= 0x04;
+    if (units & UNIT_MM)   unit_bits |= 0x08;
+    if (units & UNIT_MV)   unit_bits |= 0x10;
+    if (units & UNIT_NM)   unit_bits |= 0x20;
+    if (units & UNIT_KG)   unit_bits |= 0x40;
+    if (units & UNIT_G)    unit_bits |= 0x80;
+    return unit_bits;
 }
 
-void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setLabels(uint8_t labels) {
-    uint8_t label_bits = _convertLabelFlags(labels);
-    _writeRamMasked(label_bits, ADDR_LABELS, label_bits);
+void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setUnits(uint16_t units) {
+    uint8_t unit_bits = _convertUnitFlags(units);
+    _writeRamMasked(unit_bits, ADDR_LABELS, unit_bits);
+    if (units & UNIT_DEGREE) {
+        _writeRamMasked(0x10, 0x0B, 0x10);
+    }
 }
 
-void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::clearLabels(uint8_t labels) {
-    uint8_t label_bits = _convertLabelFlags(labels);
-    _writeRamMasked(0x00, ADDR_LABELS, label_bits);
+void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::clearUnits(uint16_t units) {
+    uint8_t unit_bits = _convertUnitFlags(units);
+    _writeRamMasked(0x00, ADDR_LABELS, unit_bits);
+    if (units & UNIT_DEGREE) {
+        _writeRamMasked(0x00, 0x0B, 0x10);
+    }
 }
 
 void SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::setDegreeSymbol(bool state, uint8_t index) {

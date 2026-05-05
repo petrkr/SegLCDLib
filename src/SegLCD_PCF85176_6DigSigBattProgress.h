@@ -19,16 +19,16 @@
 class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
     public:
         typedef enum {
-            LABEL_MPA = 0x01,
-            LABEL_KPA = 0x02,
-            LABEL_BAR = 0x04,
-            LABEL_PSI = 0x08,
-            LABEL_MH2O = 0x10,
-            LABEL_MMHG = 0x20,
-            LABEL_ATM = 0x40,
-            LABEL_KGFCM2 = 0x80,
-            LABEL_ALL = 0xFF
-        } LabelFlags;
+            UNIT_MPA = 0x01,
+            UNIT_KPA = 0x02,
+            UNIT_BAR = 0x04,
+            UNIT_PSI = 0x08,
+            UNIT_MH2O = 0x10,
+            UNIT_MMHG = 0x20,
+            UNIT_ATM = 0x40,
+            UNIT_KGFCM2 = 0x80,
+            UNIT_ALL = 0xFF
+        } UnitFlags;
 
         SegLCD_PCF85176_6DigitSignalBatteryProgress(SegTransportI2C& transport, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
         void init() override;
@@ -36,8 +36,8 @@ class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
         void setSignalLevel(uint8_t value);
         void setProgress(uint8_t value);
         void setWheel(uint16_t value);
-        void setLabels(LabelFlags labels);
-        void clearLabels(LabelFlags labels);
+        void setUnits(UnitFlags units);
+        void clearUnits(UnitFlags units);
         void setCursor(uint8_t row, uint8_t col) override;
         size_t write(uint8_t ch) override;
 

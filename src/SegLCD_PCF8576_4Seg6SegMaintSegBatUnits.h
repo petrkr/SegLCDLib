@@ -18,25 +18,26 @@
  */
 class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
     public:
-        typedef enum {
-            LABEL_MPA = 0x01,
-            LABEL_KPA = 0x02,
-            LABEL_UEPS = 0x04,
-            LABEL_MM = 0x08,
-            LABEL_MV = 0x10,
-            LABEL_NM = 0x20,
-            LABEL_KG = 0x40,
-            LABEL_G = 0x80,
-            LABEL_ALL = 0xFF
-        } LabelFlags;
+        typedef enum : uint16_t {
+            UNIT_MPA = 0x01,
+            UNIT_KPA = 0x02,
+            UNIT_UEPS = 0x04,
+            UNIT_MM = 0x08,
+            UNIT_MV = 0x10,
+            UNIT_NM = 0x20,
+            UNIT_KG = 0x40,
+            UNIT_G = 0x80,
+            UNIT_DEGREE = 0x0100,
+            UNIT_ALL = 0x01FF
+        } UnitFlags;
 
         SegLCD_PCF8576_4Seg6SegMaintSegBatUnits(SegTransportI2C& transport, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
         void init() override;
         void clear() override;
         void setBatteryLevel(uint8_t value);
         void setSignalLevel(uint8_t value);
-        void setLabels(uint8_t labels);
-        void clearLabels(uint8_t labels);
+        void setUnits(uint16_t units);
+        void clearUnits(uint16_t units);
         void setDegreeSymbol(bool state, uint8_t index = 0);
         void setMaintenanceSymbol(bool state, uint8_t index = 0);
         void setCursor(uint8_t row, uint8_t col) override;
@@ -76,7 +77,7 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
 
         uint8_t _mapSegmentsTop(uint8_t val);
         uint8_t _mapSegments(uint8_t val);
-        uint8_t _convertLabelFlags(uint8_t labels);
+        uint8_t _convertUnitFlags(uint16_t units);
         size_t _writeRow0(uint8_t ch);
         size_t _writeRow1(uint8_t ch);
 };

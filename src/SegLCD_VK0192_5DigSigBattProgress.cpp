@@ -115,17 +115,30 @@ void SegLCD_VK0192_5DigSigBattProgress::setProgress(uint8_t value) {
     _writeRam(_ramBuffer[ADDR_PROGRESS_P4], ADDR_PROGRESS_P4 * 2);
 }
 
-void SegLCD_VK0192_5DigSigBattProgress::setLabels(uint16_t labels) {
-    _updateLabels(labels & ~LABEL_DEGREE_C, true);
+void SegLCD_VK0192_5DigSigBattProgress::setUnits(uint16_t units) {
+    _updateUnits(units, true);
 }
 
-void SegLCD_VK0192_5DigSigBattProgress::clearLabels(uint16_t labels) {
-    _updateLabels(labels & ~LABEL_DEGREE_C, false);
+void SegLCD_VK0192_5DigSigBattProgress::clearUnits(uint16_t units) {
+    _updateUnits(units, false);
 }
 
 void SegLCD_VK0192_5DigSigBattProgress::setDegreeSymbol(bool state, uint8_t index) {
     if (index > 0) return;
-    _updateLabels(LABEL_DEGREE_C, state);
+    if (state) {
+        _ramBuffer[ADDR_LABELS_2] |= 0x40;
+    } else {
+        _ramBuffer[ADDR_LABELS_2] &= ~0x40;
+    }
+    _writeRam(_ramBuffer[ADDR_LABELS_2], ADDR_LABELS_2 * 2);
+}
+
+void SegLCD_VK0192_5DigSigBattProgress::setLabels(uint16_t labels) {
+    _updateLabels(labels, true);
+}
+
+void SegLCD_VK0192_5DigSigBattProgress::clearLabels(uint16_t labels) {
+    _updateLabels(labels, false);
 }
 
 void SegLCD_VK0192_5DigSigBattProgress::setCursor(uint8_t row, uint8_t col) {
@@ -408,6 +421,59 @@ uint16_t SegLCD_VK0192_5DigSigBattProgress::_map16Segments(uint16_t val) {
     return out;
 }
 
+void SegLCD_VK0192_5DigSigBattProgress::_updateUnits(uint16_t units, bool set) {
+    if (units & UNIT_DEGREE_C) {
+        if (set) {
+            _ramBuffer[ADDR_LABELS_2] |= 0x40;
+        } else {
+            _ramBuffer[ADDR_LABELS_2] &= ~0x40;
+        }
+    }
+
+    if (units & UNIT_KPA) {
+        if (set) {
+            _ramBuffer[ADDR_LABELS_1] |= 0x40;
+        } else {
+            _ramBuffer[ADDR_LABELS_1] &= ~0x40;
+        }
+    }
+
+    if (units & UNIT_MPA) {
+        if (set) {
+            _ramBuffer[ADDR_LABELS_1] |= 0x20;
+        } else {
+            _ramBuffer[ADDR_LABELS_1] &= ~0x20;
+        }
+    }
+
+    if (units & UNIT_M) {
+        if (set) {
+            _ramBuffer[ADDR_LABELS_1] |= 0x10;
+        } else {
+            _ramBuffer[ADDR_LABELS_1] &= ~0x10;
+        }
+    }
+
+    if (units & UNIT_A) {
+        if (set) {
+            _ramBuffer[ADDR_LABELS_2] |= 0x10;
+        } else {
+            _ramBuffer[ADDR_LABELS_2] &= ~0x10;
+        }
+    }
+
+    if (units & UNIT_V) {
+        if (set) {
+            _ramBuffer[ADDR_LABELS_2] |= 0x20;
+        } else {
+            _ramBuffer[ADDR_LABELS_2] &= ~0x20;
+        }
+    }
+
+    _writeRam(_ramBuffer[ADDR_LABELS_1], ADDR_LABELS_1 * 2);
+    _writeRam(_ramBuffer[ADDR_LABELS_2], ADDR_LABELS_2 * 2);
+}
+
 void SegLCD_VK0192_5DigSigBattProgress::_updateLabels(uint16_t labels, bool set) {
     if (labels & LABEL_P) {
         if (set) {
@@ -430,54 +496,6 @@ void SegLCD_VK0192_5DigSigBattProgress::_updateLabels(uint16_t labels, bool set)
             _ramBuffer[ADDR_LABELS_1] |= 0x80;
         } else {
             _ramBuffer[ADDR_LABELS_1] &= ~0x80;
-        }
-    }
-
-    if (labels & LABEL_DEGREE_C) {
-        if (set) {
-            _ramBuffer[ADDR_LABELS_2] |= 0x40;
-        } else {
-            _ramBuffer[ADDR_LABELS_2] &= ~0x40;
-        }
-    }
-
-    if (labels & LABEL_KPA) {
-        if (set) {
-            _ramBuffer[ADDR_LABELS_1] |= 0x40;
-        } else {
-            _ramBuffer[ADDR_LABELS_1] &= ~0x40;
-        }
-    }
-
-    if (labels & LABEL_MPA) {
-        if (set) {
-            _ramBuffer[ADDR_LABELS_1] |= 0x20;
-        } else {
-            _ramBuffer[ADDR_LABELS_1] &= ~0x20;
-        }
-    }
-
-    if (labels & LABEL_M) {
-        if (set) {
-            _ramBuffer[ADDR_LABELS_1] |= 0x10;
-        } else {
-            _ramBuffer[ADDR_LABELS_1] &= ~0x10;
-        }
-    }
-
-    if (labels & LABEL_A) {
-        if (set) {
-            _ramBuffer[ADDR_LABELS_2] |= 0x10;
-        } else {
-            _ramBuffer[ADDR_LABELS_2] &= ~0x10;
-        }
-    }
-
-    if (labels & LABEL_V) {
-        if (set) {
-            _ramBuffer[ADDR_LABELS_2] |= 0x20;
-        } else {
-            _ramBuffer[ADDR_LABELS_2] &= ~0x20;
         }
     }
 

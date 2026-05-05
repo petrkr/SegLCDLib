@@ -61,13 +61,13 @@ void SegLCD_PCF85176_T1T2Lcd::setClockSymbol(bool status, uint8_t index) {
     _writeRam(_ramBuffer[OFFSET_SIGCLK], ADDR_SIGNAL_CLOCK);
 }
 
-void SegLCD_PCF85176_T1T2Lcd::setLabels(uint8_t labels) {
-    _ramBuffer[OFFSET_LABELS] |= labels;
+void SegLCD_PCF85176_T1T2Lcd::setUnits(uint8_t units) {
+    _ramBuffer[OFFSET_LABELS] |= units;
     _writeRam(_ramBuffer[OFFSET_LABELS], ADDR_LABELS);
 }
 
-void SegLCD_PCF85176_T1T2Lcd::clearLabels(uint8_t labels) {
-    _ramBuffer[OFFSET_LABELS] &= ~labels;
+void SegLCD_PCF85176_T1T2Lcd::clearUnits(uint8_t units) {
+    _ramBuffer[OFFSET_LABELS] &= ~units;
     _writeRam(_ramBuffer[OFFSET_LABELS], ADDR_LABELS);
 }
 
