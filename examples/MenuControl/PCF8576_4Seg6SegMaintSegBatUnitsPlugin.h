@@ -45,16 +45,12 @@ public:
             lcd->setSignalLevel((uint8_t)parseNumber(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "ls") == 0) {
-            lcd->setLabels((uint8_t)parseNumber(nextToken(&args)));
+        if (strcmp(cmd, "us") == 0) {
+            lcd->setUnits((uint16_t)parseNumber(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "lc") == 0) {
-            lcd->clearLabels((uint8_t)parseNumber(nextToken(&args)));
-            return true;
-        }
-        if (strcmp(cmd, "deg") == 0) {
-            lcd->setDegreeSymbol(parseBool(nextToken(&args)));
+        if (strcmp(cmd, "uc") == 0) {
+            lcd->clearUnits((uint16_t)parseNumber(nextToken(&args)));
             return true;
         }
         if (strcmp(cmd, "maint") == 0) {
@@ -68,8 +64,7 @@ public:
         printMenuLine(out, "4s6s commands:");
         printMenuLine(out, "  b <0-5>            - battery level");
         printMenuLine(out, "  g <0-4>            - signal level");
-        printMenuLine(out, "  ls/lc <mask>       - set/clear labels");
-        printMenuLine(out, "  deg <0|1>          - degree symbol");
+        printMenuLine(out, "  us/uc <mask>       - set/clear units");
         printMenuLine(out, "  maint <0|1>        - maintenance");
     }
 

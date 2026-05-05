@@ -44,12 +44,12 @@ public:
             lcd->setSignalLevel((uint8_t)parseNumber(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "ls") == 0) {
-            lcd->setLabels((uint8_t)parseNumber(nextToken(&args)));
+        if (strcmp(cmd, "us") == 0) {
+            lcd->setUnits((uint8_t)parseNumber(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "lc") == 0) {
-            lcd->clearLabels((uint8_t)parseNumber(nextToken(&args)));
+        if (strcmp(cmd, "uc") == 0) {
+            lcd->clearUnits((uint8_t)parseNumber(nextToken(&args)));
             return true;
         }
         if (strcmp(cmd, "t1t2s") == 0) {
@@ -72,7 +72,7 @@ public:
         printMenuLine(out, "T1T2 commands:");
         printMenuLine(out, "  b <0-4>         - battery level");
         printMenuLine(out, "  g <0-5>         - signal level");
-        printMenuLine(out, "  ls/lc <mask>    - set/clear labels");
+        printMenuLine(out, "  us/uc <mask>    - set/clear units");
         printMenuLine(out, "  t1t2s/c <mask>  - set/clear T1/T2");
         printMenuLine(out, "  clk <0|1>       - clock symbol");
     }

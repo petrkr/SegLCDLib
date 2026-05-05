@@ -53,8 +53,12 @@ public:
             lcd->setProgress((uint8_t)parseNumber(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "deg") == 0) {
-            lcd->setDegreeSymbol(parseBool(nextToken(&args)));
+        if (strcmp(cmd, "us") == 0) {
+            lcd->setUnits((uint16_t)parseNumber(nextToken(&args)));
+            return true;
+        }
+        if (strcmp(cmd, "uc") == 0) {
+            lcd->clearUnits((uint16_t)parseNumber(nextToken(&args)));
             return true;
         }
         if (strcmp(cmd, "ls") == 0) {
@@ -74,7 +78,7 @@ public:
         printMenuLine(out, "  b <0-4>         - battery level");
         printMenuLine(out, "  g <0-3>         - signal level");
         printMenuLine(out, "  prog <0-150>    - progress bar");
-        printMenuLine(out, "  deg <0|1>       - degree symbol");
+        printMenuLine(out, "  us/uc <mask>    - set/clear units");
         printMenuLine(out, "  ls/lc <mask>    - set/clear labels");
     }
 };

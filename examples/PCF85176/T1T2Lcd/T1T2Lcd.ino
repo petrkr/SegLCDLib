@@ -54,7 +54,7 @@ void setup() {
 
   delay(500);
 
-  lcd.setLabels(SegLCD_PCF85176_T1T2Lcd::LABEL_T2_HUM | SegLCD_PCF85176_T1T2Lcd::LABEL_T1_C_UP);
+  lcd.setUnits(SegLCD_PCF85176_T1T2Lcd::UNIT_T2_HUM | SegLCD_PCF85176_T1T2Lcd::UNIT_T1_C_UP);
   lcd.setCursor(1, 0);
   lcd.print("h.e.l.o");
 

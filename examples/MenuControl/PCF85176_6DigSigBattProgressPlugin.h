@@ -53,12 +53,12 @@ public:
             lcd->setWheel((uint16_t)parseNumber(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "ls") == 0) {
-            lcd->setLabels((SegLCD_PCF85176_6DigitSignalBatteryProgress::LabelFlags)parseNumber(nextToken(&args)));
+        if (strcmp(cmd, "us") == 0) {
+            lcd->setUnits((SegLCD_PCF85176_6DigitSignalBatteryProgress::UnitFlags)parseNumber(nextToken(&args)));
             return true;
         }
-        if (strcmp(cmd, "lc") == 0) {
-            lcd->clearLabels((SegLCD_PCF85176_6DigitSignalBatteryProgress::LabelFlags)parseNumber(nextToken(&args)));
+        if (strcmp(cmd, "uc") == 0) {
+            lcd->clearUnits((SegLCD_PCF85176_6DigitSignalBatteryProgress::UnitFlags)parseNumber(nextToken(&args)));
             return true;
         }
         return false;
@@ -70,7 +70,7 @@ public:
         printMenuLine(out, "  g <0-4>            - signal level");
         printMenuLine(out, "  prog <0-150>       - progress bar");
         printMenuLine(out, "  wheel <value>      - wheel");
-        printMenuLine(out, "  ls/lc <mask>       - set/clear labels");
+        printMenuLine(out, "  us/uc <mask>       - set/clear units");
     }
 
 private:

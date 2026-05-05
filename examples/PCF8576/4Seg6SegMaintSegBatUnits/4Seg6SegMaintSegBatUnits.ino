@@ -33,7 +33,7 @@ void setup() {
   lcd.setSignalLevel(3);
   lcd.setBatteryLevel(2);
   lcd.setMaintenanceSymbol(true);
-  lcd.setDegreeSymbol(true);
+  lcd.setUnits(SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::UNIT_DEGREE);
 
   lcd.setCursor(0, 0);
   lcd.print("17:37");

@@ -43,7 +43,7 @@ void setup() {
 
   delay(2000);
 
-  lcd.setLabels(SegLCD_PCF85176_6DigitSignalBatteryProgress::LABEL_MPA);
+  lcd.setUnits(SegLCD_PCF85176_6DigitSignalBatteryProgress::UNIT_MPA);
   lcd.setCursor(1, 0);
   lcd.print("hel.l.o. ");
 
