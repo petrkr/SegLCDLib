@@ -26,6 +26,7 @@ class SegDriver_PCF85134 : public SegDriver_PCx85 {
         SegDriver_PCF85134(SegTransportI2C& transport, uint8_t address = DEFAULT_PCF85134_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS) : SegDriver_PCx85(transport, address, subaddress) {}
 
     protected:
+        using SegLCDLib::_writeRam;
         void _sendCommand(uint8_t command, bool last = true) override;
         void _writeRam(uint8_t *data, size_t length, uint8_t address = 0) override;
 };

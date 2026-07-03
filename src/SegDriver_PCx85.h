@@ -109,7 +109,7 @@ class SegDriver_PCx85 : public SegLCDLib {
          */
         void _setMode(ModeStatus status, ModeDrive drive = MODE_DRIVE_14 , ModeBias bias = MODE_BIAS_13);
         using SegLCDLib::_writeRam;
-        void _writeRam(uint8_t *data, size_t length, uint8_t address = 0) override;
+        void _writeRam(uint8_t *data, size_t length, uint8_t address = 0) override = 0;
 
         virtual void _sendCommand(uint8_t command, bool last = true) = 0;
 
