@@ -135,33 +135,4 @@ class SegDriver_PCx85 : public SegLCDLib {
         void _deviceSelect();
 };
 
-/**
- * @brief Implementation of the PCF85176 controllers.
- */
-class SegDriver_PCF85176 : public SegDriver_PCx85 {
-    public:
-        /**
-         * @brief Constructor for PCF85176 segment driver
-         *
-         * @param transport I2C transport implementation
-         * @param address I2C address of the PCF85176 device (default is 0x38)
-         * @param subaddress Subaddress for the device (default is 0)
-         */
-        SegDriver_PCF85176(SegTransportI2C& transport, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS) : SegDriver_PCx85(transport, address, subaddress) {}
-};
-
-/**
- * @brief PCF8576 LCD segment driver.
- *
- * This class is a thin wrapper around SegDriver_PCF85176.
- * The PCF8576 uses the same I2C protocol and command set as the PCF85176,
- * therefore no separate implementation is required.
- *
- * The class exists to provide a chip-specific type for user code and
- * to allow future divergence if PCF8576-specific behavior is needed.
- */
-class SegDriver_PCF8576 : public SegDriver_PCF85176 {
-    public:
-        using SegDriver_PCF85176::SegDriver_PCF85176; // inherit constructors
-};
 #endif

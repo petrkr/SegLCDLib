@@ -2,7 +2,7 @@
 #define PCX85_RAW_PLUGIN_H
 
 #include "LCDPlugin.h"
-#include "SegLCD_PCx85_Raw.h"
+#include "SegLCD_PCF85176_Raw.h"
 #include "SegTransport.h"
 #include <Wire.h>
 
@@ -26,7 +26,7 @@ public:
             Serial.println("Error: set both SDA and SCL or leave both default");
             return nullptr;
         }
-        auto *lcd = new SegLCD_PCx85_Raw(_bus, cfg.i2cAddr, cfg.subAddr);
+        auto *lcd = new SegLCD_PCF85176_Raw(_bus, cfg.i2cAddr, cfg.subAddr);
         initPowerPin(cfg.power);
         _drive = cfg.rawDrive;
         _bias = cfg.rawBias;
@@ -37,11 +37,11 @@ public:
     }
 
     void destroy(SegLCDLib *lcd) override {
-        delete static_cast<SegLCD_PCx85_Raw*>(lcd);
+        delete static_cast<SegLCD_PCF85176_Raw*>(lcd);
     }
 
     bool handleCommand(SegLCDLib *lcdBase, const char *cmd, char *args, Stream &out) override {
-        auto *lcd = static_cast<SegLCD_PCx85_Raw*>(lcdBase);
+        auto *lcd = static_cast<SegLCD_PCF85176_Raw*>(lcdBase);
 
         if (strcmp(cmd, "raw") == 0) {
             const char *addrStr = nextToken(&args);

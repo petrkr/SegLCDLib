@@ -1,7 +1,7 @@
 #ifndef SEGLCD_PCF85176_TEMPHUM_H
 #define SEGLCD_PCF85176_TEMPHUM_H
 
-#include <SegDriver_PCx85.h>
+#include <SegDriver_PCF85176.h>
 
 /**
  * @file SegLCD_PCF85176_TempHum.h

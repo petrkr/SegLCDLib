@@ -1,15 +1,15 @@
 /**
  * @example PCF85176/RawLCD/RawLCD.ino
- * @brief Example of RAW LCD display using PCx85
+ * @brief Example of RAW LCD display using PCF85176
  */
 
-#include "SegLCD_PCx85_Raw.h"
+#include "SegLCD_PCF85176_Raw.h"
 #include "SegTransport.h"
 
 #include <Wire.h>
 
 SegTransportI2CArduino bus(Wire);
-SegLCD_PCx85_Raw lcd(bus);
+SegLCD_PCF85176_Raw lcd(bus);
 
 void setup() {
   Serial.begin(115200);

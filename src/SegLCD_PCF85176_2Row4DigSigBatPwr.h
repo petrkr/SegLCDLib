@@ -1,7 +1,7 @@
 #ifndef SEGLCD_PCx85_2Row4DigSigBatPwr_H
 #define SEGLCD_PCx85_2Row4DigSigBatPwr_H
 
-#include <SegDriver_PCx85.h>
+#include <SegDriver_PCF85176.h>
 
 /**
  * @file SegLCD_PCF85176_2Row4DigSigBatPwr.h
