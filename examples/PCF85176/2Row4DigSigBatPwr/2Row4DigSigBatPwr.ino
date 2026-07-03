@@ -1,6 +1,6 @@
 /**
- * @example PCF85176/RawLCD/RawLCD.ino
- * @brief Example of RAW LCD display using PCx85
+ * @example PCF85176/2Row4DigSigBatPwr/2Row4DigSigBatPwr.ino
+ * @brief Example of PCF85176 2-row LCD display with signal, battery, and power icons.
  */
 
 #include "SegLCD_PCF85176_2Row4DigSigBatPwr.h"
