@@ -8,30 +8,16 @@ SegDriver_PCx85::SegDriver_PCx85(SegTransportI2C& transport, uint8_t address, ui
 }
 
 void SegDriver_PCx85::init() {
-    _deviceSelect();
+    _sendCommand(CMD_DEVICE_SELECT | _subaddress);
     SegLCDLib::init();
 }
 
 void SegDriver_PCx85::bankSelect(uint8_t input, uint8_t output) {
-    uint8_t data = 0;
-
-    data |= CMD_BANK_SELECT;
-    data |= input << 1;
-    data |= output;
-    data |= CMD_LAST_COMMAND;
-
-    _transport.write(_address, data);
+    _sendCommand(CMD_BANK_SELECT | (input << 1) | output);
 }
 
 void SegDriver_PCx85::blink(BlinkFrequency frequency, BlinkMode mode) {
-    uint8_t data = 0;
-
-    data |= CMD_BLINK;
-    data |= mode << 2;
-    data |= frequency;
-    data |= CMD_LAST_COMMAND;
-
-    _transport.write(_address, data);
+    _sendCommand(CMD_BLINK | (mode << 2) | frequency);
 }
 
 void SegDriver_PCx85::on() {
@@ -42,42 +28,15 @@ void SegDriver_PCx85::off() {
     _setMode(MODE_STATUS_BLANK, _drive, _bias);
 }
 
-void SegDriver_PCx85::_writeRam(uint8_t *data, size_t length, uint8_t address) {
-    if (!_autoFlush) {
-        return;
-    }
-
-    _deviceSelect();
-
-    uint8_t buffer[(MAX_ADDRESS / 2) + 2];
-    buffer[0] = address;
-    memcpy(buffer + 1, data, length);
-    _transport.write(_address, buffer, length + 1);
-}
-
-void SegDriver_PCx85::_deviceSelect() {
-    uint8_t data = 0;
-
-    data |= CMD_DEVICE_SELECT;
-    data |= _subaddress;
-    data |= CMD_LAST_COMMAND;
-
-    _transport.write(_address, data);
+void SegDriver_PCx85::command(uint8_t command) {
+    _sendCommand(command);
 }
 
 void SegDriver_PCx85::_setMode(ModeStatus status, ModeDrive drive, ModeBias bias) {
     _drive = drive;
     _bias = bias;
 
-    uint8_t data = 0;
-
-    data |= CMD_MODE;
-    data |= status << 3;
-    data |= _bias << 2;
-    data |= _drive;
-    data |= CMD_LAST_COMMAND;
-
-    _transport.write(_address, data);
+    _sendCommand(CMD_MODE | (status << 3) | (_bias << 2) | _drive);
 }
 
 void SegDriver_PCx85::flush(uint8_t startAddr, uint8_t length) {

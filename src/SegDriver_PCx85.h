@@ -7,22 +7,17 @@
 /**
  * @brief Base class for PCx85 LCD segment display drivers.
  *
- * Implementation of the PCF85176 and similar I2C controllers.
+ * Shared behavior for PCx85 LCD segment display drivers.
  */
 class SegDriver_PCx85 : public SegLCDLib {
-    // Define commands
-    #define CMD_LOAD_POINTER    0x00
-    #define CMD_MODE            0x40
-    #define CMD_DEVICE_SELECT   0x60
-    #define CMD_BLINK           0x70
-    #define CMD_BANK_SELECT     0x78
-    #define CMD_LAST_COMMAND    0x80
-
-    // Common hardware constants for PCF85176 displays
     protected:
+        static constexpr uint8_t CMD_LOAD_POINTER    = 0x00;
+        static constexpr uint8_t CMD_MODE            = 0x40;
+        static constexpr uint8_t CMD_DEVICE_SELECT   = 0x60;
+        static constexpr uint8_t CMD_BLINK           = 0x70;
+        static constexpr uint8_t CMD_BANK_SELECT     = 0x78;
         static constexpr uint8_t DEFAULT_PCF85176_I2C_ADDRESS = 0x38;  // 56 decimal
         static constexpr uint8_t DEFAULT_SUBADDRESS = 0x00;
-        static constexpr uint8_t MAX_ADDRESS = 39; ///< Last valid start HW nibble address for byte write on a single PCx85 device
 
     public:
         /**
@@ -88,8 +83,7 @@ class SegDriver_PCx85 : public SegLCDLib {
         void on() override;
         void off() override;
 
-        // TODO: Implement calling commands
-        void command(uint8_t) override { };
+        void command(uint8_t command) override;
 
         /**
          * @brief Flush specific range of buffered changes to the display.
@@ -117,22 +111,13 @@ class SegDriver_PCx85 : public SegLCDLib {
         using SegLCDLib::_writeRam;
         void _writeRam(uint8_t *data, size_t length, uint8_t address = 0) override;
 
-    private:
+        virtual void _sendCommand(uint8_t command, bool last = true) = 0;
+
         SegTransportI2C& _transport;
         uint8_t _address;
         uint8_t _subaddress;
         ModeDrive _drive;
         ModeBias _bias;
-
-        /**
-         * @brief Select the device for communication.
-         *
-         * This method is used to set the device by subaddress.
-         * If address during writing overflow one device's address
-         * next device is selected. So this is used to select
-         * back to this device.
-         */
-        void _deviceSelect();
 };
 
 #endif
