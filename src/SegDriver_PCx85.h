@@ -11,7 +11,6 @@
  */
 class SegDriver_PCx85 : public SegLCDLib {
     protected:
-        static constexpr uint8_t CMD_LOAD_POINTER    = 0x00;
         static constexpr uint8_t CMD_MODE            = 0x40;
         static constexpr uint8_t CMD_DEVICE_SELECT   = 0x60;
         static constexpr uint8_t CMD_BLINK           = 0x70;
