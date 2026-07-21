@@ -403,6 +403,9 @@ static void printConfigSummary(Stream &out) {
             out.print(", Addr=0x");
             if (config.i2cAddr < 0x10) out.print('0');
             out.print(config.i2cAddr, HEX);
+            out.print(", SubAddr=0x");
+            if (config.subAddr < 0x10) out.print('0');
+            out.print(config.subAddr, HEX);
             out.println();
         } else {
             out.print("Bus: 3-WIRE, CS=");
@@ -565,7 +568,9 @@ static void handleSettingsCommand(char *cmd, char *args) {
         char *value = nextToken(&args);
         if (!param || !value) {
             Serial.println("Usage: set <param> <value>");
-            Serial.println("Params: sda, scl, addr, cs, wr, data, backlight, blmode, power, drive, bias");
+            Serial.println("Pins: sda, scl, cs, wr, data, backlight, power = decimal or -1");
+            Serial.println("I2C: addr, subaddr = hex without 0x, e.g. 38, 00");
+            Serial.println("Modes: blmode=digital|pwm, drive=static|12|13|14, bias=12|13");
             return;
         }
 
@@ -577,6 +582,9 @@ static void handleSettingsCommand(char *cmd, char *args) {
             Serial.println("OK");
         } else if (strcmp(param, "addr") == 0) {
             config.i2cAddr = (uint8_t)strtol(value, nullptr, 16);
+            Serial.println("OK");
+        } else if (strcmp(param, "subaddr") == 0) {
+            config.subAddr = (uint8_t)strtol(value, nullptr, 16);
             Serial.println("OK");
         } else if (strcmp(param, "cs") == 0) {
             config.cs = (int8_t)parseNumber(value);
@@ -639,6 +647,10 @@ static void handleSettingsCommand(char *cmd, char *args) {
             Serial.print("0x");
             if (config.i2cAddr < 0x10) Serial.print('0');
             Serial.println(config.i2cAddr, HEX);
+        } else if (strcmp(param, "subaddr") == 0) {
+            Serial.print("0x");
+            if (config.subAddr < 0x10) Serial.print('0');
+            Serial.println(config.subAddr, HEX);
         } else if (strcmp(param, "cs") == 0) {
             Serial.println(config.cs);
         } else if (strcmp(param, "wr") == 0) {
