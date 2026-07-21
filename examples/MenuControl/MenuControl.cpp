@@ -35,14 +35,15 @@ static PCF85176_2Row4DigSigBatPwrPlugin plugin2row4dig;
 static PCF85176_6DigSigBattProgressPlugin plugin6prog;
 static PCF85176_OneDigitPlugin plugin1dig;
 static PCF85176_TempHumPlugin pluginTempHum;
-static PCx85_RawPlugin pluginPcxRaw;
+static PCx85_RawPlugin<SegLCD_PCF85176_Raw> pluginPcxRaw("pcx85_raw");
+static PCx85_RawPlugin<SegLCD_PCF85134_Raw> pluginPcf85134Raw("pcf85134_raw");
 static PCF8576_4Seg6SegMaintSegBatUnitsPlugin plugin4s6s;
 
 static LCDPlugin *plugins[] = {
     &pluginT1T2, &pluginVK0192,
     &plugin4deg, &plugin6bat, &pluginLcm0844, &pluginLcm88128, &pluginLcm59011, &pluginHt1621Raw, &plugin16seg,
     &plugin4dr821, &plugin2row4dig, &plugin6prog, &plugin1dig,
-    &pluginTempHum, &pluginPcxRaw, &plugin4s6s
+    &pluginTempHum, &pluginPcxRaw, &pluginPcf85134Raw, &plugin4s6s
 };
 static const uint8_t pluginCount = sizeof(plugins) / sizeof(plugins[0]);
 
@@ -375,7 +376,9 @@ static const char *biasModeName(ModeBias mode) {
 static bool isRawPlugin(const LCDPlugin *plugin) {
     if (!plugin) return false;
     const char *pluginName = plugin->name();
-    return strcmp(pluginName, "pcx85_raw") == 0 || strcmp(pluginName, "ht1621_raw") == 0;
+    return strcmp(pluginName, "pcx85_raw") == 0 ||
+           strcmp(pluginName, "pcf85134_raw") == 0 ||
+           strcmp(pluginName, "ht1621_raw") == 0;
 }
 
 static void initBacklightIfConfigured() {

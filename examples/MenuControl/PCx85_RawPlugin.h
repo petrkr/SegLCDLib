@@ -2,20 +2,23 @@
 #define PCX85_RAW_PLUGIN_H
 
 #include "LCDPlugin.h"
+#include "SegLCD_PCF85134_Raw.h"
 #include "SegLCD_PCF85176_Raw.h"
 #include "SegTransport.h"
 #include <Wire.h>
 
+template <typename RawLCD>
 class PCx85_RawPlugin : public LCDPlugin {
 private:
     SegTransportI2CArduino _bus;
     ModeDrive _drive = MODE_DRIVE_14;
     ModeBias _bias = MODE_BIAS_13;
+    const char *_name;
 
 public:
-    PCx85_RawPlugin() : _bus(Wire) {}
+    explicit PCx85_RawPlugin(const char *pluginName) : _bus(Wire), _name(pluginName) {}
 
-    const char *name() const override { return "pcx85_raw"; }
+    const char *name() const override { return _name; }
 
     SegLCDLib* create(const DisplayConfig &cfg) override {
         if (cfg.sda < 0 && cfg.scl < 0) {
@@ -26,7 +29,7 @@ public:
             Serial.println("Error: set both SDA and SCL or leave both default");
             return nullptr;
         }
-        auto *lcd = new SegLCD_PCF85176_Raw(_bus, cfg.i2cAddr, cfg.subAddr);
+        auto *lcd = new RawLCD(_bus, cfg.i2cAddr, cfg.subAddr);
         initPowerPin(cfg.power);
         _drive = cfg.rawDrive;
         _bias = cfg.rawBias;
@@ -37,11 +40,11 @@ public:
     }
 
     void destroy(SegLCDLib *lcd) override {
-        delete static_cast<SegLCD_PCF85176_Raw*>(lcd);
+        delete static_cast<RawLCD*>(lcd);
     }
 
     bool handleCommand(SegLCDLib *lcdBase, const char *cmd, char *args, Stream &out) override {
-        auto *lcd = static_cast<SegLCD_PCF85176_Raw*>(lcdBase);
+        auto *lcd = static_cast<RawLCD*>(lcdBase);
 
         if (strcmp(cmd, "raw") == 0) {
             const char *addrStr = nextToken(&args);
@@ -81,7 +84,9 @@ public:
     }
 
     void printMenu(Stream &out) override {
-        printMenuLine(out, "pcx85_raw commands:");
+        char title[38];
+        snprintf(title, sizeof(title), "%s commands:", _name);
+        printMenuLine(out, title);
         printMenuLine(out, "  raw <addr> <value>   - write RAM byte");
         printMenuLine(out, "  rawbuf <addr> <v1> <v2> ...");
     }
