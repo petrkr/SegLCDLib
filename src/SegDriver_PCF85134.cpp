@@ -12,7 +12,7 @@ void SegDriver_PCF85134::_sendCommand(uint8_t command, bool last) {
 }
 
 void SegDriver_PCF85134::_writeRam(uint8_t *data, size_t length, uint8_t address) {
-    uint8_t buffer[(MAX_ADDRESS / 2) + 3];
+    uint8_t buffer[(MAX_ADDRESS / 2) + 1 + 3];
     size_t maxLength;
 
     if (!_autoFlush) {
