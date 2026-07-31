@@ -20,6 +20,13 @@ class SegTransport3Wire : public SegTransport {
         virtual ~SegTransport3Wire() = default;
 
         /**
+         * @brief Initialize chip-select pin as output.
+         *
+         * @param chipselect CS pin
+         */
+        virtual void init_cs(uint8_t chipselect) = 0;
+
+        /**
          * @brief Drive chip-select line.
          *
          * @param chipselect CS pin

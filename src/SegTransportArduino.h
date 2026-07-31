@@ -22,6 +22,7 @@ class SegTransport3WireArduino : public SegTransport3Wire {
          */
         SegTransport3WireArduino(uint8_t data, uint8_t write, uint8_t read = -1);
 
+        void init_cs(uint8_t chipselect) override;
         void set_cs(uint8_t chipselect, bool state) override;
         void write(uint16_t data, uint8_t bitCount) override;
 

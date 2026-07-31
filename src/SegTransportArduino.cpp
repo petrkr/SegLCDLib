@@ -12,6 +12,10 @@ SegTransport3WireArduino::SegTransport3WireArduino(uint8_t data, uint8_t write, 
     }
 }
 
+void SegTransport3WireArduino::init_cs(uint8_t chipselect) {
+    pinMode(chipselect, OUTPUT);
+}
+
 void SegTransport3WireArduino::set_cs(uint8_t chipselect, bool state) {
     delayMicroseconds(1);
     digitalWrite(chipselect, state);
