@@ -3,8 +3,6 @@
 
 #include "LCDPlugin.h"
 #include "SegLCD_PCF85176_OneDigit.h"
-#include "SegTransportArduino.h"
-#include <Wire.h>
 
 class PCF85176_OneDigitPlugin : public LCDPlugin {
 private:

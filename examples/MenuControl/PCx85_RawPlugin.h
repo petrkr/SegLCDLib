@@ -4,8 +4,6 @@
 #include "LCDPlugin.h"
 #include "SegLCD_PCF85134_Raw.h"
 #include "SegLCD_PCF85176_Raw.h"
-#include "SegTransportArduino.h"
-#include <Wire.h>
 
 template <typename RawLCD>
 class PCx85_RawPlugin : public LCDPlugin {

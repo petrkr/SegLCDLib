@@ -3,8 +3,8 @@
  * @brief Example of 6 Digit Signal Battery Progress LCD
  */
 
-#include "SegLCD_PCF85176_6DigSigBattProgress.h"
 #include "SegTransportArduino.h"
+#include "SegLCD_PCF85176_6DigSigBattProgress.h"
 #include <Wire.h>
 
 SegTransportI2CArduino bus(Wire);

@@ -3,8 +3,8 @@
  * @brief Example of Tesla 4DR821B LCD display using PCF85176
  */
 
-#include "SegLCD_PCF85176_4DR821B.h"
 #include "SegTransportArduino.h"
+#include "SegLCD_PCF85176_4DR821B.h"
 
 #include <Wire.h>
 

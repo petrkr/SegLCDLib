@@ -3,8 +3,8 @@
  * @brief Example of RAW LCD display using PCF85134
  */
 
-#include "SegLCD_PCF85134_Raw.h"
 #include "SegTransportArduino.h"
+#include "SegLCD_PCF85134_Raw.h"
 
 #include <Wire.h>
 

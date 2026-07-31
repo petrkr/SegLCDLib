@@ -3,8 +3,8 @@
  * @brief Example of PCF85176 2-row LCD display with signal, battery, and power icons.
  */
 
-#include "SegLCD_PCF85176_2Row4DigSigBatPwr.h"
 #include "SegTransportArduino.h"
+#include "SegLCD_PCF85176_2Row4DigSigBatPwr.h"
 
 #include <Wire.h>
 

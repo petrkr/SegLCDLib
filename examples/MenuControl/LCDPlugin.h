@@ -4,8 +4,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <ctype.h>
-#include "SegLCDLib.h"
 #include "SegTransportArduino.h"
+#include "SegLCDLib.h"
 
 // Configuration structure - same as UniversalMenuControl
 enum BusType : uint8_t { BUS_I2C = 0, BUS_3WIRE = 1 };

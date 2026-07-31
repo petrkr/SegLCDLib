@@ -3,8 +3,6 @@
 
 #include "LCDPlugin.h"
 #include "SegLCD_PCF85176_T1T2Lcd.h"
-#include "SegTransportArduino.h"
-#include <Wire.h>
 
 class T1T2Plugin : public LCDPlugin {
 public:

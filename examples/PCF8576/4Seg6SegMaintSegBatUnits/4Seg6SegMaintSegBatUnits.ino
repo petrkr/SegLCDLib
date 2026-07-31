@@ -3,8 +3,8 @@
  * @brief Example for 4+6 digit LCD with maintenance, battery, signal, units
  */
 
-#include "SegLCD_PCF8576_4Seg6SegMaintSegBatUnits.h"
 #include "SegTransportArduino.h"
+#include "SegLCD_PCF8576_4Seg6SegMaintSegBatUnits.h"
 #include <Wire.h>
 
 SegTransportI2CArduino bus(Wire);

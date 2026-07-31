@@ -3,8 +3,6 @@
 
 #include "LCDPlugin.h"
 #include "SegLCD_PCF85176_6DigSigBattProgress.h"
-#include "SegTransportArduino.h"
-#include <Wire.h>
 
 class PCF85176_6DigSigBattProgressPlugin : public LCDPlugin {
 public:

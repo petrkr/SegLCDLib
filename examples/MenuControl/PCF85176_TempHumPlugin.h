@@ -3,8 +3,6 @@
 
 #include "LCDPlugin.h"
 #include "SegLCD_PCF85176_TempHum.h"
-#include "SegTransportArduino.h"
-#include <Wire.h>
 
 class PCF85176_TempHumPlugin : public LCDPlugin {
 public:

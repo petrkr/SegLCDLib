@@ -3,8 +3,8 @@
  * @brief Example of T1, T2 LCD
  */
 
-#include "SegLCD_PCF85176_T1T2Lcd.h"
 #include "SegTransportArduino.h"
+#include "SegLCD_PCF85176_T1T2Lcd.h"
 
 #include <Wire.h>
 
