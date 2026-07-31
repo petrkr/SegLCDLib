@@ -4,6 +4,19 @@ Detailed specifications for each supported LCD controller. For quick selection, 
 
 ---
 
+## Transport Headers
+
+`SegTransport.h` defines the abstract transport interfaces used by drivers and LCD models.
+
+Arduino transport implementations are declared in `SegTransportArduino.h`:
+
+- `SegTransportI2CArduino`
+- `SegTransport3WireArduino`
+
+Arduino code using these transport classes must include `SegTransportArduino.h` explicitly.
+
+---
+
 ## PCF85176 / PCF8576 (I2C)
 
 **Driver:** `SegDriver_PCx85`, `SegDriver_PCF85176`, `SegDriver_PCF8576`

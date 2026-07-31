@@ -130,6 +130,7 @@ void loop() {
 ### For HT1621/1622/VK0192 (3-Wire)
 
 ```cpp
+#include "SegTransportArduino.h"
 #include "SegLCD_HT1621_Raw.h"  // Use for HT1621, HT1622 (same driver)
 // OR
 #include "SegLCD_VK0192_Raw.h"  // Use for VK0192 (different addressing)

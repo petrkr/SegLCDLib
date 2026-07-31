@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <SegTransport.h>
+#include <SegTransportArduino.h>
 
 SegTransport3WireArduino::SegTransport3WireArduino(uint8_t data, uint8_t write, uint8_t read)
     : _data(data), _write(write), _read(read) {
