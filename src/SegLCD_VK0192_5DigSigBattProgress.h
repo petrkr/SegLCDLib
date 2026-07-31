@@ -21,13 +21,13 @@
  */
 class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
     public:
-        typedef enum {
+        typedef enum : uint16_t {
             LABEL_P = 0x0001,
             LABEL_T = 0x0002,
             LABEL_PROC = 0x0004,
         } LabelFlags;
 
-        typedef enum {
+        typedef enum : uint16_t {
             UNIT_DEGREE_C = 0x0008,
             UNIT_KPA = 0x0010,
             UNIT_MPA = 0x0020,

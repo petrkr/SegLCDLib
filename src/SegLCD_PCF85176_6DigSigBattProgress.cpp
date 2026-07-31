@@ -113,13 +113,13 @@ void SegLCD_PCF85176_6DigitSignalBatteryProgress::setWheel(uint16_t value) {
     _writeRam(&_ramBuffer[OFFSET_WHEEL], 2, ADDR_WHEEL);
 }
 
-void SegLCD_PCF85176_6DigitSignalBatteryProgress::setUnits(UnitFlags units) {
+void SegLCD_PCF85176_6DigitSignalBatteryProgress::setUnits(uint8_t units) {
     _ramBuffer[OFFSET_LABELS] |= units;
 
     _writeRam(_ramBuffer[OFFSET_LABELS], ADDR_PRES_LABELS);
 }
 
-void SegLCD_PCF85176_6DigitSignalBatteryProgress::clearUnits(UnitFlags units) {
+void SegLCD_PCF85176_6DigitSignalBatteryProgress::clearUnits(uint8_t units) {
     _ramBuffer[OFFSET_LABELS] &= ~units;
 
     _writeRam(_ramBuffer[OFFSET_LABELS], ADDR_PRES_LABELS);

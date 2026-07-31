@@ -20,7 +20,7 @@
  */
 class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
     public:
-        typedef enum {
+        typedef enum : uint8_t {
             UNIT_DEGREE_C = 0x01,
             UNIT_PERCENT = 0x02,
         } UnitFlags;

@@ -20,7 +20,7 @@
  */
 class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
     public:
-        typedef enum {
+        typedef enum : uint8_t {
             UNIT_MPA = 0x01,
             UNIT_KPA = 0x02,
             UNIT_BAR = 0x04,
@@ -38,8 +38,8 @@ class SegLCD_PCF85176_6DigitSignalBatteryProgress : public SegDriver_PCF85176 {
         void setSignalLevel(uint8_t value);
         void setProgress(uint8_t value);
         void setWheel(uint16_t value);
-        void setUnits(UnitFlags units);
-        void clearUnits(UnitFlags units);
+        void setUnits(uint8_t units);
+        void clearUnits(uint8_t units);
         void setCursor(uint8_t row, uint8_t col) override;
         size_t write(uint8_t ch) override;
 

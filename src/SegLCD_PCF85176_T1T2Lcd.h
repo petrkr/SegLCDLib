@@ -20,14 +20,14 @@
  */
 class SegLCD_PCF85176_T1T2Lcd : public SegDriver_PCF85176 {
     public:
-        typedef enum {
+        typedef enum : uint8_t {
             UNIT_T1_C_UP = 0x80,
             UNIT_T1_C_DOWN = 0x40,
             UNIT_T2_C = 0x20,
             UNIT_T2_HUM = 0x10,
         } UnitFlags;
 
-        typedef enum {
+        typedef enum : uint8_t {
             LABEL_T1 = 0x01,
             LABEL_T2 = 0x02
         } LabelT1T2Enum;

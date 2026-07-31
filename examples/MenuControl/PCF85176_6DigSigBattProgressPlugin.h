@@ -52,11 +52,11 @@ public:
             return true;
         }
         if (strcmp(cmd, "us") == 0) {
-            lcd->setUnits((SegLCD_PCF85176_6DigitSignalBatteryProgress::UnitFlags)parseNumber(nextToken(&args)));
+            lcd->setUnits((uint8_t)parseNumber(nextToken(&args)));
             return true;
         }
         if (strcmp(cmd, "uc") == 0) {
-            lcd->clearUnits((SegLCD_PCF85176_6DigitSignalBatteryProgress::UnitFlags)parseNumber(nextToken(&args)));
+            lcd->clearUnits((uint8_t)parseNumber(nextToken(&args)));
             return true;
         }
         return false;
