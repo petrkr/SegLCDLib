@@ -14,7 +14,7 @@ may use an explicit selection mode:
 
 ```text
 -DSEGLCD_DISABLE_ALL_LCDS
--DSEGLCD_ENABLE_PCF85134_XYGAX
+-DSEGLCD_ENABLE_PCF85134_XYGAX_SEG_I2C
 ```
 
 Intended meaning:

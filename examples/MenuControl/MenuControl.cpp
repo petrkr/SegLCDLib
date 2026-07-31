@@ -13,6 +13,7 @@
 #include "PCF85176_6DigSigBattProgressPlugin.h"
 #include "PCF85176_OneDigitPlugin.h"
 #include "PCF85176_TempHumPlugin.h"
+#include "PCF85134_XygaxSegI2CPlugin.h"
 #include "PCx85_RawPlugin.h"
 #include "PCF8576_4Seg6SegMaintSegBatUnitsPlugin.h"
 
@@ -35,6 +36,7 @@ static PCF85176_2Row4DigSigBatPwrPlugin plugin2row4dig;
 static PCF85176_6DigSigBattProgressPlugin plugin6prog;
 static PCF85176_OneDigitPlugin plugin1dig;
 static PCF85176_TempHumPlugin pluginTempHum;
+static PCF85134_XygaxSegI2CPlugin pluginXygaxSegI2C;
 static PCx85_RawPlugin<SegLCD_PCF85176_Raw> pluginPcxRaw("pcx85_raw");
 static PCx85_RawPlugin<SegLCD_PCF85134_Raw> pluginPcf85134Raw("pcf85134_raw");
 static PCF8576_4Seg6SegMaintSegBatUnitsPlugin plugin4s6s;
@@ -43,7 +45,7 @@ static LCDPlugin *plugins[] = {
     &pluginT1T2, &pluginVK0192,
     &plugin4deg, &plugin6bat, &pluginLcm0844, &pluginLcm88128, &pluginLcm59011, &pluginHt1621Raw, &plugin16seg,
     &plugin4dr821, &plugin2row4dig, &plugin6prog, &plugin1dig,
-    &pluginTempHum, &pluginPcxRaw, &pluginPcf85134Raw, &plugin4s6s
+    &pluginTempHum, &pluginXygaxSegI2C, &pluginPcxRaw, &pluginPcf85134Raw, &plugin4s6s
 };
 static const uint8_t pluginCount = sizeof(plugins) / sizeof(plugins[0]);
 
