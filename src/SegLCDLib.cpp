@@ -18,6 +18,19 @@ void SegLCDLib::init() {
     clear();
 }
 
+size_t SegLCDLib::write(const char *str) {
+    if (!str) return 0;
+    return write(str, strlen(str));
+}
+
+size_t SegLCDLib::write(const char *buffer, size_t size) {
+    size_t written = 0;
+    for (size_t i = 0; i < size; i++) {
+        written += write(static_cast<uint8_t>(buffer[i]));
+    }
+    return written;
+}
+
 void SegLCDLib::_writeRamMasked(uint8_t data, uint8_t address, uint8_t mask) {
     uint8_t byteIndex = address >> 1;
 

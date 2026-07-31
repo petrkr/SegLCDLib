@@ -89,12 +89,34 @@ class SegLCDLib : public Print {
         virtual size_t write(uint8_t) { return 0; };
 
         /**
+         * @brief Write a null-terminated string to the display.
+         *
+         * Available identically under Arduino and non-Arduino frameworks (ESP-IDF,
+         * RP2040 SDK, STM32...). Internally forwards each character to write(uint8_t).
+         *
+         * @param str Null-terminated C-string
+         * @return Number of characters written
+         */
+        size_t write(const char *str);
+
+        /**
+         * @brief Write a buffer of characters to the display.
+         *
+         * @param buffer Character buffer (not required to be null-terminated)
+         * @param size Number of characters to write
+         * @return Number of characters written
+         */
+        size_t write(const char *buffer, size_t size);
+
+        /**
          * @brief Send RAW command to controller
          *
          * @param command Raw command byte
          */
         virtual void command(uint8_t command) = 0;
+        #ifdef ARDUINO
         using Print::write;
+        #endif
 
         // --------------------------
         // LCD API 1.0 Optional part
