@@ -23,11 +23,11 @@ Use it in environments that provide their own `SegTransportI2C` or `SegTransport
 
 ---
 
-## PCF85176 / PCF8576 (I2C)
+## PCF85134 / PCF85176 / PCF8576 (I2C)
 
-**Driver:** `SegDriver_PCx85`, `SegDriver_PCF85176`, `SegDriver_PCF8576`
+**Driver:** `SegDriver_PCx85`, `SegDriver_PCF85134`, `SegDriver_PCF85176`, `SegDriver_PCF8576`
 
-**Note:** PCF8576 is an older variant of PCF85176 with identical functionality. SegLCDLib treats them the same.
+**Note:** PCF85134, PCF85176, and PCF8576 share the PCx85 I2C driver model. PCF8576 is an older variant of PCF85176 with identical functionality in this library.
 
 ### Physical Characteristics
 
@@ -36,8 +36,8 @@ Use it in environments that provide their own `SegTransportI2C` or `SegTransport
 | **Protocol** | I2C (2-wire) |
 | **I2C Address** | 0x38 or 0x39 (SA0 pin) |
 | **Subaddresses** | A0-A2 (protocol subaddress, not I2C) |
-| **RAM** | 40 bytes (39 usable) |
-| **Max Segments** | 320 (40 bytes × 8 bits) |
+| **RAM** | PCF85134: 60 bytes max address range; PCF85176/PCF8576: 40 bytes (39 usable) |
+| **Max Segments** | Controller/display dependent |
 | **Power** | 3.3V or 5V (controller dependent) |
 
 ### I2C and Subaddressing
@@ -62,7 +62,7 @@ A2  A1  A0  →  Subaddress
 ```
 
 **Finding Address:**
-Use I2C scanner or the `PCF85176/RawLCD` example:
+Use I2C scanner or a PCx85 raw example:
 ```cpp
 #include "SegLCD_PCF85176_Raw.h"
 
@@ -463,22 +463,22 @@ class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
 
 ## Quick Comparison
 
-| Feature | PCF85176 | HT1621 | HT1622 | VK0192 |
-|---------|----------|--------|--------|--------|
-| **Protocol** | I2C | 3-wire | 3-wire | 3-wire |
-| **Pins** | 2 (+ power) | 3 | 3 | 3 |
-| **RAM** | 40 bytes | 16 bytes | 32 bytes | 24 bytes |
-| **Max Digits** | 13 | 6 | 10+ | 5 |
-| **Addressing** | Sequential | Sequential | Sequential | Irregular |
-| **Timing Critical** | No | Moderate | High | Very High |
-| **Integration** | Separate IC | Integrated | Integrated | Integrated |
-| **Typical Cost** | $$$ | $$ | $$ | $$ |
+| Feature | PCF85134 | PCF85176/PCF8576 | HT1621 | HT1622 | VK0192 |
+|---------|----------|------------------|--------|--------|--------|
+| **Protocol** | I2C | I2C | 3-wire | 3-wire | 3-wire |
+| **Pins** | 2 (+ power) | 2 (+ power) | 3 | 3 | 3 |
+| **RAM** | 60 bytes max address range | 40 bytes | 16 bytes | 32 bytes | 24 bytes |
+| **Max Digits** | display-dependent | 13 | 6 | 10+ | 5 |
+| **Addressing** | Sequential | Sequential | Sequential | Sequential | Irregular |
+| **Timing Critical** | No | No | Moderate | High | Very High |
+| **Integration** | Separate IC | Separate IC | Integrated | Integrated | Integrated |
+| **Typical Cost** | $$$ | $$$ | $$ | $$ | $$ |
 
 ---
 
 ## Selection Guide
 
-**Choose PCF85176 if:**
+**Choose PCF85134/PCF85176 if:**
 - Need many digits (10+)
 - Want I2C (only 2 pins needed)
 - Have 3.3V/5V available for I2C pull-ups

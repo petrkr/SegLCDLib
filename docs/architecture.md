@@ -172,9 +172,9 @@ class SegTransport3WireArduino : public SegTransport3Wire {
 
 Controllers handle protocol-level communication with LCD hardware. Each driver abstracts a specific protocol.
 
-### PCF85176 / PCF8576 (I2C)
+### PCF85134 / PCF85176 / PCF8576 (I2C)
 
-**File:** `src/SegDriver_PCx85.h`, `src/SegDriver_PCF85176.h`
+**File:** `src/SegDriver_PCx85.h`, `src/SegDriver_PCF85134.h`, `src/SegDriver_PCF85176.h`
 
 ```cpp
 class SegDriver_PCx85 : public SegLCDLib {
@@ -206,6 +206,7 @@ class SegDriver_PCx85 : public SegLCDLib {
 
 **Subclass Chain:**
 - `SegDriver_PCx85`: Base with generic configuration
+- `SegDriver_PCF85134`: Inherits, sets PCF85134 specifics
 - `SegDriver_PCF85176`: Inherits, sets PCF85176 specifics
 - `SegDriver_PCF8576`: Thin wrapper (nearly identical to PCF85176)
 
@@ -411,7 +412,7 @@ When user calls `lcd.init()`:
 ## Adding New Displays
 
 ### Step 1: Identify Controller
-- **I2C?** → Use PCF85176/PCF8576 driver with `SegTransportI2C`
+- **I2C?** → Use PCF85134/PCF85176/PCF8576 driver with `SegTransportI2C`
 - **3-wire?** → Use HT1621/HT1622/VK0192 driver with `SegTransport3Wire`
 
 ### Step 2: Create LCD Class
@@ -456,6 +457,7 @@ See [Adding New LCD](adding-new-lcd.md) for detailed tutorial.
 
 ## Datasheet References
 
+- **PCF85134**: I2C segment LCD controller
 - **PCF85176**: I2C 40×8 segment LCD controller
 - **HT1621/1622**: 3-wire serial LCD drivers
 - **VK0192**: 3-wire LCD driver with irregular addressing

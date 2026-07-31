@@ -472,6 +472,7 @@ lcd.setBatteryLevel(1);   // Low battery
 
 | Controller | Protocol | Pins | I2C Addr | Examples | Complexity |
 |-----------|----------|------|----------|----------|------------|
+| **PCF85134** | I2C | 2 | 0x38/0x39 | 2 | Simple |
 | **PCF85176** | I2C | 2 | 0x38/0x39 | 7 | Simple |
 | **PCF8576** | I2C | 2 | 0x38/0x39 | 1 | Simple |
 | **HT1621** | 3-wire | 3 | N/A | 4 | Medium |

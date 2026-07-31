@@ -1,6 +1,6 @@
 # SegLCDLib
 
-Arduino library for segment LCD displays. Provides abstract interface, controller drivers (PCF85176/HT1621/HT1622/VK0192), and implementations for common displays.
+Arduino library for segment LCD displays. Provides abstract interface, controller drivers (PCF85134/PCF85176/HT1621/HT1622/VK0192), and implementations for common displays.
 
 ## Development Status
 
@@ -38,6 +38,7 @@ void loop() {
 
 | Controller | Protocol | Pins | Max Digits |
 |-----------|----------|------|-----------|
+| PCF85134 | I2C | 2 | display-dependent |
 | PCF85176 | I2C | 2 | 13 |
 | PCF8576 | I2C | 2 | 13 |
 | HT1621 | 3-wire | 3 | 6 |
@@ -87,7 +88,7 @@ See [Supported LCDs](docs/supported-lcds.md) for full catalog.
 ## Features
 
 - **Abstract Interface**: Consistent LCD API 1.0 (Arduino LCD standard)
-- **Multiple Protocols**: I2C (PCF85176) and 3-wire serial (HT1621/1622/VK0192)
+- **Multiple Protocols**: I2C (PCF85134/PCF85176) and 3-wire serial (HT1621/1622/VK0192)
 - **RAM Efficient**: Buffered writes, minimal memory overhead
 - **Print Compatibility**: Inherits from `Print` class for `print()`/`println()`
 - **Flexible**: Easy to add support for new displays

@@ -8,7 +8,7 @@ Guide for implementing support for a new segment LCD display not yet in SegLCDLi
 
 Adding a display involves 5 steps:
 
-1. **Identify the controller** (PCF85176, HT1621, HT1622, or VK0192)
+1. **Identify the controller** (PCF85134, PCF85176, HT1621, HT1622, or VK0192)
 2. **Test with RAW LCD class** (prototype segment mapping)
 3. **Create dedicated LCD class** (implement display-specific driver)
 4. **Create example sketch** (demonstrate usage)
@@ -36,6 +36,7 @@ LCD Module (bottom view):
 
 | Controller Marked | Type | Pins | Notes |
 |------------------|------|------|-------|
+| PCF85134 (separate IC) | I2C | 2 (SDA, SCL) | PCx85 family |
 | PCF85176 (separate IC) | I2C | 2 (SDA, SCL) | See separate IC on PCB |
 | PCF8576 (separate IC) | I2C | 2 (SDA, SCL) | Variant of PCF85176 |
 | None (COB) | Usually 3-wire | 3 (CLK, DATA, CS) | Integrated in module |
@@ -43,7 +44,7 @@ LCD Module (bottom view):
 | HT1622 | 3-wire serial | 3 | Larger RAM, 10+ digits |
 | VK0192 | 3-wire serial | 3 | Irregular addressing |
 
-### Determine I2C Address (if PCF85176)
+### Determine I2C Address (if PCx85)
 
 Use the standard I2C scanner:
 
@@ -67,7 +68,7 @@ void loop() {
 }
 ```
 
-**Expected I2C addresses for PCF85176:** 0x38 (SA0=0) or 0x39 (SA0=1)
+**Expected I2C addresses for PCF85134/PCF85176/PCF8576:** 0x38 (SA0=0) or 0x39 (SA0=1)
 
 ### Document Pinout
 
