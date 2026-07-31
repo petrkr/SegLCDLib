@@ -12,7 +12,7 @@ Migration checklist:
 - [Direct driver includes](#direct-driver-includes)
 - [Custom LCD implementations](#custom-lcd-implementations)
 
-### Transport layer
+### Transport layer {#transport-layer}
 
 LCD constructors no longer take Arduino `Wire` or GPIO pins directly. Create a transport object and pass it to the LCD class.
 
@@ -51,7 +51,7 @@ This affects all existing `v0.0.1` LCD constructors:
 - PCx85 I2C LCDs changed from `TwoWire&` to `SegTransportI2C&`
 - HT1621/HT1622/VK0192 LCDs changed from direct GPIO pins to `SegTransport3Wire&` plus chip-select
 
-### PCx85 raw class split
+### PCx85 raw class split {#pcx85-raw-class-split}
 
 The generic `SegLCD_PCx85_Raw` class was replaced by controller-specific raw classes.
 
@@ -75,7 +75,7 @@ SegLCD_PCF85176_Raw lcd(transport);
 
 Use `SegLCD_PCF85134_Raw` for PCF85134 displays.
 
-### Labels renamed to units
+### Labels renamed to units {#labels-renamed-to-units}
 
 Physical measurement indicators were renamed from labels to units.
 
@@ -108,7 +108,7 @@ lcd.setUnits(SegLCD_PCF85176_TempHumidity::UNIT_DEGREE_C |
 
 Display text labels remain labels. For example, `SegLCD_PCF85176_T1T2Lcd::setT1T2Labels(...)` and HT1621 LCM label APIs are unchanged.
 
-### Direct driver includes
+### Direct driver includes {#direct-driver-includes}
 
 `SegDriver_PCF85176` and `SegDriver_PCF8576` moved out of `SegDriver_PCx85.h` into their own headers.
 
@@ -121,7 +121,7 @@ If user code includes controller drivers directly, update includes:
 
 Regular LCD model headers already include the correct controller header.
 
-### Custom LCD implementations
+### Custom LCD implementations {#custom-lcd-implementations}
 
 Custom LCD classes derived from library drivers must be updated for the transport layer.
 

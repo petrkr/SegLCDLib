@@ -78,13 +78,14 @@ See [Supported LCDs](docs/supported-lcds.md) for full catalog.
 
 ## Examples
 
-18 complete examples in `examples/` directory:
+21 complete examples in `examples/` directory:
 - PCF85134: 2 examples (RawLCD, XygaxSegI2C)
 - PCF85176: 7 examples (RawLCD, TempHum, 2Row4DigSigBatPwr, etc.)
 - HT1621: 6 examples (4DigDeg, 6DigBat, LCM0844, LCM59011, LCM88128, RawLCD)
 - HT1622: 2 examples (10Digit16Segment, RawLCD)
-- VK0192: 1 example (5DigSigBatProg)
+- VK0192: 2 examples (5DigSigBatProg, RawLCD)
 - PCF8576: 1 example (4Seg6SegMaintSegBatUnits)
+- MenuControl: 1 example (pluginable menu system for ESP32)
 
 ## Features
 
