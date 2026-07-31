@@ -51,10 +51,8 @@ class SegDriver_3Wire : public SegLCDLib {
         /**
          * @brief Constructor for 3-wire serial LCD driver.
          *
+         * @param transport 3-wire transport implementation
          * @param chipselect Chip select pin
-         * @param data Data pin
-         * @param write Write clock pin
-         * @param read Read clock pin (optional, default -1)
          */
         SegDriver_3Wire(SegTransport3Wire& transport, uint8_t chipselect);
 
@@ -84,6 +82,8 @@ class SegDriver_3Wire : public SegLCDLib {
         SegTransport3Wire& _transport;
         uint8_t _cs;   ///< Chip select pin for the display
 
+        using SegLCDLib::_writeRam;
+
         /**
          * @brief Write multiple bytes to RAM starting at specified address.
          *
@@ -91,7 +91,6 @@ class SegDriver_3Wire : public SegLCDLib {
          * @param length Number of bytes to write
          * @param address Starting RAM address (0-based)
          */
-        using SegLCDLib::_writeRam;
         virtual void _writeRam(uint8_t *data, size_t length, uint8_t address);
 };
 

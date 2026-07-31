@@ -31,10 +31,8 @@ class SegDriver_HT1621 : public SegDriver_3Wire {
         /**
          * @brief Constructor for HT1621 segment driver
          *
+         * @param transport 3-wire transport implementation
          * @param chipselect Chip select pin for the display
-         * @param data Data pin for the display
-         * @param write Write clock pin for the display
-         * @param read Read clock pin for the display (optional, default is -1)
          */
         SegDriver_HT1621(SegTransport3Wire& transport, uint8_t chipselect);
 
