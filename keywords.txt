@@ -83,6 +83,10 @@ getRamBuffer	KEYWORD2
 getRamBufferSize	KEYWORD2
 initBacklight	KEYWORD2
 setBacklight	KEYWORD2
+setDigital	KEYWORD2
+setPWM	KEYWORD2
+init_cs	KEYWORD2
+set_cs	KEYWORD2
 setDegreeSymbol	KEYWORD2
 
 # PCx85 methods
