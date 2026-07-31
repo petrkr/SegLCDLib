@@ -33,7 +33,7 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
             UNIT_ALL = 0x01FF
         } UnitFlags;
 
-        SegLCD_PCF8576_4Seg6SegMaintSegBatUnits(SegTransportI2C& transport, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
+        SegLCD_PCF8576_4Seg6SegMaintSegBatUnits(SegTransportI2C& transport, uint8_t address = DEFAULT_PCX85_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
         void init() override;
         void clear() override;
         void setBatteryLevel(uint8_t value);

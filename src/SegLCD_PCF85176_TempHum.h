@@ -25,7 +25,7 @@ class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
             UNIT_PERCENT = 0x02,
         } UnitFlags;
 
-        SegLCD_PCF85176_TempHumidity(SegTransportI2C& transport, uint8_t address = DEFAULT_PCF85176_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
+        SegLCD_PCF85176_TempHumidity(SegTransportI2C& transport, uint8_t address = DEFAULT_PCX85_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
         void init() override;
         void clear() override;
         void setBatteryLevel(uint8_t value);

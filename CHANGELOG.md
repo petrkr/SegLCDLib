@@ -14,6 +14,7 @@
 - Added CI tests
 - Added Github templates, first preview version
 - Added Xygax SEG_I2C LCD support
+- Internal cleanup: unified PCx85 default I2C address constant as `DEFAULT_PCX85_I2C_ADDRESS`
 
 
 ## v0.0.1

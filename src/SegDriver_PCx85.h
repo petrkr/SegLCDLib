@@ -15,7 +15,7 @@ class SegDriver_PCx85 : public SegLCDLib {
         static constexpr uint8_t CMD_DEVICE_SELECT   = 0x60;
         static constexpr uint8_t CMD_BLINK           = 0x70;
         static constexpr uint8_t CMD_BANK_SELECT     = 0x78;
-        static constexpr uint8_t DEFAULT_PCF85176_I2C_ADDRESS = 0x38;  // 56 decimal
+        static constexpr uint8_t DEFAULT_PCX85_I2C_ADDRESS = 0x38;  // 56 decimal
         static constexpr uint8_t DEFAULT_SUBADDRESS = 0x00;
 
     public:
