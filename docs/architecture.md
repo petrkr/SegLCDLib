@@ -4,6 +4,31 @@
 
 SegLCDLib uses a layered architecture separating concerns between abstract interface, transport, controller protocol handling, and display-specific implementations.
 
+## LCD Build Selection
+
+By default, all LCD model implementations should remain enabled. This keeps the
+library usable from Arduino IDE without build flags.
+
+Build systems that can pass preprocessor defines, such as PlatformIO or ESPHome,
+may use an explicit selection mode:
+
+```text
+-DSEGLCD_DISABLE_ALL_LCDS
+-DSEGLCD_ENABLE_PCF85134_XYGAX
+```
+
+Intended meaning:
+
+- `SEGLCD_DISABLE_ALL_LCDS`: start with no display-specific LCD models enabled.
+- `SEGLCD_ENABLE_<MODEL>`: add selected LCD model implementations back.
+- Core, controller drivers and transports are not affected by
+  `SEGLCD_DISABLE_ALL_LCDS`.
+
+Do not rely on a user `#include <SegLCD_...h>` to enable the matching
+implementation automatically. Each `.cpp` file is compiled as a separate
+translation unit, so headers included from the user sketch cannot reliably
+define model-selection macros for library implementation files.
+
 ```
 ┌─────────────────────────────────────────────────────┐
 │  User Application (Arduino Sketch)                  │
