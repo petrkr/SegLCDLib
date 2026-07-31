@@ -166,7 +166,7 @@ GND        →   GND
 #include <Wire.h>
 
 SegTransportI2CArduino transport(Wire);
-SegLCD_PCF85176_TempHum lcd(transport);  // Default address 0x38
+SegLCD_PCF85176_TempHumidity lcd(transport);  // Default address 0x38
 
 void setup() {
     Wire.begin();

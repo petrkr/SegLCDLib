@@ -25,7 +25,7 @@ All LCD model implementations are enabled by default. To build only selected LCD
 | `SegLCD_PCF85134_XygaxSegI2C` | `SEGLCD_ENABLE_PCF85134_XYGAX_SEG_I2C` |
 | `SegLCD_PCF85176_2Row4DigSigBatPwr` | `SEGLCD_ENABLE_PCF85176_2ROW4DIGSIGBATPWR` |
 | `SegLCD_PCF85176_4DR821B` | `SEGLCD_ENABLE_PCF85176_4DR821B` |
-| `SegLCD_PCF85176_6DigSigBattProgress` | `SEGLCD_ENABLE_PCF85176_6DIGSIGBATTPROGRESS` |
+| `SegLCD_PCF85176_6DigitSignalBatteryProgress` | `SEGLCD_ENABLE_PCF85176_6DIGSIGBATTPROGRESS` |
 | `SegLCD_PCF85176_OneDigit` | `SEGLCD_ENABLE_PCF85176_ONEDIGIT` |
 | `SegLCD_PCF85176_Raw` | `SEGLCD_ENABLE_PCF85176_RAW` |
 | `SegLCD_PCF85176_T1T2Lcd` | `SEGLCD_ENABLE_PCF85176_T1T2LCD` |
@@ -111,7 +111,7 @@ lcd.print("123.4");
 #include <Wire.h>
 
 SegTransportI2CArduino transport(Wire);
-SegLCD_PCF85176_6DigSigBattProgress lcd(transport);
+SegLCD_PCF85176_6DigitSignalBatteryProgress lcd(transport);
 
 lcd.init();
 lcd.setCursor(0, 0);
@@ -187,7 +187,7 @@ lcd.setPowerSymbol(true);
 #include <Wire.h>
 
 SegTransportI2CArduino transport(Wire);
-SegLCD_PCF85176_TempHum lcd(transport);
+SegLCD_PCF85176_TempHumidity lcd(transport);
 
 lcd.init();
 lcd.setCursor(0, 0);  // Temperature row
