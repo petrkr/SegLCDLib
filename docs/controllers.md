@@ -15,6 +15,12 @@ Arduino transport implementations are declared in `SegTransportArduino.h`:
 
 Arduino code using these transport classes must include `SegTransportArduino.h` explicitly.
 
+### Transport Build Macros
+
+`SEGLCD_DISABLE_ARDUINO_TRANSPORT` disables Arduino transport declarations and implementation.
+
+Use it in environments that provide their own `SegTransportI2C` or `SegTransport3Wire` implementation and do not have Arduino `Wire.h` available. Arduino builds should normally leave this undefined.
+
 ---
 
 ## PCF85176 / PCF8576 (I2C)

@@ -1,6 +1,8 @@
 #ifndef SEGTRANSPORTARDUINO_H
 #define SEGTRANSPORTARDUINO_H
 
+#ifndef SEGLCD_DISABLE_ARDUINO_TRANSPORT
+
 #include <Arduino.h>
 #include <Wire.h>
 
@@ -46,5 +48,7 @@ class SegTransportI2CArduino : public SegTransportI2C {
     private:
         TwoWire& _i2c;
 };
+
+#endif
 
 #endif

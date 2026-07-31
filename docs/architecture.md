@@ -126,6 +126,8 @@ enum BacklightMode {    // GPIO backlight control
 
 Transports encapsulate low-level bus access and are injected into controller drivers.
 
+Define `SEGLCD_DISABLE_ARDUINO_TRANSPORT` to disable Arduino transport declarations and implementation when the target environment provides its own transport and does not expose Arduino `Wire.h`.
+
 ### I2C Transport
 
 **Files:** `src/SegTransport.h`, `src/SegTransportArduino.h`

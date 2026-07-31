@@ -1,3 +1,5 @@
+#ifndef SEGLCD_DISABLE_ARDUINO_TRANSPORT
+
 #include <Arduino.h>
 #include <SegTransportArduino.h>
 
@@ -40,3 +42,5 @@ void SegTransportI2CArduino::write(uint8_t address, uint8_t *data, size_t length
     _i2c.write(data, length);
     _i2c.endTransmission();
 }
+
+#endif
