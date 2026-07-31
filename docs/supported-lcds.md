@@ -1,3 +1,4 @@
+
 # Supported LCD Displays
 
 All displays use segment LCD technology controlled by I2C or 3-wire serial protocol. Select by controller type and application.
@@ -53,8 +54,9 @@ Example:
 - **I2C Address:** 0x38 (SA0=0) or 0x39 (SA0=1)
 - **Controller:** PCF85134
 - **Board Marking:** `SEG_I2C_V1.01` / `SEG_I2C_V1.02`
-- **Image:** TODO placeholder, add `docs/images/xygax-seg-i2c.webp`
+- **Image:** ![Xygax SEG_I2C](images/xygax-seg-i2c.webp)
 - **Example:** `examples/PCF85134/XygaxSegI2C/`
+- **Purchase:** https://github.com/xygax
 
 **Notes:**
 - Board version does not currently affect the library mapping.
