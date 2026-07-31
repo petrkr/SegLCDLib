@@ -5,7 +5,7 @@
 void SegDriver_PCF85134::_sendCommand(uint8_t command, bool last) {
     uint8_t buffer[2] = {
         last ? CONTROL_LAST_COMMAND : CONTROL_COMMAND,
-        command | CONTROL_COMMAND
+        static_cast<uint8_t>(command | CONTROL_COMMAND)
     };
 
     _transport.write(_address, buffer, sizeof(buffer));
