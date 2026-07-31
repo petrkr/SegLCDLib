@@ -1,6 +1,8 @@
 #ifndef SEGLCD_PCF8576_4SEG6SEGMAINTSEGBATUNITS_H
 #define SEGLCD_PCF8576_4SEG6SEGMAINTSEGBATUNITS_H
 
+
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_PCF8576_4SEG6SEGMAINTSEGBATUNITS)
 #include <SegDriver_PCF8576.h>
 
 /**
@@ -81,4 +83,6 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
         size_t _writeRow0(uint8_t ch);
         size_t _writeRow1(uint8_t ch);
 };
+#endif
+
 #endif

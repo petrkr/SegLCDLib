@@ -1,3 +1,4 @@
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_PCF85176_2ROW4DIGSIGBATPWR)
 #include <SegLCD_PCF85176_2Row4DigSigBatPwr.h>
 
 
@@ -169,3 +170,5 @@ uint8_t SegLCD_PCF85176_2Row4DigSigBatPwr::_mapSegmentsRow2(uint8_t val) {
 
     return out;
 }
+
+#endif

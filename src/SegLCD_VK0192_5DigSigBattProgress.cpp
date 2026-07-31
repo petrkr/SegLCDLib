@@ -1,3 +1,4 @@
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_VK0192_5DIGSIGBATTPROGRESS)
 #include <SegLCD_VK0192_5DigSigBattProgress.h>
 
 
@@ -503,3 +504,5 @@ void SegLCD_VK0192_5DigSigBattProgress::_updateLabels(uint16_t labels, bool set)
     _writeRam(_ramBuffer[ADDR_LABELS_2], ADDR_LABELS_2 * 2);
     _writeRam(_ramBuffer[ADDR_LABELS_3], ADDR_LABELS_3 * 2);
 }
+
+#endif

@@ -1,6 +1,8 @@
 #ifndef SEGLCD_VT0192_5DigSigBattProgress_H
 #define SEGLCD_VT0192_5DigSigBattProgress_H
 
+
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_VK0192_5DIGSIGBATTPROGRESS)
 #include <SegDriver_VK0192.h>
 
 /**
@@ -108,4 +110,6 @@ class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
         void _updateUnits(uint16_t units, bool set);
         void _updateLabels(uint16_t labels, bool set);
 };
+#endif
+
 #endif

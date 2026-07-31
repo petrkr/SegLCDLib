@@ -1,6 +1,8 @@
 #ifndef SEGLCD_PCF85134_RAW_H
 #define SEGLCD_PCF85134_RAW_H
 
+
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_PCF85134_RAW)
 /**
  * @file SegLCD_PCF85134_Raw.h
  * @brief Raw PCF85134 LCD implementation for prototyping and testing.
@@ -22,4 +24,6 @@ class SegLCD_PCF85134_Raw : public SegDriver_PCF85134 {
         void writeRam(uint8_t data, uint8_t address = 0);
         void writeRam(uint8_t *data, size_t length, uint8_t address = 0);
 };
+#endif
+
 #endif

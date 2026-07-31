@@ -1,3 +1,4 @@
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_HT1621_4SEGDEGREE)
 #include <SegLCD_HT1621_4SegDegree.h>
 
 
@@ -166,3 +167,5 @@ void SegLCD_HT1621_4SegDegree::_writeSymbols(uint8_t bitnum, bool state) {
 
     _writeRam(_ramBuffer[3], ADDR_SYMBOLS);
 }
+
+#endif

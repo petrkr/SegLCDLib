@@ -1,6 +1,8 @@
 #ifndef SEGLCD_HT1621_LCM88128_H
 #define SEGLCD_HT1621_LCM88128_H
 
+
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_HT1621_LCM88128)
 #include <SegDriver_HT1621.h>
 
 /**
@@ -355,4 +357,6 @@ class SegLCD_HT1621_LCM88128 : public SegDriver_HT1621 {
 
         uint8_t _mapSegments(uint8_t val);
 };
+#endif
+
 #endif

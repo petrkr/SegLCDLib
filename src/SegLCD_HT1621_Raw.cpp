@@ -1,3 +1,4 @@
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_HT1621_RAW)
 #include <SegLCD_HT1621_Raw.h>
 
 
@@ -19,3 +20,5 @@ void SegLCD_HT1621_Raw::writeRam(uint8_t data, uint8_t address) {
 void SegLCD_HT1621_Raw::writeRam(uint8_t *data, size_t length, uint8_t address) {
     _writeRam(data, length, address);
 }
+
+#endif

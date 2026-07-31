@@ -1,3 +1,4 @@
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_HT1622_10DIG16SEG)
 #include <SegLCD_HT1622_10Dig16Seg.h>
 
 
@@ -110,3 +111,5 @@ uint16_t SegLCD_HT1622_10Dig16Seg::_map16Segments(uint16_t val) {
     out |= (val & 0b0000000000001000) << 1;  // J
     return out;
 }
+
+#endif

@@ -1,6 +1,8 @@
 #ifndef SEGLCD_PCF85176_TEMPHUM_H
 #define SEGLCD_PCF85176_TEMPHUM_H
 
+
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_PCF85176_TEMPHUM)
 #include <SegDriver_PCF85176.h>
 
 /**
@@ -85,4 +87,6 @@ class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
 
         uint8_t _mapSegments(uint8_t val);
 };
+#endif
+
 #endif

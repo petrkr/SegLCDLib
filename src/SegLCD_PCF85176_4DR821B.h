@@ -1,6 +1,8 @@
 #ifndef SEGLCD_PCF85176_4DR821B_H
 #define SEGLCD_PCF85176_4DR821B_H
 
+
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_PCF85176_4DR821B)
 #include <SegDriver_PCF85176.h>
 
 /**
@@ -50,4 +52,6 @@ class SegLCD_PCF85176_4DR821B : public SegDriver_PCF85176 {
         static constexpr uint8_t DECIMAL_MAX_COL = 2;
         static constexpr int8_t DECIMAL_COL_OFFSET = -1;
 };
+#endif
+
 #endif

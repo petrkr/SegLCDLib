@@ -1,3 +1,4 @@
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_PCF85176_T1T2LCD)
 #include <SegLCD_PCF85176_T1T2Lcd.h>
 
 
@@ -238,3 +239,5 @@ uint8_t SegLCD_PCF85176_T1T2Lcd::_mapSegments(uint8_t val) {
     out |= (val & 0b00000001);        // H
     return out;
 }
+
+#endif

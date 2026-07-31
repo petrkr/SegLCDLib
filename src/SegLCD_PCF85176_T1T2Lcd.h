@@ -1,6 +1,8 @@
 #ifndef SEGLCD_PCx85_T1T2LCD_H
 #define SEGLCD_PCx85_T1T2LCD_H
 
+
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_PCF85176_T1T2LCD)
 #include <SegDriver_PCF85176.h>
 
 /**
@@ -92,4 +94,6 @@ class SegLCD_PCF85176_T1T2Lcd : public SegDriver_PCF85176 {
 
         uint8_t _mapSegments(uint8_t val);
 };
+#endif
+
 #endif

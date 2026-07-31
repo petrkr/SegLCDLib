@@ -1,6 +1,8 @@
 #ifndef SEGLCD_PCF85176_ONEDIGIT_H
 #define SEGLCD_PCF85176_ONEDIGIT_H
 
+
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_PCF85176_ONEDIGIT)
 #include <SegDriver_PCF85176.h>
 
 /**
@@ -38,4 +40,6 @@ class SegLCD_PCF85176_OneDigit : public SegDriver_PCF85176 {
         static constexpr uint8_t DECIMAL_MAX_COL = DIGITS-1; // All digits supports decimal
         static constexpr int8_t DECIMAL_COL_OFFSET = -1;  // -1: dot belongs to previous position
 };
+#endif
+
 #endif

@@ -1,3 +1,4 @@
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_PCF8576_4SEG6SEGMAINTSEGBATUNITS)
 #include <SegLCD_PCF8576_4Seg6SegMaintSegBatUnits.h>
 
 
@@ -323,3 +324,5 @@ uint8_t SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::_mapSegments(uint8_t val)
     out |= (val & 0b00010000) >> 4;   // D: bit4 -> bit0
     return out;
 }
+
+#endif

@@ -1,6 +1,8 @@
 #ifndef SEGLCD_HT1622_RAW_H
 #define SEGLCD_HT1622_RAW_H
 
+
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_HT1622_RAW)
 /**
  * @file SegLCD_HT1622_Raw.h
  * @brief Raw HT1622 LCD implementation for prototyping and testing.
@@ -20,4 +22,6 @@ class SegLCD_HT1622_Raw : public SegDriver_HT1622 {
         void writeRam(uint8_t data, uint8_t address = 0);
         void writeRam(uint8_t *data, size_t length, uint8_t address = 0);
 };
+#endif
+
 #endif

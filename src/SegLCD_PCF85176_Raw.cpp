@@ -1,3 +1,4 @@
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_PCF85176_RAW)
 #include <SegLCD_PCF85176_Raw.h>
 
 
@@ -23,3 +24,5 @@ void SegLCD_PCF85176_Raw::writeRam(uint8_t data, uint8_t address) {
 void SegLCD_PCF85176_Raw::writeRam(uint8_t *data, size_t length, uint8_t address) {
     _writeRam(data, length, address);
 }
+
+#endif

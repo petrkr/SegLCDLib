@@ -1,3 +1,4 @@
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_PCF85176_TEMPHUM)
 #include <SegLCD_PCF85176_TempHum.h>
 
 
@@ -198,3 +199,5 @@ uint8_t SegLCD_PCF85176_TempHumidity::_mapSegments(uint8_t val) {
     out |= (val & 0b00000001) << 3;      // H: bit 0 → 3
     return out;
 }
+
+#endif

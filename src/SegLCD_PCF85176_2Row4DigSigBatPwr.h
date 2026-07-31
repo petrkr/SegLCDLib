@@ -1,6 +1,8 @@
 #ifndef SEGLCD_PCx85_2Row4DigSigBatPwr_H
 #define SEGLCD_PCx85_2Row4DigSigBatPwr_H
 
+
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_PCF85176_2ROW4DIGSIGBATPWR)
 #include <SegDriver_PCF85176.h>
 
 /**
@@ -61,4 +63,6 @@ class SegLCD_PCF85176_2Row4DigSigBatPwr : public SegDriver_PCF85176 {
         uint8_t _mapSegmentsRow1(uint8_t val);
         uint8_t _mapSegmentsRow2(uint8_t val);
 };
+#endif
+
 #endif

@@ -1,3 +1,4 @@
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_HT1621_6SEGBAT)
 #include <SegLCD_HT1621_6SegBat.h>
 
 
@@ -85,3 +86,5 @@ uint8_t SegLCD_HT1621_6SegBat::_mapSegments(uint8_t val) {
     out |= (val & 0b00000001) << 7;      // H: bit 0 → 7
     return out;
 }
+
+#endif

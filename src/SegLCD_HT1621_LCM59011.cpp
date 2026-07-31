@@ -1,3 +1,4 @@
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_HT1621_LCM59011)
 #include <SegLCD_HT1621_LCM59011.h>
 
 
@@ -167,3 +168,5 @@ uint8_t SegLCD_HT1621_LCM59011::_mapSegments(uint8_t val) {
 
     return out;
 }
+
+#endif

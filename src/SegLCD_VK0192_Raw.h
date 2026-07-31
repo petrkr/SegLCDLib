@@ -1,6 +1,8 @@
 #ifndef SEGLCD_VK0192_RAW_H
 #define SEGLCD_VK0192_RAW_H
 
+
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_VK0192_RAW)
 /**
  * @file SegLCD_VK0192_Raw.h
  * @brief Raw VK0192 LCD implementation for prototyping and testing.
@@ -20,4 +22,6 @@ class SegLCD_VK0192_Raw : public SegDriver_VK0192 {
         void writeRam(uint8_t data, uint8_t address = 0);
         void writeRam(uint8_t *data, size_t length, uint8_t address = 0);
 };
+#endif
+
 #endif

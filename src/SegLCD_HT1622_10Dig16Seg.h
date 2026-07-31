@@ -1,6 +1,8 @@
 #ifndef SEGLCD_HT1622_10Dig16Seg_H
 #define SEGLCD_HT1622_10Dig16Seg_H
 
+
+#if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_HT1622_10DIG16SEG)
 #include <SegDriver_HT1622.h>
 
 /**
@@ -40,4 +42,6 @@ class SegLCD_HT1622_10Dig16Seg : public SegDriver_HT1622 {
         int8_t _get16SegmentsAddress(uint8_t row, uint8_t col);
 
 };
+#endif
+
 #endif
