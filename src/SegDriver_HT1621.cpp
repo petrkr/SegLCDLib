@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include <SegDriver_HT1621.h>
 
 

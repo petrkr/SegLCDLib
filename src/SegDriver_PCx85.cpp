@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include <SegDriver_PCx85.h>
 
 

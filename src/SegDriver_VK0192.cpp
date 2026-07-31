@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include <SegDriver_VK0192.h>
 
 

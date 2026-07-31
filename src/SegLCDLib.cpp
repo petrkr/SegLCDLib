@@ -1,5 +1,9 @@
 #include <SegLCDLib.h>
 
+#ifndef ARDUINO
+#include <stdlib.h>
+#include <string.h>
+#endif
 
 SegLCDLib::~SegLCDLib() {
     if (_ramBuffer) {

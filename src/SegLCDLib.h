@@ -39,7 +39,11 @@ typedef enum {
  * This class defines the generic interface required by all LCD segment drivers,
  * including display control, character output, and data writing methods.
  */
+#ifdef ARDUINO
 class SegLCDLib : public Print {
+#else
+class SegLCDLib {
+#endif
     public:
         /**
          * @brief Backlight mode for GPIO control.

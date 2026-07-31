@@ -1,7 +1,12 @@
 #ifndef SEGTRANSPORT_H
 #define SEGTRANSPORT_H
 
+#include <stdint.h>
+#include <stddef.h>
+
+#ifdef ARDUINO
 #include <Arduino.h>
+#endif
 
 /**
  * @brief Abstract base class for low-level bus transports.

@@ -1,6 +1,10 @@
 #if !defined(SEGLCD_DISABLE_ALL_LCDS) || defined(SEGLCD_ENABLE_PCF8576_4SEG6SEGMAINTSEGBATUNITS)
 #include <SegLCD_PCF8576_4Seg6SegMaintSegBatUnits.h>
 
+#ifndef ARDUINO
+#include <string.h>
+#endif
+
 
 SegLCD_PCF8576_4Seg6SegMaintSegBatUnits::SegLCD_PCF8576_4Seg6SegMaintSegBatUnits(SegTransportI2C& transport, uint8_t address, uint8_t subaddress) :  SegDriver_PCF8576(transport, address, subaddress) {
     _allocateBuffer(RAM_BYTE_COUNT);

@@ -1,5 +1,8 @@
-#include <Arduino.h>
 #include <SegDriver_PCF85176.h>
+
+#ifndef ARDUINO
+#include <string.h>
+#endif
 
 
 void SegDriver_PCF85176::_sendCommand(uint8_t command, bool last) {
