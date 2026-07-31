@@ -5,6 +5,7 @@
 #include <Wire.h>
 #include <ctype.h>
 #include "SegTransportArduino.h"
+#include "SegBacklightArduino.h"
 #include "SegLCDLib.h"
 
 // Configuration structure - same as UniversalMenuControl

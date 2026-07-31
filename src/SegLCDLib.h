@@ -1,8 +1,14 @@
 #ifndef SEGLCDLIB_H
 #define SEGLCDLIB_H
 
+#include <stddef.h>
+
+#include "SegBacklight.h"
+
+#ifdef ARDUINO
 #include <Arduino.h>
 #include "Print.h"
+#endif
 
 /**
  * @file SegLCDLib.h
@@ -132,15 +138,14 @@ class SegLCDLib : public Print {
         virtual void off() = 0;
 
         /**
-         * @brief Initialize GPIO backlight control.
+         * @brief Initialize backlight control.
          *
-         * Must be called from init() of concrete implementations to setup the backlight GPIO.
+         * Must be called from init() of concrete implementations to setup the backlight.
          *
-         * @param backlightPin GPIO pin for backlight control (-1 to disable)
+         * @param backlight Backlight implementation (nullptr to disable)
          * @param backlightMode Backlight mode (DIGITAL or PWM)
-         * @param backlightActiveHigh true if backlight is active high (default), false for active low
          */
-        void initBacklight(int8_t backlightPin, BacklightMode backlightMode = BACKLIGHT_DIGITAL, bool backlightActiveHigh = true);
+        void initBacklight(SegBacklight *backlight, BacklightMode backlightMode = BACKLIGHT_DIGITAL);
 
         /**
          * @brief Set backlight state (on/off).
@@ -253,9 +258,9 @@ class SegLCDLib : public Print {
         bool _autoFlush = true;
 
         /**
-         * @brief Backlight GPIO pin (-1 if disabled)
+         * @brief Backlight implementation (nullptr if disabled)
          */
-        int8_t _backlightPin = -1;
+        SegBacklight *_backlight = nullptr;
 
         /**
          * @brief Backlight mode (DIGITAL or PWM)
@@ -263,21 +268,9 @@ class SegLCDLib : public Print {
         BacklightMode _backlightMode = BACKLIGHT_DIGITAL;
 
         /**
-         * @brief Backlight active high flag
-         */
-        bool _backlightActiveHigh = true;
-
-        /**
          * @brief Cached backlight brightness
          */
         uint8_t _backlightBrightness = 0;
-
-        /**
-         * @brief LEDC channel for old ESP32 Arduino Core (2.0.x)
-         */
-        #if defined(ESP32) && ESP_IDF_VERSION_MAJOR < 5
-        uint8_t _backlightChannel = 0;
-        #endif
 
         /**
          * @brief Generic flag storage for display-specific state tracking.

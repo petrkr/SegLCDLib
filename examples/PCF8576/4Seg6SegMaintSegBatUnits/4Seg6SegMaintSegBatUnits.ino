@@ -4,11 +4,13 @@
  */
 
 #include "SegTransportArduino.h"
+#include "SegBacklightArduino.h"
 #include "SegLCD_PCF8576_4Seg6SegMaintSegBatUnits.h"
 #include <Wire.h>
 
 SegTransportI2CArduino bus(Wire);
 SegLCD_PCF8576_4Seg6SegMaintSegBatUnits lcd(bus);
+SegBacklightArduino backlight(10);
 
 void setup() {
   Serial.begin(115200);
@@ -22,7 +24,7 @@ void setup() {
   #endif
 
   Serial.println("Initialize backlight");
-  lcd.initBacklight(10);
+  lcd.initBacklight(&backlight);
   lcd.setBacklight(true);
 
   Serial.println("Initialize LCD");

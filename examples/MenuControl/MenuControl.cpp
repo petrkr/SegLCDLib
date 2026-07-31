@@ -383,9 +383,13 @@ static bool isRawPlugin(const LCDPlugin *plugin) {
            strcmp(pluginName, "ht1621_raw") == 0;
 }
 
+static SegBacklightArduino *activeBacklight = nullptr;
+
 static void initBacklightIfConfigured() {
     if (!activeLCD || config.backlight < 0) return;
-    activeLCD->initBacklight(config.backlight, config.backlightMode);
+    delete activeBacklight;
+    activeBacklight = new SegBacklightArduino(config.backlight);
+    activeLCD->initBacklight(activeBacklight, config.backlightMode);
 }
 
 static void printConfigSummary(Stream &out) {
@@ -697,6 +701,8 @@ static void handleSettingsCommand(char *cmd, char *args) {
             activePlugin->destroy(activeLCD);
             activeLCD = nullptr;
             activePlugin = nullptr;
+            delete activeBacklight;
+            activeBacklight = nullptr;
         }
         activePlugin = plugins[config.displayId];
         activeLCD = activePlugin->create(config);

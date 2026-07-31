@@ -4,6 +4,7 @@
  */
 
 #include "SegTransportArduino.h"
+#include "SegBacklightArduino.h"
 #include "SegLCD_HT1622_10Dig16Seg.h"
 
 #define PIN_CS 9
@@ -14,6 +15,7 @@
 
 SegTransport3WireArduino transport(PIN_DATA, PIN_WR);
 SegLCD_HT1622_10Dig16Seg lcd(transport, PIN_CS);
+SegBacklightArduino backlight(PIN_PWR);
 
 void setup() {
   Serial.begin(115200);
@@ -22,7 +24,7 @@ void setup() {
   Serial.println("Initialize LCD...");
 
   if (PIN_PWR > -1) {
-    lcd.initBacklight(PIN_PWR);
+    lcd.initBacklight(&backlight);
     lcd.setBacklight(true);
   }
 

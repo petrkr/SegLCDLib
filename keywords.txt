@@ -21,6 +21,8 @@ SegTransport3Wire	KEYWORD1
 SegTransport3WireArduino	KEYWORD1
 SegTransportI2C	KEYWORD1
 SegTransportI2CArduino	KEYWORD1
+SegBacklight	KEYWORD1
+SegBacklightArduino	KEYWORD1
 
 # Driver classes
 SegDriver_3Wire	KEYWORD1

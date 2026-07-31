@@ -90,65 +90,34 @@ void SegLCDLib::setCursor(uint8_t row, uint8_t col) {
     _cursorCol = col;
 }
 
-void SegLCDLib::initBacklight(int8_t backlightPin, BacklightMode backlightMode, bool backlightActiveHigh) {
-    _backlightPin = backlightPin;
+void SegLCDLib::initBacklight(SegBacklight *backlight, BacklightMode backlightMode) {
+    _backlight = backlight;
     _backlightMode = backlightMode;
-    _backlightActiveHigh = backlightActiveHigh;
 
-    if (_backlightPin < 0) return;
+    if (!_backlight) return;
 
-    if (_backlightMode == BACKLIGHT_PWM) {
-        #ifdef ESP32
-            #if ESP_IDF_VERSION_MAJOR >= 5
-                // ESP32 PWM setup - modern API (3.3+, IDF 5.x)
-                ledcAttach(_backlightPin, 5000, 8);  // pin, frequency, resolution
-            #else
-                // Old API (2.0.x, IDF 4.x)
-                _backlightChannel = 0;
-                ledcSetup(_backlightChannel, 5000, 8);
-                ledcAttachPin(_backlightPin, _backlightChannel);
-            #endif
-        #else
-            pinMode(_backlightPin, OUTPUT);
-        #endif
-    } else {
-        pinMode(_backlightPin, OUTPUT);
-    }
+    _backlight->init(_backlightMode == BACKLIGHT_PWM);
 
     // Initialize to off
     setBacklight(false);
 }
 
 void SegLCDLib::setBacklight(bool state) {
-    if (_backlightPin < 0) return;
+    if (!_backlight) return;
 
-    bool outputState = _backlightActiveHigh ? state : !state;
-    digitalWrite(_backlightPin, outputState ? HIGH : LOW);
+    _backlight->setDigital(state);
 }
 
 void SegLCDLib::setBacklight(int brightness) {
-    if (_backlightPin < 0) return;
+    if (!_backlight) return;
 
     _backlightBrightness = brightness;
 
-    uint8_t pwmValue = brightness;
-    if (!_backlightActiveHigh) {
-        pwmValue = 255 - brightness;
-    }
-
     if (_backlightMode == BACKLIGHT_PWM) {
-        #ifdef ESP32
-            #if ESP_IDF_VERSION_MAJOR >= 5
-                ledcWrite(_backlightPin, pwmValue);
-            #else
-                ledcWrite(_backlightChannel, pwmValue);
-            #endif
-        #else
-            analogWrite(_backlightPin, pwmValue);
-        #endif
+        _backlight->setPWM(brightness);
     } else {
         // Digital mode - convert to boolean
-        digitalWrite(_backlightPin, brightness > 127 ? HIGH : LOW);
+        _backlight->setDigital(brightness > 127);
     }
 }
 

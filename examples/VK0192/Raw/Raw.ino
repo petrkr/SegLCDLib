@@ -1,5 +1,6 @@
 
 #include "SegTransportArduino.h"
+#include "SegBacklightArduino.h"
 #include "SegLCD_VK0192_Raw.h"
 
 #define PIN_CS 9
@@ -9,10 +10,11 @@
 
 SegTransport3WireArduino transport(PIN_DATA, PIN_WR);
 SegLCD_VK0192_Raw raw(transport, PIN_CS);
+SegBacklightArduino backlight(PIN_PWR);
 
 void setup() {
   if (PIN_PWR > -1) {
-    raw.initBacklight(PIN_PWR);
+    raw.initBacklight(&backlight);
     raw.setBacklight(true);
   }
 
