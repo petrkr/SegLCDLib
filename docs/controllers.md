@@ -155,12 +155,15 @@ GND        →   GND
 ### Code Example
 
 ```cpp
-#include <Wire.h>
+#include "SegTransportArduino.h"
 #include "SegLCD_PCF85176_TempHum.h"
+#include <Wire.h>
+
+SegTransportI2CArduino transport(Wire);
+SegLCD_PCF85176_TempHum lcd(transport);  // Default address 0x38
 
 void setup() {
     Wire.begin();
-    SegLCD_PCF85176_TempHum lcd(Wire);  // Default address 0x38
     lcd.init();
 }
 
@@ -275,6 +278,8 @@ GND    →   GND
 ### Initialization Code
 
 ```cpp
+#include "SegTransportArduino.h"
+
 const int CLK = 5, DATA = 6, CS = 7;
 SegTransport3WireArduino transport(DATA, CLK);
 SegLCD_HT1621_4SegDegree lcd(transport, CS);

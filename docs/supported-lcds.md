@@ -32,8 +32,12 @@ All displays use segment LCD technology controlled by I2C or 3-wire serial proto
 
 **Code Example:**
 ```cpp
+#include "SegTransportArduino.h"
 #include "SegLCD_PCF85176_6DigSigBattProgress.h"
-SegLCD_PCF85176_6DigSigBattProgress lcd(Wire);
+#include <Wire.h>
+
+SegTransportI2CArduino transport(Wire);
+SegLCD_PCF85176_6DigSigBattProgress lcd(transport);
 
 lcd.init();
 lcd.setCursor(0, 0);
@@ -57,8 +61,12 @@ lcd.setBatteryLevel(2);  // Medium battery
 
 **Code Example:**
 ```cpp
+#include "SegTransportArduino.h"
 #include "SegLCD_PCF85176_2Row4DigSigBatPwr.h"
-SegLCD_PCF85176_2Row4DigSigBatPwr lcd(Wire);
+#include <Wire.h>
+
+SegTransportI2CArduino transport(Wire);
+SegLCD_PCF85176_2Row4DigSigBatPwr lcd(transport);
 
 lcd.init();
 lcd.setCursor(0, 0);
@@ -100,8 +108,12 @@ lcd.setPowerSymbol(true);
 
 **Code Example:**
 ```cpp
+#include "SegTransportArduino.h"
 #include "SegLCD_PCF85176_TempHum.h"
-SegLCD_PCF85176_TempHum lcd(Wire);
+#include <Wire.h>
+
+SegTransportI2CArduino transport(Wire);
+SegLCD_PCF85176_TempHum lcd(transport);
 
 lcd.init();
 lcd.setCursor(0, 0);  // Temperature row
@@ -168,6 +180,7 @@ lcd.print(45);        // 45%
 
 **Code Example:**
 ```cpp
+#include "SegTransportArduino.h"
 #include "SegLCD_HT1621_4SegDegree.h"
 
 const int CLK = 5, DATA = 6, CS = 7;
@@ -205,6 +218,7 @@ GND            →  GND
 
 **Code Example:**
 ```cpp
+#include "SegTransportArduino.h"
 #include "SegLCD_HT1621_6SegBat.h"
 
 const int CLK = 5, DATA = 6, CS = 7;
@@ -232,6 +246,7 @@ lcd.setBatteryLevel(2);  // Medium battery
 
 **Code Example:**
 ```cpp
+#include "SegTransportArduino.h"
 #include "SegLCD_HT1621_LCM0844.h"
 
 const int CLK = 5, DATA = 6, CS = 7;
@@ -260,6 +275,7 @@ lcd.setLoadLevel(3);
 
 **Code Example:**
 ```cpp
+#include "SegTransportArduino.h"
 #include "SegLCD_HT1621_LCM88128.h"
 
 const int CLK = 5, DATA = 6, CS = 7;
@@ -290,6 +306,7 @@ lcd.setSymbols(SegLCD_HT1621_LCM88128::SYMBOL_LINE_WIND_TO_ACDC);
 
 **Code Example:**
 ```cpp
+#include "SegTransportArduino.h"
 #include "SegLCD_HT1621_LCM59011.h"
 
 const int CLK = 5, DATA = 6, CS = 7;
@@ -362,6 +379,7 @@ lcd.setSymbols(SegLCD_HT1621_LCM59011::SYMBOL_ECO | SegLCD_HT1621_LCM59011::SYMB
 
 **Code Example:**
 ```cpp
+#include "SegTransportArduino.h"
 #include "SegLCD_VK0192_5DigSigBattProgress.h"
 
 const int CLK = 5, DATA = 6, CS = 7;

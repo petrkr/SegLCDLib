@@ -128,14 +128,18 @@ Transports encapsulate low-level bus access and are injected into controller dri
 
 ### I2C Transport
 
-**File:** `src/SegTransport.h`
+**Files:** `src/SegTransport.h`, `src/SegTransportArduino.h`
 
 ```cpp
 class SegTransportI2C : public SegTransport {
     virtual void write(uint8_t address, uint8_t data) = 0;
     virtual void write(uint8_t address, uint8_t* data, size_t length) = 0;
 };
+```
 
+Arduino implementation:
+
+```cpp
 class SegTransportI2CArduino : public SegTransportI2C {
     SegTransportI2CArduino(TwoWire& i2c);
 };
@@ -143,14 +147,18 @@ class SegTransportI2CArduino : public SegTransportI2C {
 
 ### 3-Wire Transport
 
-**File:** `src/SegTransport.h`
+**Files:** `src/SegTransport.h`, `src/SegTransportArduino.h`
 
 ```cpp
 class SegTransport3Wire : public SegTransport {
     virtual void set_cs(uint8_t chipselect, bool state) = 0;
     virtual void write(uint16_t data, uint8_t bitCount) = 0;
 };
+```
 
+Arduino implementation:
+
+```cpp
 class SegTransport3WireArduino : public SegTransport3Wire {
     SegTransport3WireArduino(uint8_t data, uint8_t write, uint8_t read = -1);
 };
@@ -416,6 +424,8 @@ class SegLCD_PCF85176_MyDisplay : public SegDriver_PCF85176 {
 Instantiate with transport from user code:
 
 ```cpp
+#include "SegTransportArduino.h"
+
 SegTransportI2CArduino transport(Wire);
 SegLCD_PCF85176_MyDisplay lcd(transport);
 ```
@@ -423,6 +433,8 @@ SegLCD_PCF85176_MyDisplay lcd(transport);
 For 3-wire displays:
 
 ```cpp
+#include "SegTransportArduino.h"
+
 SegTransport3WireArduino transport(dataPin, wrPin);
 SegLCD_HT1621_MyDisplay lcd(transport, csPin);
 ```

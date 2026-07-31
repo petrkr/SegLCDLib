@@ -44,6 +44,7 @@ Connect 3 GPIO pins and power to your Arduino:
 ### Code
 
 ```cpp
+#include "SegTransportArduino.h"
 #include "SegLCD_HT1621_4SegDegree.h"
 
 // Create 3-wire transport (DATA, WR) and LCD (CS)

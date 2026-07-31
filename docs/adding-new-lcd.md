@@ -91,10 +91,12 @@ Use the appropriate RAW LCD class to prototype segment mapping without writing a
 ### For PCF85176 (I2C)
 
 ```cpp
-#include <Wire.h>
+#include "SegTransportArduino.h"
 #include "SegLCD_PCF85176_Raw.h"
+#include <Wire.h>
 
-SegLCD_PCF85176_Raw lcd(Wire);  // Default I2C address 0x38
+SegTransportI2CArduino transport(Wire);
+SegLCD_PCF85176_Raw lcd(transport);  // Default I2C address 0x38
 
 void setup() {
     Wire.begin();
@@ -377,11 +379,13 @@ Example for PCF85176 6-digit display:
 
 ```cpp
 // File: examples/PCF85176/MyDisplay/MyDisplay.ino
-#include <Wire.h>
+#include "SegTransportArduino.h"
 #include "SegLCD_PCF85176_MyDisplay.h"
+#include <Wire.h>
 
 // Create LCD instance
-SegLCD_PCF85176_MyDisplay lcd(Wire);
+SegTransportI2CArduino transport(Wire);
+SegLCD_PCF85176_MyDisplay lcd(transport);
 
 void setup() {
     Wire.begin();
@@ -434,8 +438,12 @@ Add a section for your display under the appropriate controller:
 
 **Code Example:**
 \`\`\`cpp
+#include "SegTransportArduino.h"
 #include "SegLCD_PCF85176_MyDisplay.h"
-SegLCD_PCF85176_MyDisplay lcd(Wire);
+#include <Wire.h>
+
+SegTransportI2CArduino transport(Wire);
+SegLCD_PCF85176_MyDisplay lcd(transport);
 
 lcd.init();
 lcd.print(123456);
