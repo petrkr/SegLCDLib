@@ -2,6 +2,8 @@
 
 All displays use segment LCD technology controlled by I2C or 3-wire serial protocol. Select by controller type and application.
 
+> **Development status:** Versions `0.0.x` are alpha/prerelease builds. API and behavior may change at any time, including breaking changes without semantic-versioning major bumps.
+
 ---
 
 ## LCD Build Macros
@@ -36,6 +38,40 @@ Example:
 ```text
 -DSEGLCD_DISABLE_ALL_LCDS
 -DSEGLCD_ENABLE_PCF85134_XYGAX_SEG_I2C
+```
+
+---
+
+## PCF85134 (I2C) Displays
+
+### Xygax SEG_I2C
+
+**Specifications:**
+- **Digits:** Up to 6 positions, depending on LCD glass population
+- **Features:** Static segment layout, decimal handling through inline `print()` notation
+- **Wiring:** I2C (SDA, SCL)
+- **I2C Address:** 0x38 (SA0=0) or 0x39 (SA0=1)
+- **Controller:** PCF85134
+- **Board Marking:** `SEG_I2C_V1.01` / `SEG_I2C_V1.02`
+- **Image:** TODO placeholder, add `docs/images/xygax-seg-i2c.webp`
+- **Example:** `examples/PCF85134/XygaxSegI2C/`
+
+**Notes:**
+- Board version does not currently affect the library mapping.
+- Known glass variants include 6-position and 4-position populations. The driver keeps a 6-byte RAM map for the largest known wiring.
+- Some 4-position glass sketches show a down-arrow where the last decimal point would normally be. This is not implemented until RAM mapping is verified on hardware.
+
+**Code Example:**
+```cpp
+#include "SegTransportArduino.h"
+#include "SegLCD_PCF85134_XygaxSegI2C.h"
+#include <Wire.h>
+
+SegTransportI2CArduino transport(Wire);
+SegLCD_PCF85134_XygaxSegI2C lcd(transport);
+
+lcd.init();
+lcd.print("123.4");
 ```
 
 ---

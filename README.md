@@ -2,6 +2,10 @@
 
 Arduino library for segment LCD displays. Provides abstract interface, controller drivers (PCF85176/HT1621/HT1622/VK0192), and implementations for common displays.
 
+## Development Status
+
+Versions `0.0.x` are alpha/prerelease builds. API and behavior may change at any time, including breaking changes without semantic-versioning major bumps.
+
 ## Quick Start
 
 ```cpp
@@ -46,6 +50,7 @@ See [Supported LCDs](docs/supported-lcds.md) for full catalog.
 
 | Display | Controller | Features |
 |---------|-----------|----------|
+| Xygax SEG_I2C | PCF85134 | 6-position SEG_I2C board |
 | Temperature/Humidity | PCF85176 | 6-digit, icons |
 | 6-Digit Signal/Battery | PCF85176 | Signal bars, battery, progress |
 | 2x4-Digit Sig/Bat/Power | PCF85176 | 2 rows, signal, battery, power |
@@ -59,10 +64,6 @@ See [Supported LCDs](docs/supported-lcds.md) for full catalog.
 
 ## Installation
 
-## Versioning
-
-Versions `0.0.x` are preview releases. API and behavior may still change, including breaking changes, without a major or minor version bump.
-
 ### Arduino Library Manager
 1. **Sketch** → **Include Library** → **Manage Libraries**
 2. Search `SegLCDLib`
@@ -75,7 +76,8 @@ Versions `0.0.x` are preview releases. API and behavior may still change, includ
 
 ## Examples
 
-17 complete examples in `examples/` directory:
+18 complete examples in `examples/` directory:
+- PCF85134: 2 examples (RawLCD, XygaxSegI2C)
 - PCF85176: 7 examples (RawLCD, TempHum, 2Row4DigSigBatPwr, etc.)
 - HT1621: 6 examples (4DigDeg, 6DigBat, LCM0844, LCM59011, LCM88128, RawLCD)
 - HT1622: 2 examples (10Digit16Segment, RawLCD)
