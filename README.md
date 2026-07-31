@@ -28,6 +28,7 @@ void loop() {
 ## Documentation
 
 - **[Getting Started](docs/getting-started.md)**: Installation, first project, LCD selection
+- **[Migration Guide](docs/migration.md)**: Version upgrade notes and required code changes
 - **[Supported LCDs](docs/supported-lcds.md)**: Complete catalog with pinout and examples
 - **[Architecture](docs/architecture.md)**: Class hierarchy and design patterns
 - **[Controllers](docs/controllers.md)**: Protocol details (I2C, 3-wire serial)

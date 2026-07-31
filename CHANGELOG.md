@@ -2,7 +2,11 @@
 
 ## v0.0.2-SNAPSHOT
 - Note: v0.0.x releases are alpha/prerelease builds. Breaking changes may happen without semantic-versioning major bumps.
+- Migration notes: [v0.0.1 to v0.0.2](docs/migration.md#v001-to-v002)
 - Breaking change: Added Transport layer in order to support other environment than Arduino Wire.h
+- Breaking change: LCD constructors now take `SegTransportI2C` or `SegTransport3Wire` instead of Arduino `Wire` or direct GPIO pins.
+- Breaking change: measurement label APIs were renamed from `setLabels`/`clearLabels` and `LABEL_*` to `setUnits`/`clearUnits` and `UNIT_*` on affected LCDs.
+- Breaking change: `SegLCD_PCx85_Raw` was split into `SegLCD_PCF85176_Raw` and `SegLCD_PCF85134_Raw`.
 - Breaking Change: TempHum LCD changed labels C/PERCENT to Units to match other LCDs
 - FIX: TempHum: use masked write to prevent other digits when writing units
 - FIX: Call clear() from init()
