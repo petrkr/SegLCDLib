@@ -3,6 +3,7 @@
  * @brief Example of LCM0844 LCD display using HT1621
  */
 
+#include "SegTransportArduino.h"
 #include "SegLCD_HT1621_LCM0844.h"
 
 #define PIN_CS 9

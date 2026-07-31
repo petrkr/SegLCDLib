@@ -3,6 +3,7 @@
  * @brief Quick example of LCM59011 LCD display using HT1621
  */
 
+#include "SegTransportArduino.h"
 #include "SegLCD_HT1621_LCM59011.h"
 
 #define PIN_CS 9

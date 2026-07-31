@@ -3,6 +3,7 @@
  * @brief Example of 5 digit signal, battery and progress display.
  */
 
+#include "SegTransportArduino.h"
 #include "SegLCD_VK0192_5DigSigBattProgress.h"
 
 #define PIN_CS 9

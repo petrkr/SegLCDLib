@@ -3,6 +3,7 @@
  * @brief Example of 10 digits 16 segment LCD display using HT1622
  */
 
+#include "SegTransportArduino.h"
 #include "SegLCD_HT1622_10Dig16Seg.h"
 
 #define PIN_CS 9

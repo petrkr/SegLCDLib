@@ -4,7 +4,7 @@
  */
 
 #include "SegLCD_PCF85176_OneDigit.h"
-#include "SegTransport.h"
+#include "SegTransportArduino.h"
 
 #include <Wire.h>
 

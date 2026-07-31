@@ -3,7 +3,7 @@
 
 #include "LCDPlugin.h"
 #include "SegLCD_PCF85176_2Row4DigSigBatPwr.h"
-#include "SegTransport.h"
+#include "SegTransportArduino.h"
 #include <Wire.h>
 
 class PCF85176_2Row4DigSigBatPwrPlugin : public LCDPlugin {

@@ -4,7 +4,7 @@
  */
 
 #include "SegLCD_PCF85176_Raw.h"
-#include "SegTransport.h"
+#include "SegTransportArduino.h"
 
 #include <Wire.h>
 

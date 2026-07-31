@@ -4,7 +4,7 @@
  */
 
 #include "SegLCD_PCF8576_4Seg6SegMaintSegBatUnits.h"
-#include "SegTransport.h"
+#include "SegTransportArduino.h"
 #include <Wire.h>
 
 SegTransportI2CArduino bus(Wire);

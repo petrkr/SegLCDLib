@@ -3,7 +3,7 @@
 
 #include "LCDPlugin.h"
 #include "SegLCD_PCF8576_4Seg6SegMaintSegBatUnits.h"
-#include "SegTransport.h"
+#include "SegTransportArduino.h"
 #include <Wire.h>
 
 class PCF8576_4Seg6SegMaintSegBatUnitsPlugin : public LCDPlugin {

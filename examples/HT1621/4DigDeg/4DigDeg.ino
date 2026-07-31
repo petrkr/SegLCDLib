@@ -3,6 +3,7 @@
  * @brief Example of 4 digits with degree symbol LCD display using HT1621
  */
 
+#include "SegTransportArduino.h"
 #include "SegLCD_HT1621_4SegDegree.h"
 
 #define PIN_CS 26

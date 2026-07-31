@@ -3,6 +3,7 @@
  * @brief Example of RAW LCD display using HT1621
  */
 
+#include "SegTransportArduino.h"
 #include "SegLCD_HT1621_Raw.h"
 
 #define PIN_CS 6

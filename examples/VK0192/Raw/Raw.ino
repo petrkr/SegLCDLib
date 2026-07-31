@@ -1,4 +1,5 @@
 
+#include "SegTransportArduino.h"
 #include "SegLCD_VK0192_Raw.h"
 
 #define PIN_CS 9

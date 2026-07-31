@@ -3,6 +3,7 @@
  * @brief Example of LCM88128 LCD display using HT1621
  */
 
+#include "SegTransportArduino.h"
 #include "SegLCD_HT1621_LCM88128.h"
 
 #define PIN_CS 9

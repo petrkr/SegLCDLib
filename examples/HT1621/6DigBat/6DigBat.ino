@@ -3,6 +3,7 @@
  * @brief Example of 6 digit with battery gauge LCD display using HT1621
  */
 
+#include "SegTransportArduino.h"
 #include "SegLCD_HT1621_6SegBat.h"
 
 #define PIN_CS 9
