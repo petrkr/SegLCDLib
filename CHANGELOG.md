@@ -5,6 +5,8 @@
 - Migration notes: [v0.0.1 to v0.0.2](docs/migration.md#v001-to-v002)
 - Breaking change: Added Transport layer in order to support other environment than Arduino Wire.h
 - Breaking change: LCD constructors now take `SegTransportI2C` or `SegTransport3Wire` instead of Arduino `Wire` or direct GPIO pins.
+- Breaking change: `initBacklight()` now takes a `SegBacklight*` implementation instead of a raw GPIO pin number, mode, and active-high flag. Arduino users pass a `SegBacklightArduino` instance from `SegBacklightArduino.h`.
+- Added support for non-Arduino frameworks (ESP-IDF, RP2040 SDK, STM32...): `SegLCDLib` no longer requires the Arduino framework outside of Arduino builds, and gains a `write(const char*)` / `write(const char*, size_t)` API available identically everywhere.
 - Breaking change: measurement label APIs were renamed from `setLabels`/`clearLabels` and `LABEL_*` to `setUnits`/`clearUnits` and `UNIT_*` on affected LCDs.
 - Breaking change: `SegLCD_PCx85_Raw` was split into `SegLCD_PCF85176_Raw` and `SegLCD_PCF85134_Raw`.
 - Breaking Change: TempHum LCD changed labels C/PERCENT to Units to match other LCDs

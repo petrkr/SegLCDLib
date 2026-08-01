@@ -11,6 +11,7 @@ Migration checklist:
 - [Labels renamed to units](#labels-renamed-to-units)
 - [Direct driver includes](#direct-driver-includes)
 - [Custom LCD implementations](#custom-lcd-implementations)
+- [Backlight initialization](#backlight-initialization)
 
 ### Transport layer {#transport-layer}
 
@@ -128,3 +129,26 @@ Custom LCD classes derived from library drivers must be updated for the transpor
 - I2C custom drivers should inherit from the specific controller driver, such as `SegDriver_PCF85176`.
 - 3-wire custom drivers should inherit from the specific controller driver, such as `SegDriver_HT1621`, `SegDriver_HT1622`, or `SegDriver_VK0192`.
 - Old global controller macros such as `MAX_ADDRESS` / `MAX_HW_ADDRESS` were replaced by class-scoped constants.
+
+### Backlight initialization {#backlight-initialization}
+
+`initBacklight()` no longer takes a raw GPIO pin number. Create a `SegBacklight` implementation and pass it in instead. The active-high flag moved to the backlight implementation's constructor.
+
+Old:
+
+```cpp
+lcd.initBacklight(7, SegLCDLib::BACKLIGHT_DIGITAL, true);
+```
+
+New:
+
+```cpp
+#include "SegBacklightArduino.h"
+
+SegBacklightArduino backlight(7);  // activeHigh defaults to true
+lcd.initBacklight(&backlight, SegLCDLib::BACKLIGHT_DIGITAL);
+```
+
+`setBacklight(bool)` and `setBacklight(int)` are unchanged.
+
+If `initBacklight()` was called conditionally based on a "no backlight" sentinel pin value, keep the `SegBacklightArduino` instance around only when a real pin is configured (see `examples/HT1622/10Digit16SegmentLCD` for a static-pin example, or `examples/MenuControl/MenuControl.cpp` for a dynamically-configured pin using `new`/`delete`).
