@@ -34,6 +34,27 @@ void SegDriver_3Wire::command(uint8_t command) {
     _transport.set_cs(_cs, true);
 }
 
+void SegDriver_3Wire::flush(uint8_t startAddr, uint8_t length) {
+    if (!_ramBuffer || startAddr >= _ramBufferSize) return;
+
+    bool prevAuto = _autoFlush;
+    _autoFlush = true;
+
+    // Clamp length to buffer bounds
+    if (startAddr + length > _ramBufferSize) {
+        length = _ramBufferSize - startAddr;
+    }
+
+    // 3-wire protocol writes individual addresses (no bulk write support)
+    // Loop through each byte in the range
+    for (uint8_t i = 0; i < length; i++) {
+        uint8_t addr = (startAddr + i) * 2;  // Convert byte index to nibble address
+        _writeRam(_ramBuffer[startAddr + i], addr);
+    }
+
+    _autoFlush = prevAuto;
+}
+
 void SegDriver_3Wire::_writeRam(uint8_t *data, size_t length, uint8_t address) {
     if (!_autoFlush) {
         return;

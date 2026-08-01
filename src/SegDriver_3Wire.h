@@ -78,6 +78,18 @@ class SegDriver_3Wire : public SegLCDLib {
          */
         void command(uint8_t command) override;
 
+        /**
+         * @brief Flush specific range of buffered changes to the display.
+         *
+         * The 3-wire protocol has no bulk write support, so this writes each
+         * address in the range individually.
+         *
+         * @param startAddr Starting buffer address in bytes (RAM buffer index)
+         * @param length Number of bytes to flush
+         */
+        void flush(uint8_t startAddr, uint8_t length) override;
+        using SegLCDLib::flush;  // Inherit base flush() without parameters
+
     protected:
         SegTransport3Wire& _transport;
         uint8_t _cs;   ///< Chip select pin for the display
