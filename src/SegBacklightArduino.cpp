@@ -30,7 +30,7 @@ void SegBacklightArduino::setDigital(bool state) {
     digitalWrite(_pin, outputState ? HIGH : LOW);
 }
 
-void SegBacklightArduino::setPWM(uint8_t brightness) {
+void SegBacklightArduino::setBrightness(uint8_t brightness) {
     uint8_t pwmValue = brightness;
     if (!_activeHigh) {
         pwmValue = 255 - brightness;

@@ -22,7 +22,7 @@ class SegBacklightArduino : public SegBacklight {
 
         void init(bool pwm) override;
         void setDigital(bool state) override;
-        void setPWM(uint8_t brightness) override;
+        void setBrightness(uint8_t brightness) override;
 
     private:
         uint8_t _pin;

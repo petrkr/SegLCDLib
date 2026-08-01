@@ -118,7 +118,7 @@ void SegLCDLib::setBacklight(int brightness) {
     _backlightBrightness = brightness;
 
     if (_backlightMode == BACKLIGHT_PWM) {
-        _backlight->setPWM(brightness);
+        _backlight->setBrightness(brightness);
     } else {
         // Digital mode - convert to boolean
         _backlight->setDigital(brightness > 127);

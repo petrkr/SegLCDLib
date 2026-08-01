@@ -31,7 +31,7 @@ class SegBacklight {
          *
          * @param brightness Brightness level 0-255
          */
-        virtual void setPWM(uint8_t brightness) = 0;
+        virtual void setBrightness(uint8_t brightness) = 0;
 };
 
 #endif
