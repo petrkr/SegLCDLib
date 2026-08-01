@@ -149,6 +149,4 @@ SegBacklightArduino backlight(7);  // activeHigh defaults to true
 lcd.initBacklight(&backlight, SegLCDLib::BACKLIGHT_DIGITAL);
 ```
 
-`setBacklight(bool)` and `setBacklight(int)` are unchanged.
-
 If `initBacklight()` was called conditionally based on a "no backlight" sentinel pin value, keep the `SegBacklightArduino` instance around only when a real pin is configured (see `examples/HT1622/10Digit16SegmentLCD` for a static-pin example, or `examples/MenuControl/MenuControl.cpp` for a dynamically-configured pin using `new`/`delete`).
