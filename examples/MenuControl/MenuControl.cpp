@@ -250,7 +250,7 @@ static void handleActiveCommand(char *cmd, char *args) {
             const char *valStr = nextToken(&args);
             int val = valStr ? (int)parseNumber(valStr) : 0;
             if (val < 0) val = 0;
-            if (val > 254) val = 254;
+            if (val > 255) val = 255;
             activeLCD->setBacklight(val);
         } else {
             activeLCD->setBacklight(parseBool(nextToken(&args)));
