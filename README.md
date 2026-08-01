@@ -62,7 +62,7 @@ See [Supported LCDs](docs/supported-lcds.md) for full catalog.
 | LCM88128 | HT1621 | 8 digits, labels, battery/load/PV |
 | LCM59011 | HT1621 | 4 digits, colon, wifi, battery, symbols |
 | 10-Digit 16-Segment | HT1622 | Enhanced segments |
-| 5-Digit Signal/Battery | VK0192 | Advanced controller |
+| 5-Digit Signal/Battery | VK0192 | Signal/battery/progress indicators |
 
 ## Installation
 

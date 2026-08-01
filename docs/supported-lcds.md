@@ -445,8 +445,8 @@ lcd.setSymbols(SegLCD_HT1621_LCM59011::SYMBOL_ECO | SegLCD_HT1621_LCM59011::SYMB
 - **Digits:** 5 7-segment digits
 - **Features:** Signal bars (4), Battery level (3), Progress indicator
 - **Wiring:** 3 pins (CLK, DATA, CS) + Power + GND
-- **Protocol:** 3-wire serial (4μs timing)
-- **Controller:** VK0192 (24×8 bit RAM, irregular addressing)
+- **Protocol:** 3-wire serial, same protocol/timing family as HT1621/HT1622
+- **Controller:** VK0192 (24×8 bit RAM). This module's digits map to non-sequential RAM addresses due to its SEG/COM pin layout — a property of this specific display, not the VK0192 controller.
 - **Image:** ![5-digit signal/battery](images/5digsigbatprogress.webp)
 - **Example:** `examples/VK0192/5DigSigBattProgress/`
 - **Purchase:** https://aliexpress.com/item/1005009000021475.html
@@ -477,7 +477,7 @@ lcd.setBatteryLevel(1);   // Low battery
 | **PCF8576** | I2C | 2 | 0x38/0x39 | 1 | Simple |
 | **HT1621** | 3-wire | 3 | N/A | 4 | Medium |
 | **HT1622** | 3-wire | 3 | N/A | 2 | Medium |
-| **VK0192** | 3-wire | 3 | N/A | 1 | Advanced |
+| **VK0192** | 3-wire | 3 | N/A | 1 | Medium |
 
 ## Adding a New Display
 

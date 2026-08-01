@@ -360,7 +360,7 @@ Same as HT1621 (3 GPIO pins: CLK, DATA, CS).
 
 ---
 
-## VK0192 (3-Wire Serial, Advanced)
+## VK0192 (3-Wire Serial)
 
 **Driver:** `SegDriver_VK0192`
 
@@ -368,20 +368,20 @@ Same as HT1621 (3 GPIO pins: CLK, DATA, CS).
 
 | Property | Value |
 |----------|-------|
-| **Protocol** | 3-wire serial (irregular addressing) |
+| **Protocol** | 3-wire serial, same command/address/data framing family as HT1621/HT1622 |
 | **RAM** | 24 bytes (24 × 8 bit RAM) |
 | **Max Segments** | 192 (24 × 8) |
-| **Clock Speed** | 250 kHz (faster than HT1621) |
-| **Min Pulse Width** | 4μs (critical timing) |
-| **Power** | 3.3V typical |
+| **Power** | 2.4V–5.2V |
 | **Address Mode** | Internal driver uses nibble-style HW write addresses over 24 × 8 bit RAM |
 
-### Key Difference: Irregular Addressing
+Timing is handled by the shared `SegTransport3Wire` implementation — the library uses the same clock timing for HT1621, HT1622, and VK0192 (see `SegTransportArduino.cpp`), so there is no VK0192-specific timing requirement to account for.
 
-Unlike HT1621 (sequential), VK0192 has **non-sequential segment mapping**:
+### Segment Mapping Is Display-Specific, Not Controller-Specific
+
+The VK0192 controller itself addresses its 24×8 bit RAM sequentially, the same way HT1621/HT1622 do. The **reference display module** wired up in `SegLCD_VK0192_5DigSigBattProgress` happens to have its digits spread across non-adjacent RAM addresses, because of how that particular module's SEG/COM pins are wired to the glass:
 
 ```
-Display Layout:      VK0192 RAM Addresses
+Display Layout:      RAM Addresses on this module
 ┌─────────────┐
 │ Digit 1 2 3 │      Digit 1: Addresses 0, 1,  8, 9
 │ Signal ●●●● │      Digit 2: Addresses 2, 3, 10, 11
@@ -390,7 +390,7 @@ Display Layout:      VK0192 RAM Addresses
 └─────────────┘
 ```
 
-Each digit spans **non-sequential addresses** (splits between lower and upper halves).
+This is the same kind of module-specific mapping work needed for any segment LCD (HT1621/HT1622 modules can have irregular layouts too) — it is not a property of the VK0192 controller, and other VK0192 modules may map sequentially.
 
 ### 4-Bit Addressing
 
@@ -401,26 +401,6 @@ Byte = [ Address High (4 bits) | Data (4 bits) ]
 Example:
 Address 0x12 = 0x1 << 4 | data
              = 0x10 | data
-```
-
-### Timing Requirements (Strict)
-
-```
-Clock Period:  ≥ 4μs (250 kHz max)
-Pulse Width:   Exactly 4μs (critical)
-Setup/Hold:     1μs minimum
-```
-
-**Important:** Timing must be precise. Use `delayMicroseconds()` carefully:
-
-```cpp
-void writeBit(uint8_t bit) {
-    digitalWrite(CLK, LOW);
-    digitalWrite(DATA, bit ? HIGH : LOW);
-    delayMicroseconds(4);   // Exact timing
-    digitalWrite(CLK, HIGH);
-    delayMicroseconds(4);   // Exact timing
-}
 ```
 
 ### RAM Layout and Addressing
@@ -435,21 +415,21 @@ Byte Address  4-bit Addresses  Content
 23            46, 47           Progress indicator
 ```
 
-Segment mapping is **display-specific** due to irregular addressing.
+The table above reflects the reference `SegLCD_VK0192_5DigSigBattProgress` module; other VK0192-based displays may map differently.
 
 ### Wiring
 
 Same as HT1621/HT1622 (3 GPIO pins).
 
-### Segment Mapping Challenge
+### Segment Mapping Example
 
-VK0192 requires careful address mapping because digits don't occupy sequential RAM:
+Like any segment LCD with a non-trivial physical layout, mapping logical digits/segments to RAM addresses is module-specific work done once per display class:
 
 ```cpp
 class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
     void _mapSegmentToAddress(uint8_t digit, uint8_t segment,
                               uint8_t& addr, uint8_t& bit) {
-        // Complex mapping: digit 0 spans addresses 0, 1, 8, 9
+        // This module: digit 0 spans addresses 0, 1, 8, 9
         if (digit == 0) {
             if (segment < 4) addr = 0;      // Lower nibble
             else            addr = 8;       // Upper nibble
@@ -465,14 +445,15 @@ class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
 
 | Feature | PCF85134 | PCF85176/PCF8576 | HT1621 | HT1622 | VK0192 |
 |---------|----------|------------------|--------|--------|--------|
-| **Protocol** | I2C | I2C | 3-wire | 3-wire | 3-wire |
+| **Protocol** | I2C | I2C | 3-wire | 3-wire | 3-wire, same framing family as HT1621/HT1622 |
 | **Pins** | 2 (+ power) | 2 (+ power) | 3 | 3 | 3 |
 | **RAM** | 60 bytes max address range | 40 bytes | 16 bytes | 32 bytes | 24 bytes |
-| **Max Digits** | display-dependent | 13 | 6 | 10+ | 5 |
-| **Addressing** | Sequential | Sequential | Sequential | Sequential | Irregular |
-| **Timing Critical** | No | No | Moderate | High | Very High |
+| **Max Digits** | display-dependent | 13 | display-dependent | display-dependent | display-dependent |
+| **Controller Addressing** | Sequential | Sequential | Sequential | Sequential | Sequential |
 | **Integration** | Separate IC | Separate IC | Integrated | Integrated | Integrated |
 | **Typical Cost** | $$$ | $$$ | $$ | $$ | $$ |
+
+Note: whether a specific module's digits/segments land on sequential or scattered RAM addresses depends on how that module's glass is wired to the controller's SEG/COM pins, not on which of these controllers it uses. All three 3-wire controllers use the same clock timing in this library's transport implementation.
 
 ---
 
@@ -493,13 +474,10 @@ class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
 **Choose HT1622 if:**
 - Need 10+ digits
 - Want 16-segment capability
-- Can handle stricter timing
 - Module is already purchased
 
 **Choose VK0192 if:**
-- Working with specific VK0192 module
-- Can handle complex addressing
-- Need precise timing control
+- Working with a specific VK0192 module
 - Display already purchased/committed
 
 ---
@@ -522,7 +500,7 @@ Bit-banged protocol, address then data.
 ```
 CS ↓ → CMD(9b) → HW_ADDR → DATA(8b) → CS ↑
 ```
-24 × 8 bit RAM with irregular mapping. SegLCDLib uses internal HW write addresses that advance in half-byte steps for compatibility with the existing driver model.
+Same framing as HT1621, over a 24 × 8 bit RAM. SegLCDLib uses internal HW write addresses that advance in half-byte steps for compatibility with the existing driver model.
 
 ---
 

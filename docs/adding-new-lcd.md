@@ -42,7 +42,7 @@ LCD Module (bottom view):
 | None (COB) | Usually 3-wire | 3 (CLK, DATA, CS) | Integrated in module |
 | HT1621 | 3-wire serial | 3 | Standard 6-digit, small |
 | HT1622 | 3-wire serial | 3 | Larger RAM, 10+ digits |
-| VK0192 | 3-wire serial | 3 | Irregular addressing |
+| VK0192 | 3-wire serial | 3 | Same protocol family as HT1621/HT1622 |
 
 ### Determine I2C Address (if PCx85)
 
@@ -136,7 +136,7 @@ void loop() {
 #include "SegTransportArduino.h"
 #include "SegLCD_HT1621_Raw.h"  // Use for HT1621, HT1622 (same driver)
 // OR
-#include "SegLCD_VK0192_Raw.h"  // Use for VK0192 (different addressing)
+#include "SegLCD_VK0192_Raw.h"  // Use for VK0192 (separate driver class, same 3-wire protocol)
 
 const int CLK = 5, DATA = 6, CS = 7;
 SegTransport3WireArduino transport(DATA, CLK);

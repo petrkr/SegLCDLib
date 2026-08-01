@@ -249,13 +249,13 @@ class SegDriver_HT1621 : public SegLCDLib {
 
 ---
 
-### VK0192 (3-Wire Serial, Advanced)
+### VK0192 (3-Wire Serial)
 
 **File:** `src/SegDriver_VK0192.h`
 
 ```cpp
 class SegDriver_VK0192 : public SegLCDLib {
-    // Same 3-wire transport model as HT1621
+    // Same 3-wire transport model as HT1621/HT1622
     SegTransport3Wire& _transport;
     uint8_t _cs;
 
@@ -270,11 +270,9 @@ class SegDriver_VK0192 : public SegLCDLib {
 
 **Features:**
 - Uses shared dynamic RAM buffer from `SegLCDLib`
-- Sends 3-wire signaling through `SegTransport3Wire`
+- Sends 3-wire signaling through `SegTransport3Wire`, same protocol family and timing as HT1621/HT1622
 - VK0192 address space is 24×8 bit RAM (48 4-bit addresses 0-47)
-- Irregular segment mapping (digits/segments not sequential in memory)
-- 4μs minimum pulse width timing
-- More complex segment addressing than HT1621/HT1622
+- The reference `SegLCD_VK0192_5DigSigBattProgress` display maps digits to non-sequential RAM addresses, but this reflects that specific module's SEG/COM pin layout, not a property of the VK0192 controller itself — controller-level RAM addressing is sequential, same as HT1621/HT1622
 
 ---
 
@@ -460,7 +458,7 @@ See [Adding New LCD](adding-new-lcd.md) for detailed tutorial.
 - **PCF85134**: I2C segment LCD controller
 - **PCF85176**: I2C 40×8 segment LCD controller
 - **HT1621/1622**: 3-wire serial LCD drivers
-- **VK0192**: 3-wire LCD driver with irregular addressing
+- **VK0192**: 3-wire serial LCD driver, same protocol family as HT1621/HT1622
 
 ---
 

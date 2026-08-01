@@ -86,7 +86,7 @@ Use this table to find the right display for your project:
 | **Small display** | HT1621 | 4-digit with degree | 3 pins |
 | **Many digits** | HT1621 | 6-digit with battery | 3 pins |
 | **16-segment** | HT1622 | 10-digit 16-segment | 3 pins |
-| **Advanced** | VK0192 | 5-digit with battery | 3 pins |
+| **Signal/battery** | VK0192 | 5-digit with battery | 3 pins |
 
 For detailed specifications and purchase links, see [Supported LCDs](supported-lcds.md).
 
