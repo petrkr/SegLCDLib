@@ -8,6 +8,26 @@ on:
       - develop
 
 jobs:
+  compile-host:
+    name: Compile non-Arduino host build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate per-class compile test
+        run: python3 test/host/generate_compile_all.py
+
+      - name: Compile without Arduino
+        run: |
+          g++ -std=c++17 -Wall -Wextra -I src -I test/host \
+            test/host/compile_all.generated.cpp \
+            $(ls src/*.cpp | grep -v 'Arduino.cpp$') \
+            -o /tmp/host_test
+
+      - name: Run host build
+        run: /tmp/host_test
+
   compile-examples:
     name: Compile examples (${{ matrix.name }})
     runs-on: ubuntu-latest
