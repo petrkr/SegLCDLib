@@ -20,8 +20,6 @@ class SegLCD_PCF85134_Raw : public SegDriver_PCF85134 {
     public:
         SegLCD_PCF85134_Raw(SegTransportI2C& transport, uint8_t address = DEFAULT_PCX85_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
         void init(ModeDrive drive, ModeBias bias);
-        using SegLCDLib::write;
-        size_t write(uint8_t ch) override;
         void writeRam(uint8_t data, uint8_t address = 0);
         void writeRam(uint8_t *data, size_t length, uint8_t address = 0);
 };

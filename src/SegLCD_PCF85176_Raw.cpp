@@ -11,11 +11,6 @@ void SegLCD_PCF85176_Raw::init(ModeDrive drive, ModeBias bias) {
     _setMode(MODE_STATUS_ENABLED, drive, bias);
 }
 
-size_t SegLCD_PCF85176_Raw::write(uint8_t ch) {
-    (void)ch;
-    return 1;
-}
-
 // For generic class allow access to low level functions
 void SegLCD_PCF85176_Raw::writeRam(uint8_t data, uint8_t address) {
     _writeRam(data, address);
