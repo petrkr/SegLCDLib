@@ -33,6 +33,7 @@ class SegLCD_PCF85176_TempHumidity : public SegDriver_PCF85176 {
         void setUnits(uint8_t units);
         void clearUnits(uint8_t units);
         void setCursor(uint8_t row, uint8_t col) override;
+        using SegLCDLib::write;
         size_t write(uint8_t ch) override;
 
     private:

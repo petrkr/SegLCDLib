@@ -43,6 +43,7 @@ class SegLCD_PCF8576_4Seg6SegMaintSegBatUnits : public SegDriver_PCF8576 {
         void setDegreeSymbol(bool state, uint8_t index = 0);
         void setMaintenanceSymbol(bool state, uint8_t index = 0);
         void setCursor(uint8_t row, uint8_t col) override;
+        using SegLCDLib::write;
         size_t write(uint8_t ch) override;
 
     protected:

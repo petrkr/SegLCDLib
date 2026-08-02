@@ -25,6 +25,7 @@ class SegLCD_HT1621_4SegDegree : public SegDriver_HT1621 {
         void clear() override;
         void setCursor(uint8_t row, uint8_t col) override;
         void setDegreeSymbol(bool state, uint8_t index = 0);
+        using SegLCDLib::write;
         size_t write(uint8_t ch) override;
 
     private:

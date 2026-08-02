@@ -21,6 +21,7 @@ class SegLCD_PCF85134_XygaxSegI2C : public SegDriver_PCF85134 {
     public:
         SegLCD_PCF85134_XygaxSegI2C(SegTransportI2C& transport, uint8_t address = DEFAULT_PCX85_I2C_ADDRESS, uint8_t subaddress = DEFAULT_SUBADDRESS);
         void init() override;
+        using SegLCDLib::write;
         size_t write(uint8_t ch) override;
 
     private:

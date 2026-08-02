@@ -47,6 +47,7 @@ class SegLCD_VK0192_5DigSigBattProgress : public SegDriver_VK0192 {
         void setLabels(uint16_t labels);
         void clearLabels(uint16_t labels);
         void setCursor(uint8_t row, uint8_t col) override;
+        using SegLCDLib::write;
         size_t write(uint8_t ch) override;
 
     private:

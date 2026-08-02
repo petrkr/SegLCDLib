@@ -29,6 +29,7 @@ class SegLCD_PCF85176_4DR821B : public SegDriver_PCF85176 {
         void init() override;
         void setSymbol(uint8_t symbol, bool state);
         void setCursor(uint8_t row, uint8_t col) override;
+        using SegLCDLib::write;
         size_t write(uint8_t ch) override;
 
     private:

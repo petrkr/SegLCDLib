@@ -18,6 +18,7 @@ class SegLCD_PCF85176_2Row4DigSigBatPwr : public SegDriver_PCF85176 {
         void setBatteryLevel(uint8_t value);
         void setSignalLevel(uint8_t value);
         void setPowerSymbol(bool state, uint8_t index = 0);
+        using SegLCDLib::write;
         size_t write(uint8_t ch) override;
 
     private:

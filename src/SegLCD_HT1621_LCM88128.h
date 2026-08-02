@@ -132,6 +132,7 @@ class SegLCD_HT1621_LCM88128 : public SegDriver_HT1621 {
         void setMaintenanceSymbol(bool state, uint8_t index = 0);
         void setWarningSymbol(bool state, uint8_t index = 0);
         void setMuteSymbol(bool state, uint8_t index = 0);
+        using SegLCDLib::write;
         size_t write(uint8_t ch) override;
 
     private:

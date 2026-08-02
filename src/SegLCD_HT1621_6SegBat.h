@@ -23,6 +23,7 @@ class SegLCD_HT1621_6SegBat : public SegDriver_HT1621 {
         SegLCD_HT1621_6SegBat(SegTransport3Wire& transport, uint8_t chipselect);
         void init() override;
         void setBatteryLevel(uint8_t level);
+        using SegLCDLib::write;
         size_t write(uint8_t ch) override;
 
     private:

@@ -42,6 +42,7 @@ class SegLCD_PCF85176_T1T2Lcd : public SegDriver_PCF85176 {
         void clearUnits(uint8_t units);
         void clearT1T2Labels(uint8_t t1t2);
         void setCursor(uint8_t row, uint8_t col) override;
+        using SegLCDLib::write;
         size_t write(uint8_t ch) override;
 
     private:

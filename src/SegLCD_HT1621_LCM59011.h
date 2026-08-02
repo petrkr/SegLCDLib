@@ -67,6 +67,7 @@ class SegLCD_HT1621_LCM59011 : public SegDriver_HT1621 {
         void setSymbols(uint32_t symbols);
         void clearSymbols(uint32_t symbols);
         void setWarningSymbol(bool state, uint8_t index = 0);
+        using SegLCDLib::write;
         size_t write(uint8_t ch) override;
 
     private:
