@@ -54,9 +54,23 @@ class SegLCDLib {
         };
 
         /**
+         * @brief Default constructor.
+         */
+        SegLCDLib() = default;
+
+        /**
          * @brief Virtual destructor to ensure proper cleanup in derived classes.
          */
         virtual ~SegLCDLib();
+
+        /**
+         * @brief Disable copying to keep the RAM buffer uniquely owned.
+         *
+         * Copying would duplicate the raw buffer pointer and both instances would
+         * try to release the same allocation in the destructor.
+         */
+        SegLCDLib(const SegLCDLib&) = delete;
+        SegLCDLib& operator=(const SegLCDLib&) = delete;
 
         /**
          * @brief Logical display sections that can be targeted by higher-level rendering logic.
