@@ -102,7 +102,7 @@ lcd.print("123.4");
 - **Controller:** PCF85176
 - **Image:** ![6-digit display](images/6digsigbatprogress.webp)
 - **Example:** `examples/PCF85176/6DigSigBattProgress/`
-- **Purchase:** https://aliexpress.com/item/1005009214559485.html
+- **Purchase:** https://www.aliexpress.com/item/1005008425148644.html
 
 **Code Example:**
 ```cpp
@@ -288,7 +288,7 @@ GND            →  GND
 - **Controller:** HT1621 (integrated)
 - **Image:** ![6-digit with battery](images/6digbatht1621.webp)
 - **Example:** `examples/HT1621/6DigBat/`
-- **Purchase:** https://aliexpress.com/item/1005005555160141.html
+- **Purchase:** https://www.aliexpress.com/item/1005006419794882.html
 
 **Code Example:**
 ```cpp
@@ -316,7 +316,7 @@ lcd.setBatteryLevel(2);  // Medium battery
 - **Controller:** HT1621 (integrated)
 - **Image:** ![LCM0844](images/LCM0844.webp)
 - **Example:** `examples/HT1621/LCM0844/`
-- **Purchase:** https://www.aliexpress.com/item/1005010575036798.html
+- **Purchase:** https://www.aliexpress.com/w/wholesale-LCM0844.html
 
 **Code Example:**
 ```cpp
@@ -345,7 +345,7 @@ lcd.setLoadLevel(3);
 - **Controller:** HT1621 (integrated)
 - **Image:** ![LCM88128](images/LCM88128.webp)
 - **Example:** `examples/HT1621/LCM88128/`
-- **Purchase:** https://www.aliexpress.com/item/1005010569015863.html
+- **Purchase:** (N/A) whzkyd.com
 
 **Code Example:**
 ```cpp
